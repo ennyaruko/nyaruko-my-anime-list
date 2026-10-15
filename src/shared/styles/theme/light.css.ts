@@ -4,14 +4,11 @@ import { themeVars } from "./contract.css";
 
 export const lightTheme = createTheme(themeVars, {
   gradient: {
-    backgroundImageFade: "linear-gradient(to bottom, #FFFFFF00 0%, #FFFFFFFF 100%)",
+    backgroundImageFade:
+      "linear-gradient(to bottom, #FFFFFF00 0%, #FFFFFFFF 100%)",
   },
 
   color: {
-    brand: {
-      darkBlue: "#445566",
-    },
-
     table: {
       state1: "#4682B4",
       state2: "#79A9CF",
@@ -22,6 +19,12 @@ export const lightTheme = createTheme(themeVars, {
       normal: "#DCDCDC",
       secondary: "#4B4B4B",
       secondaryHover: "#181818",
+    },
+
+    brand: {
+      darkBlue: "#445566",
+      darkBlueHover: "#536475",
+      darkBluePressed: "#374859",
     },
 
     status: {

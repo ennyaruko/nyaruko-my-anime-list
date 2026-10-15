@@ -4,11 +4,12 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
+    "dev": "react-router dev",
+    "build": "react-router typegen && tsc -b && react-router build",
     "prepare": "husky",
     "commitlint": "commitlint",
     "preview": "vite preview",
+    "typecheck": "react-router typegen && tsc -b",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "steiger": "steiger ./src"
@@ -16,15 +17,20 @@
   "dependencies": {
     "@vanilla-extract/css": "^1.17.4",
     "clsx": "^2.1.1",
+    "isbot": "^5",
     "radix-ui": "1.7.0",
     "react": "^19.3.0",
-    "react-dom": "^19.3.0"
+    "react-dom": "^19.3.0",
+    "react-router": "^8.4.0",
+    "react-toastify": "^11.1.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^21.2.3",
     "@commitlint/config-conventional": "^21.2.3",
     "@eslint/js": "^9.39.5",
     "@feature-sliced/steiger-plugin": "^0.8.0",
+    "@react-router/dev": "^8.4.0",
+    "@react-router/node": "^8.4.0",
     "@svgr/rollup": "^8.1.0",
     "@types/node": "^24.7.2",
     "@types/react": "^19.3.0",

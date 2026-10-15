@@ -44,8 +44,10 @@ const customImportGroups = [
 export default defineConfig([
   globalIgnores([
     "dist/**",
+    "build/**",
     "node_modules/**",
     "coverage/**",
+    ".react-router/**",
     "**/*.tsbuildinfo",
   ]),
   {

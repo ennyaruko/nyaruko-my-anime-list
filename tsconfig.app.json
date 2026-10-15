@@ -14,6 +14,7 @@
     "jsx": "react-jsx",
     /* Linting */
     "strict": true,
+    "rootDirs": [".", "./.react-router/types"],
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
@@ -28,5 +29,5 @@
     },
     "allowSyntheticDefaultImports": true
   },
-  "include": ["src"]
+  "include": ["src", ".react-router/types/**/*"]
 }

@@ -1,6 +1,6 @@
 import svgr from "@svgr/rollup";
 import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
+import { reactRouter } from "@react-router/dev/vite";
 import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin";
 
 export default defineConfig({
@@ -8,7 +8,7 @@ export default defineConfig({
     tsconfigPaths: true,
   },
   plugins: [
-    react(),
+    reactRouter(),
     svgr(),
     vanillaExtractPlugin({
       identifiers: ({ hash }) => `anime_${hash}`,

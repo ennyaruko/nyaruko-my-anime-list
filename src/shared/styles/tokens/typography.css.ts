@@ -10,44 +10,56 @@ import { createGlobalTheme } from "@vanilla-extract/css";
  * an explicit weight for that style.
  */
 export const typography = createGlobalTheme(":root", {
-  body: {
-    s: {
-      fontSize: "13px",
-      fontWeight: "400",
-      lineHeight: "normal",
-      fontFamily: "Inter, sans-serif",
-    },
-    "s-bold": {
-      fontSize: "13px",
-      fontWeight: "700",
-      lineHeight: "normal",
-      fontFamily: "Inter, sans-serif",
-    },
-    "2xs-bold": {
-      fontSize: "11px",
-      fontWeight: "700",
-      lineHeight: "normal",
-      fontFamily: "Inter, sans-serif",
-    },
-  },
-
   caption: {
     xs: {
       fontSize: "12px",
       fontWeight: "400",
-      lineHeight: "normal",
+      lineHeight: "15px",
       fontFamily: "Inter, sans-serif",
     },
     "2xs": {
       fontSize: "11px",
       fontWeight: "400",
-      lineHeight: "normal",
+      lineHeight: "13px",
       fontFamily: "Inter, sans-serif",
     },
     "2xs-medium": {
       fontSize: "11px",
       fontWeight: "500",
-      lineHeight: "normal",
+      lineHeight: "13px",
+      fontFamily: "Inter, sans-serif",
+    },
+  },
+
+  body: {
+    m: {
+      fontSize: "15px",
+      fontWeight: "400",
+      lineHeight: "18px",
+      fontFamily: "Inter, sans-serif",
+    },
+    s: {
+      fontSize: "13px",
+      fontWeight: "400",
+      lineHeight: "16px",
+      fontFamily: "Inter, sans-serif",
+    },
+    "s-bold": {
+      fontSize: "13px",
+      fontWeight: "700",
+      lineHeight: "16px",
+      fontFamily: "Inter, sans-serif",
+    },
+    "s-medium": {
+      fontSize: "13px",
+      fontWeight: "500",
+      lineHeight: "16px",
+      fontFamily: "Inter, sans-serif",
+    },
+    "2xs-bold": {
+      fontSize: "11px",
+      fontWeight: "700",
+      lineHeight: "13px",
       fontFamily: "Inter, sans-serif",
     },
   },
@@ -56,31 +68,37 @@ export const typography = createGlobalTheme(":root", {
     "2xl": {
       fontSize: "20px",
       fontWeight: "400",
-      lineHeight: "normal",
-      fontFamily: "Inter, sans-serif",
-    },
-    "3xl-m": {
-      fontSize: "24px",
-      fontWeight: "500",
-      lineHeight: "normal",
+      lineHeight: "24px",
       fontFamily: "Inter, sans-serif",
     },
     "m-bold": {
       fontSize: "15px",
       fontWeight: "700",
-      lineHeight: "normal",
+      lineHeight: "18px",
       fontFamily: "Inter, sans-serif",
     },
-    "s-bold": {
+    "m-medium": {
+      fontSize: "15px",
+      fontWeight: "500",
+      lineHeight: "18px",
+      fontFamily: "Inter, sans-serif",
+    },
+    "s-medium": {
       fontSize: "13px",
-      fontWeight: "700",
-      lineHeight: "normal",
+      fontWeight: "500",
+      lineHeight: "16px",
       fontFamily: "Inter, sans-serif",
     },
-    "xl-bold": {
+    "xl-medium": {
       fontSize: "18px",
-      fontWeight: "700",
-      lineHeight: "normal",
+      fontWeight: "500",
+      lineHeight: "22px",
+      fontFamily: "Inter, sans-serif",
+    },
+    "3xl-medium": {
+      fontSize: "24px",
+      fontWeight: "500",
+      lineHeight: "29px",
       fontFamily: "Inter, sans-serif",
     },
   },

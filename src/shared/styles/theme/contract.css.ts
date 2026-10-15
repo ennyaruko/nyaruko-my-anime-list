@@ -10,10 +10,6 @@ export const themeVars = createThemeContract({
   },
 
   color: {
-    brand: {
-      darkBlue: null,
-    },
-
     table: {
       state1: null,
       state2: null,
@@ -24,6 +20,12 @@ export const themeVars = createThemeContract({
       normal: null,
       secondary: null,
       secondaryHover: null,
+    },
+
+    brand: {
+      darkBlue: null,
+      darkBlueHover: null,
+      darkBluePressed: null,
     },
 
     status: {

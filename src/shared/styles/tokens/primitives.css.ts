@@ -10,8 +10,9 @@ export const primitives = createGlobalTheme(":root", {
   },
 
   radii: {
-    md: "1.25rem",
-    sm: "0.938rem",
+    s: "5px",
+    xs: "3px",
+    sm: "4px",
   },
 
   zIndex: {

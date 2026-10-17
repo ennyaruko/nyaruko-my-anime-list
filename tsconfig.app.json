@@ -21,12 +21,11 @@
     "paths": {
       "@/*": ["./src/*"],
       "@/app/*": ["./src/app/*"],
-      "@/application/*": ["./src/application/*"],
-      "@/domain/*": ["./src/domain/*"],
-      "@/infrastructure/*": ["./src/infrastructure/*"],
-      "@/presentation/*": ["./src/presentation/*"],
+      "@/entities/*": ["./src/entities/*"],
+      "@/features/*": ["./src/features/*"],
+      "@/pages/*": ["./src/pages/*"],
       "@/shared/*": ["./src/shared/*"],
-      "@/synchronization/*": ["./src/synchronization/*"]
+      "@/widgets/*": ["./src/widgets/*"]
     },
     "allowSyntheticDefaultImports": true
   },

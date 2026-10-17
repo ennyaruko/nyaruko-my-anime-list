@@ -9,13 +9,12 @@ import { defineConfig, globalIgnores } from "eslint/config";
 const sourceFiles = ["**/*.{js,mjs,cjs,jsx,ts,mts,cts,tsx}"];
 
 const importPathPatterns = ["^react$", "^react-.+", "^react/.+"];
-const architectureSegments = [
+const fsdSegments = [
   "app",
-  "presentation",
-  "application",
-  "domain",
-  "synchronization",
-  "infrastructure",
+  "pages",
+  "widgets",
+  "features",
+  "entities",
   "shared",
 ];
 
@@ -29,7 +28,7 @@ const customImportGroups = [
     groupName: "react",
     elementNamePattern: importPathPatterns,
   },
-  ...architectureSegments.flatMap((segment) => [
+  ...fsdSegments.flatMap((segment) => [
     {
       selector: "type",
       groupName: `${segment}-type`,
@@ -160,11 +159,10 @@ export default defineConfig([
             ],
             ["internal", "type-internal", "value-internal"],
             ["app", "app-type"],
-            ["presentation", "presentation-type"],
-            ["application", "application-type"],
-            ["domain", "domain-type"],
-            ["synchronization", "synchronization-type"],
-            ["infrastructure", "infrastructure-type"],
+            ["pages", "pages-type"],
+            ["widgets", "widgets-type"],
+            ["features", "features-type"],
+            ["entities", "entities-type"],
             ["shared", "shared-type"],
             ["type-parent", "value-parent"],
             ["type-sibling", "value-sibling", "type-index", "value-index"],

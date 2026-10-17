@@ -29,6 +29,12 @@ export const header = style({
   gap: primitives.spacing.xs,
 });
 
+export const toolbar = style({
+  display: "flex",
+  justifyContent: "flex-end",
+  marginBottom: primitives.spacing.m,
+});
+
 export const title = style({
   ...typography.heading["3xl-medium"],
   color: colors.text.primary,

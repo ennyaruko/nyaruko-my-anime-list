@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import type { ReactNode, HTMLAttributes } from "react";
 
 import clsx from "clsx";
@@ -10,11 +11,11 @@ export type StatusProps = HTMLAttributes<HTMLSpanElement> & {
   variant?: "info" | "positive" | "negative";
 };
 
-const labels = {
-  info: "Онгоинг",
-  positive: "Вышел",
-  negative: "Анонс",
-} satisfies Record<NonNullable<StatusProps["variant"]>, string>;
+const labelKeys = {
+  info: "common:mediaStatus.ongoing",
+  positive: "common:mediaStatus.released",
+  negative: "common:mediaStatus.announced",
+} as const satisfies Record<NonNullable<StatusProps["variant"]>, string>;
 
 export function Status({
   children,
@@ -23,6 +24,8 @@ export function Status({
   variant = "positive",
   ...props
 }: StatusProps) {
+  const { t } = useTranslation(["common"]);
+
   return (
     <span
       {...props}
@@ -33,7 +36,7 @@ export function Status({
         className,
       )}
     >
-      {children ?? labels[variant]}
+      {children ?? t(labelKeys[variant])}
     </span>
   );
 }

@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 import { useRef, useMemo, useState, useCallback } from "react";
 
 import clsx from "clsx";
@@ -40,14 +41,16 @@ export function MultiSelect({
   value,
   options,
   className,
+  placeholder,
   defaultValue,
   onValueChange,
   loading = false,
   disabled = false,
   cleanable = false,
   searchable = false,
-  placeholder = "Выберите варианты",
 }: MultiSelectProps) {
+  const { t } = useTranslation(["common"]);
+  const effectivePlaceholder = placeholder ?? t("common:multiSelect.placeholder");
   const rootRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [internalValue, setInternalValue] = useState(defaultValue ?? []);
@@ -155,7 +158,7 @@ export function MultiSelect({
               onChange={handleQueryChange}
               disabled={disabled || loading}
               readOnly={!searchable || loading}
-              placeholder={loading ? "Загрузка..." : placeholder}
+              placeholder={loading ? t("common:loading") : effectivePlaceholder}
               value={loading ? "" : open && searchable ? query : selectedLabels}
               className={clsx(styles.input, {
                 [styles.inputNotSearchable]:
@@ -171,7 +174,7 @@ export function MultiSelect({
                   <button
                     type="button"
                     onClick={clearSelection}
-                    aria-label="Очистить выбранные значения"
+                    aria-label={t("common:actions.clearSelection")}
                     onPointerDown={(event) => event.preventDefault()}
                     className={clsx(styles.iconButton, {
                       [styles.clearButtonHidden]: selectedValues.length === 0,
@@ -237,7 +240,7 @@ export function MultiSelect({
                   />
                 ))}
                 {filteredOptions.length === 0 && (
-                  <div className={styles.empty}>Ничего не найдено</div>
+                  <div className={styles.empty}>{t("common:emptyResults")}</div>
                 )}
               </div>
             </ScrollArea>

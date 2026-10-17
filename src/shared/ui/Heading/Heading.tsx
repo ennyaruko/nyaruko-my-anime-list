@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import type { ReactNode, HTMLAttributes } from "react";
 
 import clsx from "clsx";
@@ -11,13 +12,13 @@ export type HeadingProps = HTMLAttributes<HTMLDivElement> & {
   variant?: "info" | "neutral" | "warning" | "positive" | "negative";
 };
 
-const labels = {
-  info: "Смотрю",
-  warning: "Отложено",
-  negative: "Брошено",
-  positive: "Просмотрено",
-  neutral: "Запланировано",
-} satisfies Record<NonNullable<HeadingProps["variant"]>, string>;
+const labelKeys = {
+  info: "common:watchStatus.watching",
+  warning: "common:watchStatus.onHold",
+  neutral: "common:watchStatus.planned",
+  negative: "common:watchStatus.dropped",
+  positive: "common:watchStatus.completed",
+} as const satisfies Record<NonNullable<HeadingProps["variant"]>, string>;
 
 export function Heading({
   action,
@@ -27,6 +28,8 @@ export function Heading({
   variant = "info",
   ...props
 }: HeadingProps) {
+  const { t } = useTranslation(["common"]);
+
   return (
     <div
       {...props}
@@ -37,7 +40,7 @@ export function Heading({
         className,
       )}
     >
-      {children ?? labels[variant]}
+      {children ?? t(labelKeys[variant])}
       {action && <div className={styles.action}>{action}</div>}
     </div>
   );

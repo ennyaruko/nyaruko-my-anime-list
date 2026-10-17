@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import {
   useMemo,
   useState,
@@ -188,18 +189,21 @@ export function Table({
   items,
   className,
   onItemClick,
+  showAllLabel,
+  showLessLabel,
   numericList = false,
   valueMode = "relative",
   initialVisibleCount = 3,
-  showLessLabel = "Свернуть",
-  showAllLabel = "Показать ещё...",
   ...props
 }: TableProps) {
+  const { t } = useTranslation(["common"]);
   const [showAll, setShowAll] = useState(false);
   const visibleCount = Math.max(0, Math.floor(initialVisibleCount));
   const visibleItems = showAll ? items : items.slice(0, visibleCount);
   const hasToggle = items.length > visibleCount;
-  const toggleLabel = showAll ? showLessLabel : showAllLabel;
+  const toggleLabel = showAll
+    ? (showLessLabel ?? t("common:table.showLess"))
+    : (showAllLabel ?? t("common:table.showAll"));
   const maxValue = useMemo(
     () =>
       valueMode === "relative"
@@ -250,6 +254,7 @@ export function TableSkeleton({
   valueMode = "relative",
   ...props
 }: TableSkeletonProps) {
+  const { t } = useTranslation(["common"]);
   const maxValue = useMemo(
     () =>
       valueMode === "relative"
@@ -272,7 +277,7 @@ export function TableSkeleton({
         ))}
       </div>
       <button disabled type="button" className={styles.more}>
-        Показать ещё...
+        {t("common:table.showAll")}
       </button>
     </div>
   );

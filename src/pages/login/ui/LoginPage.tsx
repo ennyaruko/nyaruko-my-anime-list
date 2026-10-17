@@ -1,4 +1,7 @@
 import { Link } from "react-router";
+import { useTranslation } from "react-i18next";
+
+import { LocaleSwitcher } from "@/features/change-language";
 
 import { Button, Column, Container } from "@/shared/ui";
 
@@ -7,16 +10,19 @@ import { LoginForm } from "./LoginForm";
 import * as styles from "./LoginPage.css";
 
 export function LoginPage() {
+  const { t } = useTranslation(["login"]);
+
   return (
     <Container as="main" className={styles.page}>
       <section className={styles.content}>
         <header className={styles.header}>
+          <div className={styles.toolbar}>
+            <LocaleSwitcher />
+          </div>
           <h1 id="login-title" className={styles.title}>
-            Авторизация
+            {t("login:title")}
           </h1>
-          <p className={styles.description}>
-            На данной странице вы сможете авторизоваться на нашем сайте.
-          </p>
+          <p className={styles.description}>{t("login:description")}</p>
         </header>
 
         <div className={styles.illustration} />
@@ -25,11 +31,11 @@ export function LoginPage() {
         <Column wide tall gap="xxl" className={styles.login}>
           <LoginForm onSubmit={() => {}}>
             <Button round size="l" type="submit" variant="secondary">
-              Войти
+              {t("login:submit")}
             </Button>
           </LoginForm>
           <p className={styles.registerPrompt}>
-            Нет аккаунта? <Link to="/register">Зарегистрируйтесь</Link>
+            {t("login:noAccount")} <Link to="/register">{t("login:register")}</Link>
           </p>
         </Column>
       </section>

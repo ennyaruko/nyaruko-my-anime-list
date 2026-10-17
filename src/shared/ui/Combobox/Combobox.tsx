@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 import { memo, useId, useRef, useMemo, useState, useCallback } from "react";
 
 import clsx from "clsx";
@@ -94,13 +95,15 @@ export function Combobox({
   value,
   options,
   className,
+  placeholder,
   onValueChange,
   loading = false,
   disabled = false,
   defaultValue = "",
   searchable = false,
-  placeholder = "Выберите вариант",
 }: ComboboxProps) {
+  const { t } = useTranslation(["common"]);
+  const effectivePlaceholder = placeholder ?? t("common:combobox.placeholder");
   const rootRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -214,8 +217,8 @@ export function Combobox({
               onChange={handleQueryChange}
               disabled={disabled || loading}
               readOnly={!searchable || loading}
-              placeholder={loading ? "Загрузка..." : placeholder}
               value={loading ? "" : open ? query : selectedLabel}
+              placeholder={loading ? t("common:loading") : effectivePlaceholder}
               className={clsx(styles.input, {
                 [styles.inputNotSearchable]:
                   !searchable && !disabled && !loading,
@@ -288,7 +291,7 @@ export function Combobox({
                 ))}
 
                 {filteredOptions.length === 0 && (
-                  <div className={styles.empty}>Ничего не найдено</div>
+                  <div className={styles.empty}>{t("common:emptyResults")}</div>
                 )}
               </div>
             </ScrollArea>

@@ -151,14 +151,12 @@ export function MultiSelect({
               id={id}
               ref={inputRef}
               autoComplete="off"
+              onClick={toggleMenu}
               onChange={handleQueryChange}
               disabled={disabled || loading}
               readOnly={!searchable || loading}
               placeholder={loading ? "Загрузка..." : placeholder}
               value={loading ? "" : open && searchable ? query : selectedLabels}
-              onClick={() => {
-                if (!open) openMenu();
-              }}
               className={clsx(styles.input, {
                 [styles.inputNotSearchable]:
                   !searchable && !disabled && !loading,

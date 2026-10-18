@@ -1,0 +1,25 @@
+query ViewerAnimeList($userId: Int!, $type: MediaType = ANIME) {
+  MediaListCollection(userId: $userId, type: $type) {
+    lists {
+      name
+      status
+      entries {
+        id
+        status
+        score
+        progress
+        media {
+          id
+          title { romaji english native }
+          coverImage { large medium }
+          averageScore
+          episodes
+          seasonYear
+          format
+          genres
+          type
+        }
+      }
+    }
+  }
+}

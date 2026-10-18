@@ -1,39 +1,39 @@
 export default {
-  "actions": {
-    "clearSelection": "Clear selection"
+  title: "Anime List",
+  loading: "Loading...",
+  emptyResults: "No results found",
+  progress: {
+    label: "Progress",
   },
-  "combobox": {
-    "placeholder": "Select an option"
+  combobox: {
+    placeholder: "Select an option",
   },
-  "description": "Anime List UI built with React and TypeScript",
-  "emptyResults": "No results found",
-  "language": {
-    "english": "English",
-    "label": "Language",
-    "russian": "Русский"
+  actions: {
+    clearSelection: "Clear selection",
   },
-  "loading": "Loading...",
-  "mediaStatus": {
-    "announced": "Announced",
-    "ongoing": "Ongoing",
-    "released": "Released"
+  multiSelect: {
+    placeholder: "Select options",
   },
-  "multiSelect": {
-    "placeholder": "Select options"
+  description: "Anime List UI built with React and TypeScript",
+  table: {
+    showLess: "Show less",
+    showAll: "Show more...",
   },
-  "progress": {
-    "label": "Progress"
+  language: {
+    label: "Language",
+    english: "English",
+    russian: "Русский",
   },
-  "table": {
-    "showAll": "Show more...",
-    "showLess": "Show less"
+  mediaStatus: {
+    ongoing: "Ongoing",
+    released: "Released",
+    announced: "Announced",
   },
-  "title": "Anime List",
-  "watchStatus": {
-    "completed": "Completed",
-    "dropped": "Dropped",
-    "onHold": "On hold",
-    "planned": "Planned",
-    "watching": "Watching"
-  }
+  watchStatus: {
+    onHold: "On hold",
+    dropped: "Dropped",
+    planned: "Planned",
+    watching: "Watching",
+    completed: "Completed",
+  },
 } as const;

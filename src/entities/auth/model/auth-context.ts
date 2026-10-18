@@ -9,6 +9,8 @@ export type AuthContextValue = {
   login: () => void;
   status: AuthStatus;
   authError: null | string;
+  /** Ephemeral identifier for this login session; never contains the access token. */
+  sessionId: null | string;
   accessToken: null | string;
   clearAuthError: () => void;
   logout: () => Promise<void>;

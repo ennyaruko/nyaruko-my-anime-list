@@ -2,7 +2,9 @@ import { aniListIdentityProvider } from "@/app/integrations/anilist";
 
 import { identityProviderToken } from "@/entities/auth";
 
+import { createServiceRegistry } from "@/shared/lib/app-services";
+
 /** Composition root: concrete adapters are registered here and nowhere else. */
-export const appServices = new Map([
-  [identityProviderToken.key, aniListIdentityProvider],
-]);
+export const appServices = createServiceRegistry()
+  .register(identityProviderToken, aniListIdentityProvider)
+  .build();

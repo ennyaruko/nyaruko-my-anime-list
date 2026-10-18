@@ -24,10 +24,13 @@ export function QueryProvider({ children }: { children: ReactNode }) {
     <PersistQueryClientProvider
       client={queryClient}
       persistOptions={{
-        buster: "my-anime-list-v1",
+        buster: "my-anime-list-v2",
         maxAge: maxPersistedCacheAge,
         persister: categoryAwareQueryPersister,
         dehydrateOptions: {
+          // Offline mutation replay is not part of the MVP. Never persist
+          // paused or otherwise dehydrated mutations across browser sessions.
+          shouldDehydrateMutation: () => false,
           shouldDehydrateQuery: (query) =>
             defaultShouldDehydrateQuery(query) && shouldPersistQuery(query),
         },

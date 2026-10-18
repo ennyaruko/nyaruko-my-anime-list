@@ -18,6 +18,7 @@ export function LoginPage() {
     status,
     logout,
     authError,
+    sessionId,
     accessToken,
     clearAuthError,
     identityProvider,
@@ -25,8 +26,9 @@ export function LoginPage() {
   const accountQuery = useQuery({
     retry: false,
     staleTime: 5 * 60 * 1000,
-    queryKey: queryKeys.account(identityProvider.id),
-    enabled: status === "authenticated" && Boolean(accessToken),
+    queryKey: queryKeys.account(identityProvider.id, sessionId),
+    enabled:
+      status === "authenticated" && Boolean(accessToken) && Boolean(sessionId),
     queryFn: ({ signal }) =>
       identityProvider.getCurrentAccount(accessToken!, signal),
   });
@@ -61,9 +63,7 @@ export function LoginPage() {
             <Column gap="s">
               {authError && (
                 <p role="alert" onClick={clearAuthError}>
-                  {authError === "missing_token"
-                    ? t("login:authFailed")
-                    : authError}
+                  {t("login:authFailed")}
                 </p>
               )}
               <Button round size="l" onClick={login} variant="secondary">

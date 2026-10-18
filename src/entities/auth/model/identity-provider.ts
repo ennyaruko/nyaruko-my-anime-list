@@ -11,7 +11,7 @@ export type AccountProfile = {
 export type AuthorizationCallback =
   | { type: "none" }
   | { type: "error"; error: string }
-  | { type: "success"; accessToken: string };
+  | { type: "success"; expiresAt: number; accessToken: string };
 
 /**
  * Port for an identity provider. Provider DTOs and SDK types must not cross

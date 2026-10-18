@@ -21,7 +21,9 @@
     "locales:lint": "i18next-cli lint",
     "locales:check": "i18next-cli status",
     "locales:unused": "i18next-cli status --unused",
-    "locales:remove": "i18next-cli extract"
+    "locales:remove": "i18next-cli extract",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
@@ -74,7 +76,8 @@
     "tsx": "^4.20.5",
     "typescript": "~6.0.3",
     "typescript-eslint": "^8.71.1",
-    "vite": "^8.3.4"
+    "vite": "^8.3.4",
+    "vitest": "^5.0.5"
   },
   "engines": {
     "node": "^20.19.0 || ^22.13.0 || >=24.0.0"

@@ -1,11 +1,13 @@
 import type { CodegenConfig } from "@graphql-codegen/cli";
 
 const config: CodegenConfig = {
-  ignoreNoDocuments: true,
+  ignoreNoDocuments: false,
   schema: "https://graphql.anilist.co",
-  documents: ["src/shared/api/anilist/**/*.graphql"],
+  documents: [
+    "src/app/integrations/anilist/api/operations/**/*.graphql",
+  ],
   generates: {
-    "src/shared/api/anilist/generated/": {
+    "src/app/integrations/anilist/api/generated/": {
       preset: "client",
       config: { useTypeImports: true },
     },

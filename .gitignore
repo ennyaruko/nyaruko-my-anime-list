@@ -7,3 +7,8 @@ build
 .vscode/*
 !.vscode/extensions.json
 .DS_Store
+
+# Local environment configuration
+.env
+.env.*
+!.env.example

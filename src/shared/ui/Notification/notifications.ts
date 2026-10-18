@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { toast } from "react-toastify";
 
-import type { NotificationVariant } from "./Notification";
+export type NotificationVariant = "info" | "error" | "success" | "warning";
 
 export type ShowNotification = (
   message: ReactNode,

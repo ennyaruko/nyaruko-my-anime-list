@@ -6,7 +6,7 @@ import { LocaleSwitcher } from "@/features/change-language";
 
 import { useAuth } from "@/entities/auth";
 
-import { queryClient, clearUserQueries } from "@/shared/api";
+import { queryKeys } from "@/shared/api";
 import { Button, Column, Spinner, Container } from "@/shared/ui";
 
 import * as styles from "./LoginPage.css";
@@ -25,20 +25,13 @@ export function LoginPage() {
   const accountQuery = useQuery({
     retry: false,
     staleTime: 5 * 60 * 1000,
-    queryKey: ["identity", "account", identityProvider.id],
+    queryKey: queryKeys.account(identityProvider.id),
     enabled: status === "authenticated" && Boolean(accessToken),
     queryFn: ({ signal }) =>
       identityProvider.getCurrentAccount(accessToken!, signal),
   });
 
-  const handleLogout = async () => {
-    const userId = accountQuery.data?.id;
-    logout();
-    await clearUserQueries(userId);
-    queryClient.removeQueries({
-      queryKey: ["identity", "account", identityProvider.id],
-    });
-  };
+  const handleLogout = () => void logout();
 
   return (
     <Container as="main" className={styles.page}>

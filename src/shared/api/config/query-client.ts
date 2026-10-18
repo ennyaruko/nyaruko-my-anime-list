@@ -1,5 +1,6 @@
 import { type Query, QueryClient } from "@tanstack/react-query";
 
+import { getUserIdFromQueryKey } from "../../lib/query-keys";
 import { shouldPersistQuery as shouldPersistByKey } from "../../lib";
 
 export const queryClient = new QueryClient({
@@ -8,6 +9,8 @@ export const queryClient = new QueryClient({
     queries: {
       staleTime: 5 * 60 * 1_000,
       refetchOnWindowFocus: true,
+      // TanStack Query requires gcTime >= persisted maxAge for reliable hydration.
+      // Category-specific persistent retention still prunes individual queries.
       gcTime: 90 * 24 * 60 * 60 * 1_000,
       retry: (failureCount, error) => {
         const apiError = error as {
@@ -30,15 +33,14 @@ export function shouldPersistQuery(query: Query): boolean {
   );
 }
 
-export async function clearUserQueries(
-  userId?: string | number,
-): Promise<void> {
+/** Remove every query whose key follows the user-scoped key contract. */
+export function clearUserQueries(userId?: string | number): void {
   queryClient.removeQueries({
     predicate: (query) => {
-      const [category, cachedUserId] = query.queryKey;
+      const cachedUserId = getUserIdFromQueryKey(query.queryKey);
       return (
-        category === "user-list" &&
-        (userId === undefined || String(cachedUserId) === String(userId))
+        cachedUserId !== null &&
+        (userId === undefined || cachedUserId === String(userId))
       );
     },
   });

@@ -1,3 +1,5 @@
+import { createServiceToken } from "@/shared/lib/app-services";
+
 /** Provider-neutral account shape exposed to application code. */
 export type AccountProfile = {
   id: string;
@@ -25,3 +27,7 @@ export interface IdentityProvider {
     signal?: AbortSignal,
   ): Promise<AccountProfile>;
 }
+
+/** Shared typed DI token; the concrete implementation is registered by app/. */
+export const identityProviderToken =
+  createServiceToken<IdentityProvider>("identityProvider");

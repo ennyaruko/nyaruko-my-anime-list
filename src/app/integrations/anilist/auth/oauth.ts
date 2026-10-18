@@ -51,6 +51,9 @@ export function consumeAniListAuthorizationCallback(): AuthorizationCallback {
   const cleanSearch = new URLSearchParams(window.location.search);
   cleanSearch.delete("error");
   cleanSearch.delete("error_description");
+  cleanSearch.delete("access_token");
+  cleanSearch.delete("token_type");
+  cleanSearch.delete("expires_in");
   const query = cleanSearch.toString();
   window.history.replaceState(
     window.history.state,

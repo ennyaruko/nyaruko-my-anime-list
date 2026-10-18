@@ -1,7 +1,7 @@
 import { GraphQLClient } from "graphql-request";
 
+import type { AniListViewerDto } from "./dto";
 import { CurrentViewerDocument } from "./queries";
-import type { AniListViewerDto, AniListCurrentViewerResponse } from "./dto";
 
 function getGraphQLEndpoint(): string {
   const endpoint = import.meta.env.VITE_ANILIST_GRAPHQL_ENDPOINT?.trim();
@@ -30,7 +30,7 @@ export async function getViewer(
   signal?: AbortSignal,
 ): Promise<AniListViewerDto> {
   const client = createAniListGraphQLClient(accessToken);
-  const response = await client.request<AniListCurrentViewerResponse>({
+  const response = await client.request({
     signal,
     variables: {},
     document: CurrentViewerDocument,

@@ -1,11 +1,5 @@
-/** Raw AniList DTOs. Keep these types inside the provider integration boundary. */
-export interface AniListViewerDto {
-  id: number;
-  name: string;
-  siteUrl?: null | string;
-  avatar?: null | { large?: null | string; medium?: null | string };
-}
+import type { CurrentViewerQuery } from "./generated/graphql";
 
-export interface AniListCurrentViewerResponse {
-  Viewer: null | AniListViewerDto;
-}
+/** Derived from the generated operation to avoid duplicating GraphQL DTO shape. */
+export type AniListCurrentViewerResponse = CurrentViewerQuery;
+export type AniListViewerDto = NonNullable<CurrentViewerQuery["Viewer"]>;

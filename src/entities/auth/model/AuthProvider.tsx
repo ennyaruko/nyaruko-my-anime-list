@@ -1,4 +1,5 @@
 import {
+  useRef,
   useMemo,
   useState,
   useEffect,
@@ -6,9 +7,9 @@ import {
   type ReactNode,
 } from "react";
 
-import { useAppServices } from "@/shared/lib";
+import { useAppService } from "@/shared/lib/app-services";
 
-import type { IdentityProvider } from "./identity-provider";
+import { identityProviderToken } from "./identity-provider";
 import { AuthContext, type AuthStatus } from "./auth-context";
 
 const TOKEN_STORAGE_PREFIX = "my-anime-list";
@@ -23,44 +24,51 @@ function toErrorMessage(error: unknown, fallback: string): string {
 
 type AuthProviderProps = {
   children: ReactNode;
+  /** App-level cleanup hook; auth state itself remains provider-neutral. */
+  onLogout?: (providerId: string) => void | Promise<void>;
 };
 
-/**
- * Provider-neutral auth state. The concrete identity provider is read from the
- * app service registry through a lower-layer API; this module never imports app/.
- */
-export function AuthProvider({ children }: AuthProviderProps) {
-  const { identityProvider } = useAppServices<{
-    identityProvider: IdentityProvider;
-  }>();
+/** Provider-neutral auth state; app/ supplies integration and logout orchestration. */
+export function AuthProvider({ children, onLogout }: AuthProviderProps) {
+  const identityProvider = useAppService(identityProviderToken);
   const [status, setStatus] = useState<AuthStatus>("initializing");
   const [accessToken, setAccessToken] = useState<null | string>(null);
   const [authError, setAuthError] = useState<null | string>(null);
+  const initializedProviderId = useRef<null | string>(null);
 
   const tokenStorageKey = getTokenStorageKey(identityProvider.id);
 
   useEffect(() => {
+    // React Strict Mode replays effects in development. OAuth callbacks are
+    // one-shot inputs, so process them once per provider rather than consuming
+    // the callback twice (which is especially important when storage is blocked).
+    if (initializedProviderId.current === identityProvider.id) return;
+    initializedProviderId.current = identityProvider.id;
+
     setStatus("initializing");
     setAccessToken(null);
     setAuthError(null);
 
     try {
       const callback = identityProvider.consumeAuthorizationCallback();
-
       if (callback.type === "success") {
         setAccessToken(callback.accessToken);
         setStatus("authenticated");
         try {
           window.sessionStorage.setItem(tokenStorageKey, callback.accessToken);
         } catch {
-          // The current session can still work when storage is unavailable.
+          // Current in-memory session still works when storage is unavailable.
         }
         return;
       }
 
       if (callback.type === "error") setAuthError(callback.error);
-
-      const storedToken = window.sessionStorage.getItem(tokenStorageKey);
+      let storedToken: null | string = null;
+      try {
+        storedToken = window.sessionStorage.getItem(tokenStorageKey);
+      } catch {
+        // Treat inaccessible browser storage as an anonymous session.
+      }
       if (storedToken) {
         setAccessToken(storedToken);
         setStatus("authenticated");
@@ -82,7 +90,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }, [identityProvider]);
 
-  const logout = useCallback(() => {
+  const logout = useCallback(async () => {
     try {
       window.sessionStorage.removeItem(tokenStorageKey);
     } catch {
@@ -91,7 +99,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setAccessToken(null);
     setStatus("anonymous");
     setAuthError(null);
-  }, [tokenStorageKey]);
+    await onLogout?.(identityProvider.id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [onLogout, tokenStorageKey]);
 
   const clearAuthError = useCallback(() => setAuthError(null), []);
 

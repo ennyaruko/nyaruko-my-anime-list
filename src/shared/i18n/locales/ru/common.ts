@@ -1,39 +1,39 @@
 export default {
-  title: "Anime List",
-  loading: "Загрузка...",
-  emptyResults: "Ничего не найдено",
-  progress: {
-    label: "Прогресс",
+  "actions": {
+    "clearSelection": "Очистить выбранные значения"
   },
-  combobox: {
-    placeholder: "Выберите вариант",
+  "combobox": {
+    "placeholder": "Выберите вариант"
   },
-  multiSelect: {
-    placeholder: "Выберите варианты",
+  "description": "UI Kit для Anime List на React и TypeScript",
+  "emptyResults": "Ничего не найдено",
+  "language": {
+    "english": "English",
+    "label": "Язык",
+    "russian": "Русский"
   },
-  description: "UI Kit для Anime List на React и TypeScript",
-  actions: {
-    clearSelection: "Очистить выбранные значения",
+  "loading": "Загрузка...",
+  "mediaStatus": {
+    "announced": "Анонс",
+    "ongoing": "Онгоинг",
+    "released": "Вышел"
   },
-  table: {
-    showLess: "Свернуть",
-    showAll: "Показать ещё...",
+  "multiSelect": {
+    "placeholder": "Выберите варианты"
   },
-  language: {
-    label: "Язык",
-    english: "English",
-    russian: "Русский",
+  "progress": {
+    "label": "Прогресс"
   },
-  mediaStatus: {
-    released: "Вышел",
-    announced: "Анонс",
-    ongoing: "Онгоинг",
+  "table": {
+    "showAll": "Показать ещё...",
+    "showLess": "Свернуть"
   },
-  watchStatus: {
-    dropped: "Брошено",
-    onHold: "Отложено",
-    watching: "Смотрю",
-    completed: "Просмотрено",
-    planned: "Запланировано",
-  },
+  "title": "Anime List",
+  "watchStatus": {
+    "completed": "Просмотрено",
+    "dropped": "Брошено",
+    "onHold": "Отложено",
+    "planned": "Запланировано",
+    "watching": "Смотрю"
+  }
 } as const;

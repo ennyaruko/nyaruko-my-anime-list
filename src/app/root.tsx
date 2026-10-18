@@ -3,13 +3,15 @@ import { useTranslation } from "react-i18next";
 import "react-toastify/dist/ReactToastify.css";
 import { Meta, Links, Outlet, Scripts, ScrollRestoration } from "react-router";
 
-import { AuthProvider } from "@/entities/auth";
-
 import i18n from "@/shared/i18n";
 import { lightTheme } from "@/shared/styles";
 import { NotificationContainer } from "@/shared/ui";
 
-import { QueryProvider, AppServicesProvider } from "./providers";
+import {
+  QueryProvider,
+  AppAuthProvider,
+  AppServicesProvider,
+} from "./providers";
 
 import "./global.css";
 
@@ -45,10 +47,10 @@ export default function Root() {
   return (
     <QueryProvider>
       <AppServicesProvider>
-        <AuthProvider>
+        <AppAuthProvider>
           <Outlet />
           <NotificationContainer />
-        </AuthProvider>
+        </AppAuthProvider>
       </AppServicesProvider>
     </QueryProvider>
   );

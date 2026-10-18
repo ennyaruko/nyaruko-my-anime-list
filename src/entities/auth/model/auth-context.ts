@@ -8,10 +8,10 @@ export type AuthStatus = "anonymous" | "initializing" | "authenticated";
 export type AuthContextValue = {
   login: () => void;
   status: AuthStatus;
-  logout: () => void;
   authError: null | string;
   accessToken: null | string;
   clearAuthError: () => void;
+  logout: () => Promise<void>;
   identityProvider: IdentityProvider;
 };
 

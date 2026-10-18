@@ -1,2 +1,3 @@
-export * from "./QueryProvider";
-export * from "./AppServicesProvider";
+export { QueryProvider } from "./QueryProvider";
+export { AppAuthProvider } from "./AppAuthProvider";
+export { AppServicesProvider } from "./AppServicesProvider";

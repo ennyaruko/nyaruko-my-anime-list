@@ -50,7 +50,8 @@ export function MultiSelect({
   searchable = false,
 }: MultiSelectProps) {
   const { t } = useTranslation(["common"]);
-  const effectivePlaceholder = placeholder ?? t("common:multiSelect.placeholder");
+  const effectivePlaceholder =
+    placeholder ?? t("common:multiSelect.placeholder");
   const rootRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [internalValue, setInternalValue] = useState(defaultValue ?? []);

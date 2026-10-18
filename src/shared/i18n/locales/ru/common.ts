@@ -1,4 +1,4 @@
-const common = {
+export default {
   title: "Anime List",
   loading: "Загрузка...",
   emptyResults: "Ничего не найдено",
@@ -21,21 +21,19 @@ const common = {
   },
   language: {
     label: "Язык",
-    russian: "Русский",
     english: "English",
+    russian: "Русский",
   },
   mediaStatus: {
     released: "Вышел",
-    ongoing: "Онгоинг",
     announced: "Анонс",
+    ongoing: "Онгоинг",
   },
   watchStatus: {
-    watching: "Смотрю",
-    onHold: "Отложено",
     dropped: "Брошено",
+    onHold: "Отложено",
+    watching: "Смотрю",
     completed: "Просмотрено",
     planned: "Запланировано",
   },
-};
-
-export default common;
+} as const;

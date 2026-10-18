@@ -8,6 +8,9 @@ export type ShowNotification = (
   variant?: NotificationVariant,
 ) => void;
 
-export const showNotification: ShowNotification = (message, variant = "info") => {
+export const showNotification: ShowNotification = (
+  message,
+  variant = "info",
+) => {
   toast(message, { type: variant });
 };

@@ -1,6 +1,4 @@
-import type ru from "../ru/common";
-
-const common = {
+export default {
   title: "Anime List",
   loading: "Loading...",
   emptyResults: "No results found",
@@ -10,11 +8,11 @@ const common = {
   combobox: {
     placeholder: "Select an option",
   },
-  multiSelect: {
-    placeholder: "Select options",
-  },
   actions: {
     clearSelection: "Clear selection",
+  },
+  multiSelect: {
+    placeholder: "Select options",
   },
   description: "Anime List UI built with React and TypeScript",
   table: {
@@ -23,8 +21,8 @@ const common = {
   },
   language: {
     label: "Language",
-    russian: "Русский",
     english: "English",
+    russian: "Русский",
   },
   mediaStatus: {
     ongoing: "Ongoing",
@@ -38,6 +36,4 @@ const common = {
     watching: "Watching",
     completed: "Completed",
   },
-} satisfies typeof ru;
-
-export default common;
+} as const;

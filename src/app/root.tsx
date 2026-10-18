@@ -3,9 +3,13 @@ import { useTranslation } from "react-i18next";
 import "react-toastify/dist/ReactToastify.css";
 import { Meta, Links, Outlet, Scripts, ScrollRestoration } from "react-router";
 
+import { AuthProvider } from "@/entities/auth";
+
 import i18n from "@/shared/i18n";
 import { lightTheme } from "@/shared/styles";
 import { NotificationContainer } from "@/shared/ui";
+
+import { QueryProvider, AppServicesProvider } from "./providers";
 
 import "./global.css";
 
@@ -14,7 +18,11 @@ export function Layout({ children }: { children: ReactNode }) {
   const language = i18n.resolvedLanguage ?? "ru";
 
   return (
-    <html lang={language} className={lightTheme} style={{ colorScheme: "light" }}>
+    <html
+      lang={language}
+      className={lightTheme}
+      style={{ colorScheme: "light" }}
+    >
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -35,9 +43,13 @@ export function Layout({ children }: { children: ReactNode }) {
 
 export default function Root() {
   return (
-    <>
-      <Outlet />
-      <NotificationContainer />
-    </>
+    <QueryProvider>
+      <AppServicesProvider>
+        <AuthProvider>
+          <Outlet />
+          <NotificationContainer />
+        </AuthProvider>
+      </AppServicesProvider>
+    </QueryProvider>
   );
 }

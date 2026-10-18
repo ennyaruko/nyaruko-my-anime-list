@@ -37,7 +37,9 @@ export function Progress({
 
   return (
     <div {...props} className={clsx(styles.root, styles.size[size], className)}>
-      <span className={styles.label}>{effectiveLabel + ": " + value + "/" + max}</span>
+      <span className={styles.label}>
+        {effectiveLabel + ": " + value + "/" + max}
+      </span>
       <span className={clsx(styles.controls, styles.controlsSize[size])}>
         {editable && (
           <button

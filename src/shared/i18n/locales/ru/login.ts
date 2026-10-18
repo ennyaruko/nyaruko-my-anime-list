@@ -1,11 +1,14 @@
-const login = {
-  submit: "Войти",
+export default {
+  logout: "Выйти",
+  retry: "Повторить",
   title: "Авторизация",
-  noAccount: "Нет аккаунта?",
-  register: "Зарегистрируйтесь",
-  passwordPlaceholder: "Введите пароль",
-  usernamePlaceholder: "Логин пользователя",
-  description: "На данной странице вы сможете авторизоваться на нашем сайте.",
-};
-
-export default login;
+  connectedTitle: "Вы вошли",
+  openProfile: "Открыть профиль",
+  signedInAs: "Вы вошли как {{username}}",
+  continueWithProvider: "Продолжить с {{provider}}",
+  accountLoadFailed: "Не удалось загрузить профиль аккаунта.",
+  connectedDescription: "Аккаунт AniList подключён к Anime Tracker.",
+  authFailed: "Не удалось завершить авторизацию AniList. Попробуйте ещё раз.",
+  description:
+    "Войдите через AniList, чтобы синхронизировать свой список аниме.",
+} as const;

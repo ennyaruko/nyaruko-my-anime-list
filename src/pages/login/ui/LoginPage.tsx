@@ -1,16 +1,44 @@
-import { Link } from "react-router";
 import { useTranslation } from "react-i18next";
+
+import { useQuery } from "@tanstack/react-query";
 
 import { LocaleSwitcher } from "@/features/change-language";
 
-import { Button, Column, Container } from "@/shared/ui";
+import { useAuth } from "@/entities/auth";
 
-import { LoginForm } from "./LoginForm";
+import { queryClient, clearUserQueries } from "@/shared/api";
+import { Button, Column, Spinner, Container } from "@/shared/ui";
 
 import * as styles from "./LoginPage.css";
 
 export function LoginPage() {
-  const { t } = useTranslation(["login"]);
+  const { t } = useTranslation(["common", "login"]);
+  const {
+    login,
+    status,
+    logout,
+    authError,
+    accessToken,
+    clearAuthError,
+    identityProvider,
+  } = useAuth();
+  const accountQuery = useQuery({
+    retry: false,
+    staleTime: 5 * 60 * 1000,
+    queryKey: ["identity", "account", identityProvider.id],
+    enabled: status === "authenticated" && Boolean(accessToken),
+    queryFn: ({ signal }) =>
+      identityProvider.getCurrentAccount(accessToken!, signal),
+  });
+
+  const handleLogout = async () => {
+    const userId = accountQuery.data?.id;
+    logout();
+    await clearUserQueries(userId);
+    queryClient.removeQueries({
+      queryKey: ["identity", "account", identityProvider.id],
+    });
+  };
 
   return (
     <Container as="main" className={styles.page}>
@@ -20,23 +48,94 @@ export function LoginPage() {
             <LocaleSwitcher />
           </div>
           <h1 id="login-title" className={styles.title}>
-            {t("login:title")}
+            {status === "authenticated" && accountQuery.data
+              ? t("login:connectedTitle")
+              : t("login:title")}
           </h1>
-          <p className={styles.description}>{t("login:description")}</p>
+          <p className={styles.description}>
+            {status === "authenticated" && accountQuery.data
+              ? t("login:connectedDescription")
+              : t("login:description")}
+          </p>
         </header>
 
         <div className={styles.illustration} />
         <div className={styles.illustrationFade} />
 
         <Column wide tall gap="xxl" className={styles.login}>
-          <LoginForm onSubmit={() => {}}>
-            <Button round size="l" type="submit" variant="secondary">
-              {t("login:submit")}
-            </Button>
-          </LoginForm>
-          <p className={styles.registerPrompt}>
-            {t("login:noAccount")} <Link to="/register">{t("login:register")}</Link>
-          </p>
+          {status === "initializing" && <Spinner />}
+          {status === "anonymous" && (
+            <Column gap="s">
+              {authError && (
+                <p role="alert" onClick={clearAuthError}>
+                  {authError === "missing_token"
+                    ? t("login:authFailed")
+                    : authError}
+                </p>
+              )}
+              <Button round size="l" onClick={login} variant="secondary">
+                {t("login:continueWithProvider", {
+                  provider: identityProvider.displayName,
+                })}
+              </Button>
+            </Column>
+          )}
+          {status === "authenticated" && accountQuery.isPending && <Spinner />}
+          {status === "authenticated" && accountQuery.isError && (
+            <Column gap="s">
+              <p role="alert">{t("login:accountLoadFailed")}</p>
+              <Button
+                round
+                size="l"
+                onClick={() => void accountQuery.refetch()}
+              >
+                {t("login:retry")}
+              </Button>
+              <Button
+                round
+                size="l"
+                variant="flat"
+                onClick={() => void handleLogout()}
+              >
+                {t("login:logout")}
+              </Button>
+            </Column>
+          )}
+          {status === "authenticated" && accountQuery.data && (
+            <Column gap="m">
+              {accountQuery.data.avatarUrl && (
+                <img
+                  alt=""
+                  width={72}
+                  height={72}
+                  src={accountQuery.data.avatarUrl}
+                  style={{ objectFit: "cover", borderRadius: "50%" }}
+                />
+              )}
+              <p>
+                {t("login:signedInAs", {
+                  username: accountQuery.data.username,
+                })}
+              </p>
+              {accountQuery.data.profileUrl && (
+                <a
+                  target="_blank"
+                  rel="noreferrer"
+                  href={accountQuery.data.profileUrl}
+                >
+                  {t("login:openProfile")}
+                </a>
+              )}
+              <Button
+                round
+                size="l"
+                variant="secondary"
+                onClick={() => void handleLogout()}
+              >
+                {t("login:logout")}
+              </Button>
+            </Column>
+          )}
         </Column>
       </section>
     </Container>

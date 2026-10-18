@@ -1,7 +1,9 @@
 import { z } from "zod";
 import type { TFunction } from "i18next";
 
-export function createLoginSchema(t: TFunction<["login", "validation"]>) {
+export function createLoginSchema(
+  t: TFunction<["common", "login", "validation"]>,
+) {
   return z.object({
     password: z.string().min(1, t("validation:passwordRequired")),
     login: z

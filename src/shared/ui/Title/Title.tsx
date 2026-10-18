@@ -5,12 +5,7 @@ import clsx from "clsx";
 import * as styles from "./Title.css";
 
 export type TitleState =
-  | "paused"
-  | "default"
-  | "dropped"
-  | "planning"
-  | "watching"
-  | "completed";
+  "paused" | "default" | "dropped" | "planning" | "watching" | "completed";
 export type TitleProps = HTMLAttributes<HTMLDivElement> & {
   title: string;
   variant?: TitleState;

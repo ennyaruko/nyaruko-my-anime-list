@@ -41,7 +41,10 @@ export function Column({
         styles.root,
         { [layoutStyles.direction[direction]]: Boolean(direction) },
         { [layoutStyles.alignItem[alignItem]]: Boolean(alignItem) },
-        { [layoutStyles.justifyContent[justifyContent]]: Boolean(justifyContent) },
+        {
+          [layoutStyles.justifyContent[justifyContent]]:
+            Boolean(justifyContent),
+        },
         { [layoutStyles.wide]: wide },
         { [layoutStyles.tall]: tall },
         { [layoutStyles.wrap]: wrap },

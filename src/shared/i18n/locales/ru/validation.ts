@@ -1,7 +1,5 @@
-const validation = {
+export default {
   passwordRequired: "Введите пароль",
   loginRequired: "Введите имя пользователя",
   loginLatinOnly: "Имя пользователя не должно содержать кириллицу",
-};
-
-export default validation;
+} as const;

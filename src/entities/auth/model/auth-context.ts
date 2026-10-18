@@ -1,0 +1,18 @@
+import { createContext } from "react";
+
+import type { IdentityProvider } from "./identity-provider";
+
+export type AuthStatus = "anonymous" | "initializing" | "authenticated";
+
+/** Provider-neutral authentication state consumed by application UI. */
+export type AuthContextValue = {
+  login: () => void;
+  status: AuthStatus;
+  logout: () => void;
+  authError: null | string;
+  accessToken: null | string;
+  clearAuthError: () => void;
+  identityProvider: IdentityProvider;
+};
+
+export const AuthContext = createContext<null | AuthContextValue>(null);

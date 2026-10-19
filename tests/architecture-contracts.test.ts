@@ -1,20 +1,19 @@
 import { it, expect, describe } from "vitest";
 import type { PersistedClient } from "@tanstack/react-query-persist-client";
 
+import { queryCacheConfig } from "../src/shared/config";
 import { createServiceToken } from "../src/shared/lib/app-services/service-token";
 import { createServiceRegistry } from "../src/shared/lib/app-services/service-registry";
 import { createSerializedPersister } from "../src/shared/lib/persistence/serialized-persister";
-import { retainUnexpiredQueries } from "../src/shared/lib/persistence/category-aware-query-persister";
 import {
-  queryKeys,
   isUserScopedQueryKey,
   getUserIdFromQueryKey,
-} from "../src/shared/lib/query-keys";
+} from "../src/shared/lib/query-key-utils";
+import { retainUnexpiredQueries } from "../src/shared/lib/persistence/category-aware-query-persister";
 import {
-  queryRetentionMs,
   shouldPersistQuery,
-  getQueryRetentionMs,
-} from "../src/shared/lib/persistence/query-persistence-policy";
+  resolveQueryCachePolicy,
+} from "../src/shared/lib/query-cache-policy";
 
 describe("application architecture contracts", () => {
   describe("service registry", () => {
@@ -34,17 +33,30 @@ describe("application architecture contracts", () => {
 
   describe("query keys", () => {
     it("isolates account keys by ephemeral session", () => {
-      const first = queryKeys.account("anilist", "session-a");
-      const second = queryKeys.account("anilist", "session-b");
+      const first = queryCacheConfig.families.account.key(
+        "anilist",
+        "session-a",
+      );
+      const second = queryCacheConfig.families.account.key(
+        "anilist",
+        "session-b",
+      );
 
       expect(first).not.toEqual(second);
       expect(first).not.toContain("access-token");
     });
 
     it("requires a stable non-empty user identifier for user-scoped keys", () => {
-      expect(getUserIdFromQueryKey(queryKeys.userList("123"))).toBe("123");
-      expect(isUserScopedQueryKey(["user-settings", "123"])).toBe(true);
-      expect(getUserIdFromQueryKey(["user-list", ""])).toBeNull();
+      expect(
+        getUserIdFromQueryKey(queryCacheConfig.families.userList.key("123")),
+      ).toBe("123");
+      expect(
+        isUserScopedQueryKey(queryCacheConfig.families.userList.key("123")),
+      ).toBe(true);
+      expect(isUserScopedQueryKey(["user-settings", "123"])).toBe(false);
+      expect(
+        getUserIdFromQueryKey(queryCacheConfig.families.userList.key("")),
+      ).toBeNull();
       expect(isUserScopedQueryKey(["anime", "details", 123])).toBe(false);
     });
   });
@@ -52,18 +64,27 @@ describe("application architecture contracts", () => {
   describe("query persistence", () => {
     it("allowlists keys and applies retention to query data age", () => {
       const now = 2_000_000_000_000;
-      const userListKey = queryKeys.userList("123");
-      const detailsKey = queryKeys.animeDetails(42);
+      const userListKey = queryCacheConfig.families.userList.key("123");
+      const detailsKey = queryCacheConfig.families.animeDetails.key(42);
 
-      expect(getQueryRetentionMs(userListKey)).toBe(queryRetentionMs.userList);
-      expect(getQueryRetentionMs(detailsKey)).toBe(
-        queryRetentionMs.animeDetails,
+      const userListPolicy = resolveQueryCachePolicy(userListKey);
+      const detailsPolicy = resolveQueryCachePolicy(detailsKey);
+      expect(userListPolicy.persistForMs).toBe(90 * 24 * 60 * 60 * 1_000);
+      expect(detailsPolicy.persistForMs).toBe(30 * 24 * 60 * 60 * 1_000);
+      expect(userListPolicy.staleTimeMs).toBe(24 * 60 * 60 * 1_000);
+      expect(
+        resolveQueryCachePolicy(["reference", "arbitrary"]).persistForMs,
+      ).toBeNull();
+      expect(resolveQueryCachePolicy(["search", "query"]).persistForMs).toBe(
+        null,
       );
-      expect(getQueryRetentionMs(["reference", "arbitrary"])).toBeNull();
-      expect(getQueryRetentionMs(["search", "query"])).toBeNull();
       expect(shouldPersistQuery(userListKey, now - 1_000, now)).toBe(true);
       expect(
-        shouldPersistQuery(userListKey, now - queryRetentionMs.userList, now),
+        shouldPersistQuery(
+          userListKey,
+          now - (userListPolicy.persistForMs ?? 0),
+          now,
+        ),
       ).toBe(false);
       expect(shouldPersistQuery(userListKey, now + 1_000, now)).toBe(false);
       expect(shouldPersistQuery(userListKey, 0, now)).toBe(false);
@@ -84,8 +105,12 @@ describe("application architecture contracts", () => {
           queries: [
             {
               queryHash: "user-list-123",
-              queryKey: queryKeys.userList("123"),
-              state: { dataUpdatedAt: now - 1_000 },
+              queryKey: queryCacheConfig.families.userList.key("123"),
+              state: {
+                data: [],
+                status: "success",
+                dataUpdatedAt: now - 1_000,
+              },
             },
           ],
         },

@@ -1,5 +1,5 @@
 export default {
-  "loginLatinOnly": "Имя пользователя не должно содержать кириллицу",
-  "loginRequired": "Введите имя пользователя",
-  "passwordRequired": "Введите пароль"
+  passwordRequired: "Введите пароль",
+  loginRequired: "Введите имя пользователя",
+  loginLatinOnly: "Имя пользователя не должно содержать кириллицу",
 } as const;

@@ -1,6 +1,6 @@
 import { useEffect, type ReactNode } from "react";
 
-import { setPersistenceErrorHandler } from "@/shared/lib/persistence";
+import { setPersistenceErrorHandler } from "@/shared/lib";
 
 /** Central, privacy-safe diagnostics for best-effort browser infrastructure. */
 export function AppDiagnosticsProvider({ children }: { children: ReactNode }) {

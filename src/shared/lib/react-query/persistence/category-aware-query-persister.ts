@@ -3,15 +3,20 @@ import type {
   PersistedClient,
 } from "@tanstack/react-query-persist-client";
 
-import { shouldPersistQuery } from "./query-persistence-policy";
+import { queryCacheConfig } from "../query-cache";
+import { shouldPersistQuery } from "../cache/query-cache-policy";
+
 import { indexedDbQueryPersister } from "./indexed-db-persister";
 
 export function retainUnexpiredQueries(
   persistedClient: PersistedClient,
   now: number,
 ) {
-  const queries = persistedClient.clientState.queries.filter((query) =>
-    shouldPersistQuery(query.queryKey, query.state.dataUpdatedAt, now),
+  const queries = persistedClient.clientState.queries.filter(
+    (query) =>
+      query.state.status === "success" &&
+      query.state.data !== undefined &&
+      shouldPersistQuery(query.queryKey, query.state.dataUpdatedAt, now),
   );
   return {
     queries,
@@ -20,18 +25,14 @@ export function retainUnexpiredQueries(
       clientState: {
         ...persistedClient.clientState,
         queries,
-        // The application has no durable offline mutation queue. Dropping
-        // mutations here is a second line of defence beyond dehydrateOptions.
+        // Offline mutations are intentionally not persisted by this app.
         mutations: [],
       },
     },
   };
 }
 
-/**
- * Apply category retention both on write and on restore. Query data age is
- * never renewed by pruning the snapshot, and mutations are never persisted.
- */
+/** Persist only unexpired query data; keep query schemas outside this layer. */
 export const categoryAwareQueryPersister: Persister = {
   removeClient: () => indexedDbQueryPersister.removeClient(),
   async persistClient(persistedClient) {
@@ -48,26 +49,31 @@ export const categoryAwareQueryPersister: Persister = {
   async restoreClient() {
     const persistedClient = await indexedDbQueryPersister.restoreClient();
     if (!persistedClient) return undefined;
-    const { client, queries } = retainUnexpiredQueries(
-      persistedClient,
-      Date.now(),
-    );
+
+    const now = Date.now();
+    const { client, queries } = retainUnexpiredQueries(persistedClient, now);
     if (queries.length === 0) {
       await indexedDbQueryPersister.removeClient();
       return undefined;
     }
+
     const queriesWerePruned =
       queries.length !== persistedClient.clientState.queries.length;
     const mutationsWerePruned =
       persistedClient.clientState.mutations.length > 0;
+    const snapshotExpired =
+      !Number.isFinite(client.timestamp) ||
+      client.timestamp <= 0 ||
+      client.timestamp + queryCacheConfig.snapshot.maxAgeMs <= now;
 
-    if (queriesWerePruned || mutationsWerePruned) {
-      // Refresh the snapshot timestamp only because its contents changed;
-      // each query's dataUpdatedAt remains untouched and governs retention.
-      const prunedClient = { ...client, timestamp: Date.now() };
-      await indexedDbQueryPersister.persistClient(prunedClient);
-      return prunedClient;
+    if (queriesWerePruned || mutationsWerePruned || snapshotExpired) {
+      // Refresh only the snapshot envelope. Query timestamps still determine
+      // each entry's retention and are never extended by this operation.
+      const restoredClient = { ...client, timestamp: now };
+      await indexedDbQueryPersister.persistClient(restoredClient);
+      return restoredClient;
     }
+
     return client;
   },
 };

@@ -1,13 +1,7 @@
 export default {
-  "accountLoadFailed": "Could not load your account profile.",
-  "authFailed": "AniList authorization could not be completed. Please try again.",
-  "connectedDescription": "Your AniList account is connected to Anime Tracker.",
-  "connectedTitle": "You are connected",
-  "continueWithProvider": "Continue with {{provider}}",
-  "description": "Sign in with AniList to sync your personal anime list.",
-  "logout": "Sign out",
-  "openProfile": "Open profile",
-  "retry": "Try again",
-  "signedInAs": "Signed in as {{username}}",
-  "title": "Sign in"
+  title: "Sign in",
+  retry: "Try again",
+  continueWithProvider: "Continue with {{provider}}",
+  description: "On this page, you will be able to log in to our website.",
+  authFailed: "AniList authorization could not be completed. Please try again.",
 } as const;

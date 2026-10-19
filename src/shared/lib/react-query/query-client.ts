@@ -1,17 +1,21 @@
 import { type Query, QueryClient } from "@tanstack/react-query";
 
-import { getUserIdFromQueryKey } from "../../lib/query-keys";
-import { shouldPersistQuery as shouldPersistByKey } from "../../lib";
+import { queryCacheConfig } from "./query-cache";
+import { getUserIdFromQueryKey } from "./cache/query-key-utils";
+import {
+  resolveQueryCachePolicy,
+  shouldPersistQuery as shouldPersistByKey,
+} from "./cache/query-cache-policy";
 
 export const queryClient = new QueryClient({
   defaultOptions: {
     mutations: { retry: 0 },
     queries: {
-      staleTime: 5 * 60 * 1_000,
-      refetchOnWindowFocus: true,
-      // TanStack Query requires gcTime >= persisted maxAge for reliable hydration.
-      // Category-specific persistent retention still prunes individual queries.
-      gcTime: 90 * 24 * 60 * 60 * 1_000,
+      // Keep gcTime >= snapshot maxAge and below the browser timer limit.
+      gcTime: queryCacheConfig.snapshot.maxAgeMs,
+      refetchOnMount: queryCacheConfig.refetchOnMount,
+      refetchOnWindowFocus: queryCacheConfig.refetchOnWindowFocus,
+      staleTime: (query) => resolveQueryCachePolicy(query.queryKey).staleTimeMs,
       retry: (failureCount, error) => {
         const apiError = error as {
           status?: number;

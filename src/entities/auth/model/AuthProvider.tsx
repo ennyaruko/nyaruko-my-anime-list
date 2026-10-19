@@ -19,6 +19,8 @@ const MAX_TIMER_DELAY_MS = 2_147_000_000;
 type StoredAuthSession = {
   version: 1;
   expiresAt: number;
+  sessionId: string;
+  accountId?: string;
   accessToken: string;
 };
 
@@ -56,11 +58,98 @@ function parseStoredSession(raw: null | string): null | StoredAuthSession {
         version: 1,
         expiresAt: value.expiresAt,
         accessToken: value.accessToken,
+        sessionId:
+          typeof value.sessionId === "string" && value.sessionId.length > 0
+            ? value.sessionId
+            : createSessionId(),
+        ...(typeof value.accountId === "string" && value.accountId.length > 0
+          ? { accountId: value.accountId }
+          : {}),
       };
     }
   } catch {
     // Older versions stored raw tokens. Re-authenticate rather than trusting
     // a token whose expiry cannot be established.
+  }
+  return null;
+}
+
+function storeAuthSession(key: string, session: StoredAuthSession): void {
+  const value = JSON.stringify(session);
+  try {
+    window.localStorage.setItem(key, value);
+  } catch {
+    // Keep the current browser-tab session usable if persistent storage is blocked.
+    try {
+      window.sessionStorage.setItem(key, value);
+    } catch {
+      // The in-memory session still works until this page is closed.
+    }
+    return;
+  }
+
+  try {
+    window.sessionStorage.removeItem(key);
+  } catch {
+    // The persistent session has already been stored successfully.
+  }
+}
+
+function removeStoredAuthSession(key: string): void {
+  try {
+    window.localStorage.removeItem(key);
+  } catch {
+    // Best-effort cleanup when browser storage is unavailable.
+  }
+  try {
+    window.sessionStorage.removeItem(key);
+  } catch {
+    // Remove any session-scoped copy left by an older app version.
+  }
+}
+
+function readStoredAuthSession(key: string): null | StoredAuthSession {
+  let raw: null | string = null;
+  try {
+    raw = window.localStorage.getItem(key);
+  } catch {
+    // Fall back to an existing tab-scoped session if persistent storage is blocked.
+  }
+
+  const persistentSession = parseStoredSession(raw);
+  if (persistentSession) {
+    try {
+      window.sessionStorage.removeItem(key);
+    } catch {
+      // The persistent session remains valid.
+    }
+    return persistentSession;
+  }
+  if (raw !== null) {
+    try {
+      window.localStorage.removeItem(key);
+    } catch {
+      // Continue to the legacy session-scoped copy.
+    }
+  }
+
+  try {
+    raw = window.sessionStorage.getItem(key);
+  } catch {
+    raw = null;
+  }
+  const legacySession = parseStoredSession(raw);
+  if (legacySession) {
+    storeAuthSession(key, legacySession);
+    return legacySession;
+  }
+
+  if (raw !== null) {
+    try {
+      window.sessionStorage.removeItem(key);
+    } catch {
+      // Invalid or expired session data must not be restored.
+    }
   }
   return null;
 }
@@ -84,6 +173,7 @@ export function AuthProvider({ children, onLogout }: AuthProviderProps) {
   const [accessToken, setAccessToken] = useState<null | string>(null);
   const [expiresAt, setExpiresAt] = useState<null | number>(null);
   const [sessionId, setSessionId] = useState<null | string>(null);
+  const [accountId, setAccountIdState] = useState<null | string>(null);
   const [authError, setAuthError] = useState<null | string>(null);
   const initializedProviderId = useRef<null | string>(null);
 
@@ -99,6 +189,7 @@ export function AuthProvider({ children, onLogout }: AuthProviderProps) {
     setAccessToken(null);
     setExpiresAt(null);
     setSessionId(null);
+    setAccountIdState(null);
     setAuthError(null);
 
     try {
@@ -106,29 +197,25 @@ export function AuthProvider({ children, onLogout }: AuthProviderProps) {
       if (callback.type === "success") {
         if (callback.expiresAt <= Date.now() + EXPIRY_SAFETY_WINDOW_MS) {
           setAuthError("missing_or_expired_token_expiry");
-          try {
-            window.sessionStorage.removeItem(tokenStorageKey);
-          } catch {
-            // Best-effort removal of any previous token.
-          }
+          removeStoredAuthSession(tokenStorageKey);
           setStatus("anonymous");
           return;
         }
 
         setAccessToken(callback.accessToken);
         setExpiresAt(callback.expiresAt);
-        setSessionId(createSessionId());
+        const newSessionId = createSessionId();
+        setSessionId(newSessionId);
+        setAccountIdState(null);
         setStatus("authenticated");
         try {
           const storedSession: StoredAuthSession = {
             version: 1,
+            sessionId: newSessionId,
             expiresAt: callback.expiresAt,
             accessToken: callback.accessToken,
           };
-          window.sessionStorage.setItem(
-            tokenStorageKey,
-            JSON.stringify(storedSession),
-          );
+          storeAuthSession(tokenStorageKey, storedSession);
         } catch {
           // Current in-memory session still works without persistence.
         }
@@ -137,33 +224,20 @@ export function AuthProvider({ children, onLogout }: AuthProviderProps) {
 
       if (callback.type === "error") {
         setAuthError(callback.error);
-        try {
-          window.sessionStorage.removeItem(tokenStorageKey);
-        } catch {
-          // Best-effort removal after a rejected callback.
-        }
+        removeStoredAuthSession(tokenStorageKey);
         setStatus("anonymous");
         return;
       }
 
-      let storedRaw: null | string = null;
-      try {
-        storedRaw = window.sessionStorage.getItem(tokenStorageKey);
-      } catch {
-        // Treat inaccessible browser storage as an anonymous session.
-      }
-      const storedSession = parseStoredSession(storedRaw);
+      const storedSession = readStoredAuthSession(tokenStorageKey);
       if (storedSession) {
         setAccessToken(storedSession.accessToken);
         setExpiresAt(storedSession.expiresAt);
-        setSessionId(createSessionId());
+        setSessionId(storedSession.sessionId);
+        setAccountIdState(storedSession.accountId ?? null);
         setStatus("authenticated");
       } else {
-        try {
-          window.sessionStorage.removeItem(tokenStorageKey);
-        } catch {
-          // Best-effort removal of expired or legacy token formats.
-        }
+        removeStoredAuthSession(tokenStorageKey);
         setStatus("anonymous");
       }
     } catch (error) {
@@ -181,16 +255,26 @@ export function AuthProvider({ children, onLogout }: AuthProviderProps) {
     }
   }, [identityProvider]);
 
+  const setAccountId = useCallback(
+    (nextAccountId: string) => {
+      setAccountIdState(nextAccountId);
+      const storedSession = readStoredAuthSession(tokenStorageKey);
+      if (storedSession)
+        storeAuthSession(tokenStorageKey, {
+          ...storedSession,
+          accountId: nextAccountId,
+        });
+    },
+    [tokenStorageKey],
+  );
+
   const logout = useCallback(async () => {
-    try {
-      window.sessionStorage.removeItem(tokenStorageKey);
-    } catch {
-      // Logging out in memory must still work when storage is unavailable.
-    }
+    removeStoredAuthSession(tokenStorageKey);
     const endingSessionId = sessionId;
     setAccessToken(null);
     setExpiresAt(null);
     setSessionId(null);
+    setAccountIdState(null);
     setStatus("anonymous");
     setAuthError(null);
     try {
@@ -233,7 +317,9 @@ export function AuthProvider({ children, onLogout }: AuthProviderProps) {
       logout,
       authError,
       sessionId,
+      accountId,
       accessToken,
+      setAccountId,
       clearAuthError,
       identityProvider,
     }),
@@ -242,6 +328,8 @@ export function AuthProvider({ children, onLogout }: AuthProviderProps) {
       status,
       accessToken,
       sessionId,
+      accountId,
+      setAccountId,
       authError,
       login,
       logout,

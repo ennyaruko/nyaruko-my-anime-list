@@ -2,8 +2,9 @@ import { useCallback, type ReactNode } from "react";
 
 import { AuthProvider } from "@/entities/auth";
 
-import { queryKeys, queryClient, clearUserQueries } from "@/shared/api";
+import { queryClient, clearUserQueries } from "@/shared/lib";
 import {
+  queryCacheConfig,
   isUserScopedQueryKey,
   categoryAwareQueryPersister,
 } from "@/shared/lib";
@@ -12,7 +13,10 @@ import {
 export function AppAuthProvider({ children }: { children: ReactNode }) {
   const handleLogout = useCallback(
     async (providerId: string, sessionId: null | string) => {
-      const accountKey = queryKeys.account(providerId, sessionId);
+      const accountKey = queryCacheConfig.families.account.key(
+        providerId,
+        sessionId,
+      );
       const isCurrentAccountQuery = (queryKey: readonly unknown[]) =>
         queryKey.length === accountKey.length &&
         queryKey.every((part, index) => part === accountKey[index]);

@@ -4,15 +4,11 @@ import { useState, useEffect, type ReactNode } from "react";
 import { Meta, Links, Outlet, Scripts, ScrollRestoration } from "react-router";
 
 import i18n from "@/shared/i18n";
+import { supportedLanguages } from "@/shared/i18n";
 import { NotificationContainer } from "@/shared/ui";
 import { darkTheme, lightTheme } from "@/shared/styles";
 
-import {
-  QueryProvider,
-  AppAuthProvider,
-  AppServicesProvider,
-  AppDiagnosticsProvider,
-} from "./providers";
+import { Providers } from "./providers";
 
 import "./global.css";
 
@@ -20,6 +16,19 @@ export function Layout({ children }: { children: ReactNode }) {
   const { t } = useTranslation(["common"]);
   const [prefersDarkTheme, setPrefersDarkTheme] = useState(false);
   const language = i18n.resolvedLanguage ?? "ru";
+
+  useEffect(() => {
+    const storedLanguage = window.localStorage.getItem("my-anime-list:locale");
+    const detectedLanguage =
+      storedLanguage ?? window.navigator.language.split("-")[0];
+    if (
+      typeof detectedLanguage === "string" &&
+      detectedLanguage !== language &&
+      supportedLanguages.some((language) => language === detectedLanguage)
+    ) {
+      void i18n.changeLanguage(detectedLanguage);
+    }
+  }, [language]);
 
   useEffect(() => {
     const preference = window.matchMedia("(prefers-color-scheme: dark)");
@@ -56,15 +65,9 @@ export function Layout({ children }: { children: ReactNode }) {
 
 export default function Root() {
   return (
-    <AppDiagnosticsProvider>
-      <QueryProvider>
-        <AppServicesProvider>
-          <AppAuthProvider>
-            <Outlet />
-            <NotificationContainer />
-          </AppAuthProvider>
-        </AppServicesProvider>
-      </QueryProvider>
-    </AppDiagnosticsProvider>
+    <Providers>
+      <Outlet />
+      <NotificationContainer />
+    </Providers>
   );
 }

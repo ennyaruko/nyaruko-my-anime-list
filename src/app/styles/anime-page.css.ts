@@ -1,6 +1,7 @@
-import { style, styleVariants } from "@vanilla-extract/css";
+import { style } from "@vanilla-extract/css";
 
 import { colors, primitives, typography } from "@/shared/styles";
+import { skeleton as skeletonAnimation } from "@/shared/styles/common/skeleton.css";
 
 export const page = style({
   margin: "0 auto",
@@ -34,7 +35,7 @@ export const avatar = style({
   background: colors.background.elevation1,
 });
 export const userName = style({
-  ...typography.heading["l-medium"],
+  ...typography.heading["xl-medium"],
   margin: 0,
   overflow: "hidden",
   textOverflow: "ellipsis",
@@ -57,25 +58,6 @@ export const heading = style({
   background: colors.background.elevation1,
   borderLeft: `4px solid ${colors.text.secondary}`,
   ...typography.heading["m-medium"],
-});
-export const genreWrap = style({
-  display: "flex",
-  flexWrap: "wrap",
-  gap: primitives.spacing.xxs,
-});
-export const genre = style({
-  cursor: "pointer",
-  padding: "6px 10px",
-  borderRadius: "999px",
-  color: colors.text.secondary,
-  background: colors.background.base,
-  border: `1px solid ${colors.border.normal}`,
-  ...typography.caption.xs,
-});
-export const selectedGenre = style({
-  color: colors.text.primaryOnLight,
-  background: colors.brand.darkBlue,
-  borderColor: colors.brand.darkBlue,
 });
 export const tabs = style({
   display: "flex",
@@ -105,14 +87,6 @@ export const toolbar = style({
 export const label = style({
   ...typography.body.s,
   color: colors.text.secondary,
-});
-export const select = style({
-  minHeight: "36px",
-  padding: "0 30px 0 10px",
-  color: colors.text.primary,
-  borderRadius: primitives.radii.xs,
-  background: colors.background.base,
-  border: `1px solid ${colors.border.normal}`,
 });
 export const cardGrid = style({
   display: "grid",
@@ -144,21 +118,17 @@ export const poster = style({
   display: "block",
   objectFit: "cover",
 });
+export const posterSkeleton = style([posterWrap, skeletonAnimation]);
+export const textSkeleton = style([
+  skeletonAnimation,
+  { height: "14px", marginTop: "8px", borderRadius: primitives.radii.xs },
+]);
 export const score = style({ top: "8px", left: "8px", position: "absolute" });
 export const progress = style({
   left: 0,
   right: 0,
   bottom: 0,
   position: "absolute",
-});
-export const cardTitle = style({
-  marginTop: "8px",
-  overflow: "hidden",
-  WebkitLineClamp: 2,
-  display: "-webkit-box",
-  color: colors.text.action,
-  WebkitBoxOrient: "vertical",
-  ...typography.body.s,
 });
 export const meta = style({
   display: "flex",
@@ -177,41 +147,4 @@ export const error = style({ color: colors.text.negative });
 export const stat = style({
   color: colors.text.tertiary,
   ...typography.caption.xs,
-});
-export const statusHeading = styleVariants({
-  CURRENT: {
-    color: colors.text.info,
-    borderColor: colors.text.info,
-    background: colors.background.elevation1Info,
-  },
-  REPEATING: {
-    color: colors.text.info,
-    borderColor: colors.text.info,
-    background: colors.background.elevation1Info,
-  },
-  PAUSED: {
-    color: colors.text.secondary,
-    borderColor: colors.text.secondary,
-    background: colors.background.elevation1,
-  },
-  UNKNOWN: {
-    color: colors.text.secondary,
-    borderColor: colors.text.secondary,
-    background: colors.background.elevation1,
-  },
-  PLANNING: {
-    color: colors.text.warning,
-    borderColor: colors.text.warning,
-    background: colors.background.elevation1Warning,
-  },
-  DROPPED: {
-    color: colors.text.negative,
-    borderColor: colors.text.negative,
-    background: colors.background.elevation1Negative,
-  },
-  COMPLETED: {
-    color: colors.text.positive,
-    borderColor: colors.text.positive,
-    background: colors.background.elevation1Positive,
-  },
 });

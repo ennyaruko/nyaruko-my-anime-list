@@ -1,14 +1,12 @@
 import type { ReactNode } from "react";
 
+import { QueryClientProvider } from "@tanstack/react-query";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
-import {
-  QueryClientProvider,
-  defaultShouldDehydrateQuery,
-} from "@tanstack/react-query";
 
-import { queryClient, shouldPersistQuery } from "@/shared/api";
 import {
-  maxPersistedCacheAge,
+  queryClient,
+  queryCacheConfig,
+  shouldPersistQuery,
   categoryAwareQueryPersister,
 } from "@/shared/lib";
 
@@ -24,15 +22,14 @@ export function QueryProvider({ children }: { children: ReactNode }) {
     <PersistQueryClientProvider
       client={queryClient}
       persistOptions={{
-        buster: "my-anime-list-v2",
-        maxAge: maxPersistedCacheAge,
         persister: categoryAwareQueryPersister,
+        buster: queryCacheConfig.snapshot.buster,
+        maxAge: queryCacheConfig.snapshot.maxAgeMs,
         dehydrateOptions: {
           // Offline mutation replay is not part of the MVP. Never persist
           // paused or otherwise dehydrated mutations across browser sessions.
           shouldDehydrateMutation: () => false,
-          shouldDehydrateQuery: (query) =>
-            defaultShouldDehydrateQuery(query) && shouldPersistQuery(query),
+          shouldDehydrateQuery: shouldPersistQuery,
         },
       }}
     >

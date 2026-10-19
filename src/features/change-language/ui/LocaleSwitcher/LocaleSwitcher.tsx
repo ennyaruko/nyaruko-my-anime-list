@@ -13,6 +13,7 @@ export function LocaleSwitcher() {
     const nextLanguage = event.currentTarget.value;
 
     if (supportedLanguages.some((language) => language === nextLanguage)) {
+      window.localStorage.setItem("my-anime-list:locale", nextLanguage);
       void i18n.changeLanguage(nextLanguage);
     }
   };

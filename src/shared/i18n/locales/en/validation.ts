@@ -1,5 +1,5 @@
 export default {
-  "loginLatinOnly": "Username must not contain Cyrillic characters",
-  "loginRequired": "Username is required",
-  "passwordRequired": "Password is required"
+  loginRequired: "Username is required",
+  passwordRequired: "Password is required",
+  loginLatinOnly: "Username must not contain Cyrillic characters",
 } as const;

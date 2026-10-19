@@ -1,4 +1,4 @@
-import { createServiceToken } from "@/shared/lib/app-services";
+import { createServiceToken } from "@/shared/lib";
 
 export type AnimeListEntry = {
   id: number;

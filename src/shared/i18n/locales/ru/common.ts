@@ -1,39 +1,62 @@
 export default {
-  "actions": {
-    "clearSelection": "Очистить выбранные значения"
+  anime: "Аниме",
+  genres: "Жанры",
+  logout: "Выйти",
+  animeList: "Список",
+  title: "Anime List",
+  myAnime: "Моё аниме",
+  sortBy: "Сортировка:",
+  tvSeries: "ТВ сериал",
+  loading: "Загрузка...",
+  sortScore: "По оценке",
+  sortTitle: "По названию",
+  sortYear: "По году выхода",
+  sortProgress: "По прогрессу",
+  animeStatuses: "Статусы аниме",
+  listRefresh: "Обновить список",
+  clearGenre: "Жанр: {{genre}} ×",
+  listRefreshing: "Обновление...",
+  emptyResults: "Ничего не найдено",
+  progress: {
+    label: "Прогресс",
   },
-  "combobox": {
-    "placeholder": "Выберите вариант"
+  animeCount_one: "{{count}} аниме в списке",
+  animeCount_few: "{{count}} аниме в списке",
+  animeCount_many: "{{count}} аниме в списке",
+  animeCount_other: "{{count}} аниме в списке",
+  noGenreResults: "В этом жанре аниме не найдено",
+  emptyAnimeList: "В этой категории пока нет аниме",
+  combobox: {
+    placeholder: "Выберите вариант",
   },
-  "description": "UI Kit для Anime List на React и TypeScript",
-  "emptyResults": "Ничего не найдено",
-  "language": {
-    "english": "English",
-    "label": "Язык",
-    "russian": "Русский"
+  profileError: "Не удалось загрузить профиль AniList.",
+  multiSelect: {
+    placeholder: "Выберите варианты",
   },
-  "loading": "Загрузка...",
-  "mediaStatus": {
-    "announced": "Анонс",
-    "ongoing": "Онгоинг",
-    "released": "Вышел"
+  description: "UI Kit для Anime List на React и TypeScript",
+  listError: "Не удалось загрузить список. Попробуйте ещё раз.",
+  actions: {
+    clearSelection: "Очистить выбранные значения",
   },
-  "multiSelect": {
-    "placeholder": "Выберите варианты"
+  table: {
+    showLess: "Свернуть",
+    showAll: "Показать ещё...",
   },
-  "progress": {
-    "label": "Прогресс"
+  language: {
+    label: "Язык",
+    english: "English",
+    russian: "Русский",
   },
-  "table": {
-    "showAll": "Показать ещё...",
-    "showLess": "Свернуть"
+  mediaStatus: {
+    released: "Вышел",
+    announced: "Анонс",
+    ongoing: "Онгоинг",
   },
-  "title": "Anime List",
-  "watchStatus": {
-    "completed": "Просмотрено",
-    "dropped": "Брошено",
-    "onHold": "Отложено",
-    "planned": "Запланировано",
-    "watching": "Смотрю"
-  }
+  watchStatus: {
+    dropped: "Брошено",
+    onHold: "Отложено",
+    watching: "Смотрю",
+    completed: "Просмотрено",
+    planned: "Запланировано",
+  },
 } as const;

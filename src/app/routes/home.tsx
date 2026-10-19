@@ -1,4 +1,5 @@
-/** Index route: / */
+import { Navigate } from "react-router";
+
 export default function HomeRoute() {
-  return <div>Hi</div>;
+  return <Navigate replace to="/anime" />;
 }

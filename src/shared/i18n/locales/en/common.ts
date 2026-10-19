@@ -1,39 +1,60 @@
 export default {
-  "actions": {
-    "clearSelection": "Clear selection"
+  anime: "Anime",
+  genres: "Genres",
+  animeList: "List",
+  logout: "Log out",
+  sortBy: "Sort by:",
+  sortScore: "Score",
+  sortTitle: "Title",
+  myAnime: "My anime",
+  title: "Anime List",
+  loading: "Loading...",
+  tvSeries: "TV series",
+  sortProgress: "Progress",
+  sortYear: "Release year",
+  listRefresh: "Refresh list",
+  animeStatuses: "Anime statuses",
+  listRefreshing: "Refreshing...",
+  clearGenre: "Genre: {{genre}} ×",
+  emptyResults: "No results found",
+  progress: {
+    label: "Progress",
   },
-  "combobox": {
-    "placeholder": "Select an option"
+  animeCount_one: "{{count}} anime in list",
+  animeCount_other: "{{count}} anime in list",
+  noGenreResults: "No anime found in this genre",
+  listError: "Could not load your list. Try again.",
+  combobox: {
+    placeholder: "Select an option",
   },
-  "description": "Anime List UI built with React and TypeScript",
-  "emptyResults": "No results found",
-  "language": {
-    "english": "English",
-    "label": "Language",
-    "russian": "Русский"
+  profileError: "Could not load your AniList profile.",
+  actions: {
+    clearSelection: "Clear selection",
   },
-  "loading": "Loading...",
-  "mediaStatus": {
-    "announced": "Announced",
-    "ongoing": "Ongoing",
-    "released": "Released"
+  multiSelect: {
+    placeholder: "Select options",
   },
-  "multiSelect": {
-    "placeholder": "Select options"
+  emptyAnimeList: "There are no anime in this category yet",
+  description: "Anime List UI built with React and TypeScript",
+  table: {
+    showLess: "Show less",
+    showAll: "Show more...",
   },
-  "progress": {
-    "label": "Progress"
+  language: {
+    label: "Language",
+    english: "English",
+    russian: "Русский",
   },
-  "table": {
-    "showAll": "Show more...",
-    "showLess": "Show less"
+  mediaStatus: {
+    ongoing: "Ongoing",
+    released: "Released",
+    announced: "Announced",
   },
-  "title": "Anime List",
-  "watchStatus": {
-    "completed": "Completed",
-    "dropped": "Dropped",
-    "onHold": "On hold",
-    "planned": "Planned",
-    "watching": "Watching"
-  }
+  watchStatus: {
+    onHold: "On hold",
+    dropped: "Dropped",
+    planned: "Planned",
+    watching: "Watching",
+    completed: "Completed",
+  },
 } as const;

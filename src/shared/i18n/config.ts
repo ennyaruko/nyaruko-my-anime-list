@@ -5,10 +5,13 @@ import LanguageDetector from "i18next-browser-languagedetector";
 
 import { resources, supportedLanguages } from "./resources";
 
+const activeLanguage = i18n.isInitialized ? i18n.language : undefined;
+
 void i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
+    ...(activeLanguage ? { lng: activeLanguage } : {}),
     resources,
     fallbackLng: "ru",
     returnNull: false,
@@ -21,8 +24,8 @@ void i18n
       escapeValue: false,
     },
     detection: {
-      caches: ["localStorage"],
-      order: ["localStorage", "navigator"],
+      order: [],
+      caches: [],
       lookupLocalStorage: "my-anime-list:locale",
     },
   });

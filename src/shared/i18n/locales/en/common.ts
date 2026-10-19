@@ -57,4 +57,13 @@ export default {
     watching: "Watching",
     completed: "Completed",
   },
+  errorBoundary: {
+    reload: "Reload",
+    retry: "Try again",
+    title: "Something went wrong",
+    notFoundTitle: "Page not found",
+    description: "Something went wrong. Try reloading the page.",
+    notFoundDescription:
+      "The page may have moved or the address may be incorrect.",
+  },
 } as const;

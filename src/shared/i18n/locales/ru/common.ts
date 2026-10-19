@@ -59,4 +59,13 @@ export default {
     completed: "Просмотрено",
     planned: "Запланировано",
   },
+  errorBoundary: {
+    retry: "Повторить",
+    reload: "Перезагрузить",
+    title: "Ошибка загрузки",
+    notFoundTitle: "Страница не найдена",
+    description: "Что-то пошло не так. Попробуйте перезагрузить страницу.",
+    notFoundDescription:
+      "Возможно, адрес неверный или страница была перемещена.",
+  },
 } as const;

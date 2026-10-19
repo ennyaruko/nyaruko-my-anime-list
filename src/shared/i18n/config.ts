@@ -5,6 +5,8 @@ import LanguageDetector from "i18next-browser-languagedetector";
 
 import { resources, supportedLanguages } from "./resources";
 
+export const LOCALE_STORAGE_KEY = "my-anime-list:locale";
+
 const activeLanguage = i18n.isInitialized ? i18n.language : undefined;
 
 void i18n
@@ -26,7 +28,7 @@ void i18n
     detection: {
       order: [],
       caches: [],
-      lookupLocalStorage: "my-anime-list:locale",
+      lookupLocalStorage: LOCALE_STORAGE_KEY,
     },
   });
 

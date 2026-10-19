@@ -1,7 +1,7 @@
 import type { ChangeEvent } from "react";
 import { useTranslation } from "react-i18next";
 
-import { supportedLanguages } from "@/shared/i18n";
+import { LOCALE_STORAGE_KEY, supportedLanguages } from "@/shared/i18n";
 
 import * as styles from "./LocaleSwitcher.css";
 
@@ -13,7 +13,7 @@ export function LocaleSwitcher() {
     const nextLanguage = event.currentTarget.value;
 
     if (supportedLanguages.some((language) => language === nextLanguage)) {
-      window.localStorage.setItem("my-anime-list:locale", nextLanguage);
+      window.localStorage.setItem(LOCALE_STORAGE_KEY, nextLanguage);
       void i18n.changeLanguage(nextLanguage);
     }
   };

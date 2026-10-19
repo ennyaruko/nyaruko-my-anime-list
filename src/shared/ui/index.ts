@@ -17,5 +17,6 @@ export * from "./ScrollArea";
 export * from "./MultiSelect";
 export * from "./Breadcrumbs";
 export * from "./Notification";
+export * from "./ErrorBoundary";
 export * from "./Form/ControlledInput";
 export * from "./Form/ControlledComponent";

@@ -3,10 +3,9 @@ import "react-toastify/dist/ReactToastify.css";
 import { useState, useEffect, type ReactNode } from "react";
 import { Meta, Links, Outlet, Scripts, ScrollRestoration } from "react-router";
 
-import i18n from "@/shared/i18n";
-import { supportedLanguages } from "@/shared/i18n";
-import { NotificationContainer } from "@/shared/ui";
 import { darkTheme, lightTheme } from "@/shared/styles";
+import { GlobalErrorFallback, NotificationContainer } from "@/shared/ui";
+import i18n, { LOCALE_STORAGE_KEY, supportedLanguages } from "@/shared/i18n";
 
 import { Providers } from "./providers";
 
@@ -18,7 +17,7 @@ export function Layout({ children }: { children: ReactNode }) {
   const language = i18n.resolvedLanguage ?? "ru";
 
   useEffect(() => {
-    const storedLanguage = window.localStorage.getItem("my-anime-list:locale");
+    const storedLanguage = window.localStorage.getItem(LOCALE_STORAGE_KEY);
     const detectedLanguage =
       storedLanguage ?? window.navigator.language.split("-")[0];
     if (
@@ -70,4 +69,8 @@ export default function Root() {
       <NotificationContainer />
     </Providers>
   );
+}
+
+export function ErrorBoundary() {
+  return <GlobalErrorFallback />;
 }

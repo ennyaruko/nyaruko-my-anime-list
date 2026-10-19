@@ -49,6 +49,7 @@ export default defineConfig([
     "coverage/**",
     ".react-router/**",
     "**/*.tsbuildinfo",
+    "src/app/integrations/anilist/api/generated/**",
   ]),
   {
     files: sourceFiles,

@@ -10,4 +10,5 @@ package-lock.json
 *.config.js
 *.config.ts
 codegen.ts
+src/app/integrations/anilist/api/generated/
 tsconfig.*

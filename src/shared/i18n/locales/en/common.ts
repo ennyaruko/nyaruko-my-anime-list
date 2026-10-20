@@ -57,13 +57,16 @@ export default {
     watching: "Watching",
     completed: "Completed",
   },
+  blockStatus: {
+    emptyDescription: "Try changing your search criteria or adding a new anime",
+    notFoundDescription:
+      "The link may be outdated or the address may contain an error",
+  },
   errorBoundary: {
     reload: "Reload",
     retry: "Try again",
     title: "Something went wrong",
     notFoundTitle: "Page not found",
     description: "Something went wrong. Try reloading the page.",
-    notFoundDescription:
-      "The page may have moved or the address may be incorrect.",
   },
 } as const;

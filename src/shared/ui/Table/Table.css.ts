@@ -73,7 +73,7 @@ export const itemOverlay = style({
   alignItems: "center",
   whiteSpace: "nowrap",
   pointerEvents: "none",
-  color: colors.text.primaryOpposite,
+  color: colors.text.primaryOnLight,
   padding: `${primitives.spacing.tiny} ${primitives.spacing.xxxs}`,
 });
 export const itemOverlayFull = style({ clipPath: "inset(0)" });

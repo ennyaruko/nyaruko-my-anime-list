@@ -1,4 +1,4 @@
-import { AnimeListEntry, AnimeListStatus } from "@/entities/anime-list";
+import { MyListEntry, MyListStatus } from "@/entities/my-list";
 
 import { ViewerAnimeListDocument } from "./queries";
 import { createAniListGraphQLClient } from "./client";
@@ -54,9 +54,9 @@ export async function getViewerAnimeList(
   );
 }
 
-export function mapAniListAnimeListEntry(
+export function mapAniListMyListEntry(
   entry: AniListMediaListEntryDto,
-): AnimeListEntry {
+): MyListEntry {
   const media = entry.media;
   const allowedStatuses = new Set([
     "CURRENT",
@@ -68,7 +68,7 @@ export function mapAniListAnimeListEntry(
   ]);
   const status =
     entry.status && allowedStatuses.has(entry.status)
-      ? (entry.status as AnimeListStatus)
+      ? (entry.status as MyListStatus)
       : "UNKNOWN";
 
   return {

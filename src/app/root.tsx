@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import "react-toastify/dist/ReactToastify.css";
-import { useState, useEffect, type ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import { Meta, Links, Outlet, Scripts, ScrollRestoration } from "react-router";
 
 import { darkTheme, lightTheme } from "@/shared/styles";
@@ -9,11 +9,23 @@ import i18n, { LOCALE_STORAGE_KEY, supportedLanguages } from "@/shared/i18n";
 
 import { Providers } from "./providers";
 
-import "./global.css";
+import "./styles/global.css";
+
+const themeInitializerScript = `
+  (function() {
+    const storedTheme = window.localStorage.getItem("theme");
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    
+    const isDark = storedTheme === "dark" || (storedTheme !== "light" && prefersDark);
+    
+    document.documentElement.classList.add(isDark ? "${darkTheme}" : "${lightTheme}");
+    
+    document.documentElement.style.colorScheme = isDark ? "dark" : "light";
+  })();
+`;
 
 export function Layout({ children }: { children: ReactNode }) {
   const { t } = useTranslation(["common"]);
-  const [prefersDarkTheme, setPrefersDarkTheme] = useState(false);
   const language = i18n.resolvedLanguage ?? "ru";
 
   useEffect(() => {
@@ -29,28 +41,26 @@ export function Layout({ children }: { children: ReactNode }) {
     }
   }, [language]);
 
-  useEffect(() => {
-    const preference = window.matchMedia("(prefers-color-scheme: dark)");
-    const updateTheme = () => setPrefersDarkTheme(preference.matches);
-
-    updateTheme();
-    preference.addEventListener("change", updateTheme);
-    return () => preference.removeEventListener("change", updateTheme);
-  }, []);
-
   return (
-    <html
-      lang={language}
-      className={prefersDarkTheme ? darkTheme : lightTheme}
-      style={{ colorScheme: prefersDarkTheme ? "dark" : "light" }}
-    >
+    <html lang={language} suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta content="#10131a" name="theme-color" />
         <meta name="description" content={t("common:description")} />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          crossOrigin="anonymous"
+          href="https://fonts.gstatic.com"
+        />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap"
+        />
         <Meta />
         <Links />
+        <script dangerouslySetInnerHTML={{ __html: themeInitializerScript }} />
         <title>{t("common:title")}</title>
       </head>
       <body>

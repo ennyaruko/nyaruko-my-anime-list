@@ -1,6 +1,6 @@
 import { createServiceToken } from "@/shared/lib";
 
-export type AnimeListEntry = {
+export type MyListEntry = {
   id: number;
   title: string;
   score: number;
@@ -8,14 +8,14 @@ export type AnimeListEntry = {
   progress: number;
   genres: string[];
   year: null | number;
+  status: MyListStatus;
   format: null | string;
   coverUrl: null | string;
-  status: AnimeListStatus;
   episodes: null | number;
   averageScore: null | number;
 };
 
-export type AnimeListStatus =
+export type MyListStatus =
   | "PAUSED"
   | "CURRENT"
   | "DROPPED"
@@ -24,13 +24,13 @@ export type AnimeListStatus =
   | "COMPLETED"
   | "REPEATING";
 
-export type AnimeListService = {
-  getAnimeList(
+export type MyListService = {
+  getMyList(
     accessToken: string,
     userId: string,
     signal?: AbortSignal,
-  ): Promise<AnimeListEntry[]>;
+  ): Promise<MyListEntry[]>;
 };
 
-export const animeListServiceToken =
-  createServiceToken<AnimeListService>("animeListService");
+export const myListServiceToken =
+  createServiceToken<MyListService>("myListService");

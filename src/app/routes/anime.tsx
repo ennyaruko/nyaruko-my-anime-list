@@ -8,10 +8,10 @@ import * as styles from "@/app/styles/anime-page.css";
 
 import { useAuth } from "@/entities/auth";
 import {
-  type AnimeListEntry,
-  type AnimeListStatus,
-  animeListServiceToken,
-} from "@/entities/anime-list";
+  type MyListEntry,
+  type MyListStatus,
+  myListServiceToken,
+} from "@/entities/my-list";
 
 import { ExitIcon } from "@/shared/icons";
 import { useAppService, queryCacheConfig } from "@/shared/lib";
@@ -27,7 +27,7 @@ import {
   TableSkeleton,
 } from "@/shared/ui";
 
-const statuses: AnimeListStatus[] = [
+const statuses: MyListStatus[] = [
   "PLANNING",
   "CURRENT",
   "COMPLETED",
@@ -35,7 +35,7 @@ const statuses: AnimeListStatus[] = [
   "PAUSED",
 ];
 const statusKeys: Record<
-  AnimeListStatus,
+  MyListStatus,
   | "watchStatus.onHold"
   | "watchStatus.planned"
   | "watchStatus.dropped"
@@ -51,7 +51,7 @@ const statusKeys: Record<
   COMPLETED: "watchStatus.completed",
 };
 const titleVariants: Record<
-  AnimeListStatus,
+  MyListStatus,
   "paused" | "dropped" | "default" | "planning" | "watching" | "completed"
 > = {
   PAUSED: "paused",
@@ -75,8 +75,8 @@ export default function AnimeListRoute() {
     identityProvider,
     status: authStatus,
   } = useAuth();
-  const listService = useAppService(animeListServiceToken);
-  const [activeStatus, setActiveStatus] = useState<AnimeListStatus>("PLANNING");
+  const listService = useAppService(myListServiceToken);
+  const [activeStatus, setActiveStatus] = useState<MyListStatus>("PLANNING");
   const [genre, setGenre] = useState("");
   const [sort, setSort] = useState("score");
   const [isManualRefreshPending, setIsManualRefreshPending] = useState(false);
@@ -95,7 +95,7 @@ export default function AnimeListRoute() {
   const listQuery = useQuery({
     enabled: Boolean(accessToken && userId),
     queryFn: ({ signal }) =>
-      listService.getAnimeList(accessToken!, userId!, signal),
+      listService.getMyList(accessToken!, userId!, signal),
     queryKey: queryCacheConfig.families.userList.key(userId ?? "", {
       format: "ANIME",
     }),
@@ -111,7 +111,7 @@ export default function AnimeListRoute() {
     }
   }, [accountId, accountQuery.data?.id, setAccountId]);
 
-  const entries = useMemo<AnimeListEntry[]>(
+  const entries = useMemo<MyListEntry[]>(
     () => listQuery.data ?? [],
     [listQuery.data],
   );
@@ -327,7 +327,7 @@ export default function AnimeListRoute() {
   );
 }
 
-function AnimeCard({ entry }: { entry: AnimeListEntry }) {
+function AnimeCard({ entry }: { entry: MyListEntry }) {
   const { t } = useTranslation(["common"]);
   const media =
     entry.format === "TV"

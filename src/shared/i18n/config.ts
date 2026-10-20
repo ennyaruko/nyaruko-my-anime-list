@@ -20,8 +20,8 @@ void i18n
     defaultNS: "common",
     load: "languageOnly",
     enableSelector: false,
-    ns: ["common", "login", "validation"],
     supportedLngs: [...supportedLanguages],
+    ns: ["common", "login", "validation, list"],
     interpolation: {
       escapeValue: false,
     },

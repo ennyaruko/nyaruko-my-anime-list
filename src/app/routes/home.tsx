@@ -1,5 +1,5 @@
-import { Navigate } from "react-router";
+import { MyListPage } from "@/pages/my-list";
 
 export default function HomeRoute() {
-  return <Navigate replace to="/anime" />;
+  return <MyListPage />;
 }

@@ -14,6 +14,7 @@ export * from "./Checkbox";
 export * from "./Combobox";
 export * from "./Progress";
 export * from "./ScrollArea";
+export * from "./BlockStatus";
 export * from "./MultiSelect";
 export * from "./Breadcrumbs";
 export * from "./Notification";

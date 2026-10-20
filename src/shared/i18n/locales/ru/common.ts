@@ -59,13 +59,17 @@ export default {
     completed: "Просмотрено",
     planned: "Запланировано",
   },
+  blockStatus: {
+    notFoundDescription:
+      "Возможно, ссылка устарела или в адресе допущена ошибка",
+    emptyDescription:
+      "Попробуйте изменить параметры поиска или добавить новое аниме",
+  },
   errorBoundary: {
     retry: "Повторить",
     reload: "Перезагрузить",
     title: "Ошибка загрузки",
     notFoundTitle: "Страница не найдена",
     description: "Что-то пошло не так. Попробуйте перезагрузить страницу.",
-    notFoundDescription:
-      "Возможно, адрес неверный или страница была перемещена.",
   },
 } as const;

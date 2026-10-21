@@ -1,75 +1,73 @@
 export default {
-  anime: "Аниме",
-  genres: "Жанры",
-  logout: "Выйти",
-  animeList: "Список",
-  title: "Anime List",
-  myAnime: "Моё аниме",
-  sortBy: "Сортировка:",
-  tvSeries: "ТВ сериал",
-  loading: "Загрузка...",
-  sortScore: "По оценке",
-  sortTitle: "По названию",
-  sortYear: "По году выхода",
-  sortProgress: "По прогрессу",
-  animeStatuses: "Статусы аниме",
-  listRefresh: "Обновить список",
-  clearGenre: "Жанр: {{genre}} ×",
-  listRefreshing: "Обновление...",
-  emptyResults: "Ничего не найдено",
-  progress: {
-    label: "Прогресс",
+  "actions": {
+    "clearSelection": "Очистить выбранные значения"
   },
-  animeCount_one: "{{count}} аниме в списке",
-  animeCount_few: "{{count}} аниме в списке",
-  animeCount_many: "{{count}} аниме в списке",
-  animeCount_other: "{{count}} аниме в списке",
-  noGenreResults: "В этом жанре аниме не найдено",
-  emptyAnimeList: "В этой категории пока нет аниме",
-  combobox: {
-    placeholder: "Выберите вариант",
+  "anime": "Аниме",
+  "animeCount_one": "{{count}} аниме в списке",
+  "animeCount_few": "{{count}} аниме в списке",
+  "animeCount_many": "{{count}} аниме в списке",
+  "animeCount_other": "{{count}} аниме в списке",
+  "animeList": "Список",
+  "animeStatuses": "Статусы аниме",
+  "blockStatus": {
+    "emptyDescription": "Попробуйте изменить параметры поиска или добавить новое аниме",
+    "notFoundDescription": "Возможно, ссылка устарела или в адресе допущена ошибка"
   },
-  profileError: "Не удалось загрузить профиль AniList.",
-  multiSelect: {
-    placeholder: "Выберите варианты",
+  "clearGenre": "Жанр: {{genre}} ×",
+  "combobox": {
+    "placeholder": "Выберите вариант"
   },
-  description: "UI Kit для Anime List на React и TypeScript",
-  listError: "Не удалось загрузить список. Попробуйте ещё раз.",
-  actions: {
-    clearSelection: "Очистить выбранные значения",
+  "description": "UI Kit для Anime List на React и TypeScript",
+  "emptyAnimeList": "В этой категории пока нет аниме",
+  "emptyResults": "Ничего не найдено",
+  "errorBoundary": {
+    "description": "Что-то пошло не так. Попробуйте перезагрузить страницу.",
+    "notFoundTitle": "Страница не найдена",
+    "reload": "Перезагрузить",
+    "retry": "Повторить",
+    "title": "Ошибка загрузки"
   },
-  table: {
-    showLess: "Свернуть",
-    showAll: "Показать ещё...",
+  "genres": "Жанры",
+  "language": {
+    "english": "English",
+    "label": "Язык",
+    "russian": "Русский"
   },
-  language: {
-    label: "Язык",
-    english: "English",
-    russian: "Русский",
+  "listError": "Не удалось загрузить список. Попробуйте ещё раз.",
+  "listRefresh": "Обновить список",
+  "listRefreshing": "Обновление...",
+  "loading": "Загрузка...",
+  "logout": "Выйти",
+  "mediaStatus": {
+    "announced": "Анонс",
+    "ongoing": "Онгоинг",
+    "released": "Вышел"
   },
-  mediaStatus: {
-    released: "Вышел",
-    announced: "Анонс",
-    ongoing: "Онгоинг",
+  "multiSelect": {
+    "placeholder": "Выберите варианты"
   },
-  watchStatus: {
-    dropped: "Брошено",
-    onHold: "Отложено",
-    watching: "Смотрю",
-    completed: "Просмотрено",
-    planned: "Запланировано",
+  "myAnime": "Моё аниме",
+  "noGenreResults": "В этом жанре аниме не найдено",
+  "profileError": "Не удалось загрузить профиль AniList.",
+  "progress": {
+    "label": "Прогресс"
   },
-  blockStatus: {
-    notFoundDescription:
-      "Возможно, ссылка устарела или в адресе допущена ошибка",
-    emptyDescription:
-      "Попробуйте изменить параметры поиска или добавить новое аниме",
+  "sortBy": "Сортировка:",
+  "sortProgress": "По прогрессу",
+  "sortScore": "По оценке",
+  "sortTitle": "По названию",
+  "sortYear": "По году выхода",
+  "table": {
+    "showAll": "Показать ещё...",
+    "showLess": "Свернуть"
   },
-  errorBoundary: {
-    retry: "Повторить",
-    reload: "Перезагрузить",
-    title: "Ошибка загрузки",
-    notFoundTitle: "Страница не найдена",
-    description: "Что-то пошло не так. Попробуйте перезагрузить страницу.",
-  },
+  "title": "Anime List",
+  "tvSeries": "ТВ сериал",
+  "watchStatus": {
+    "completed": "Просмотрено",
+    "dropped": "Брошено",
+    "onHold": "Отложено",
+    "planned": "Запланировано",
+    "watching": "Смотрю"
+  }
 } as const;

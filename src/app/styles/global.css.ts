@@ -15,7 +15,6 @@ globalStyle("html, body", {
   fontSynthesis: "none",
   fontFamily: "Inter, sans-serif",
   textRendering: "optimizeLegibility",
-  backgroundColor: colors.background.base,
 });
 
 globalStyle("body", {
@@ -26,4 +25,10 @@ globalStyle("button, input, textarea, select", {
   border: "none",
   font: "inherit",
   background: "none",
+});
+
+globalStyle(".app", {
+  minWidth: "100%",
+  minHeight: "100svh",
+  backgroundColor: colors.background.base,
 });

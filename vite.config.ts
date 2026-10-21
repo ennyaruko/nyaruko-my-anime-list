@@ -11,10 +11,11 @@ export default defineConfig({
     tsconfigPaths: true,
   },
   plugins: [
-    reactRouter(),
-    svgr(),
     vanillaExtractPlugin({
       identifiers: ({ hash }) => `anime_${hash}`,
     }),
+    reactRouter(),
+    svgr(),
+    
   ],
 });

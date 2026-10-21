@@ -75,7 +75,9 @@ export function Layout({ children }: { children: ReactNode }) {
 export default function Root() {
   return (
     <Providers>
-      <Outlet />
+      <div className="app">
+        <Outlet />
+      </div>
       <NotificationContainer />
     </Providers>
   );

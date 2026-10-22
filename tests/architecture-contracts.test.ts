@@ -1,19 +1,19 @@
 import { it, expect, describe } from "vitest";
 import type { PersistedClient } from "@tanstack/react-query-persist-client";
 
-import { queryCacheConfig } from "../src/shared/config";
+import { queryCacheConfig } from "../src/shared/lib/react-query/query-cache";
 import { createServiceToken } from "../src/shared/lib/app-services/service-token";
 import { createServiceRegistry } from "../src/shared/lib/app-services/service-registry";
-import { createSerializedPersister } from "../src/shared/lib/persistence/serialized-persister";
+import { createSerializedPersister } from "../src/shared/lib/react-query/persistence/serialized-persister";
+import { retainUnexpiredQueries } from "../src/shared/lib/react-query/persistence/category-aware-query-persister";
 import {
   isUserScopedQueryKey,
   getUserIdFromQueryKey,
-} from "../src/shared/lib/query-key-utils";
-import { retainUnexpiredQueries } from "../src/shared/lib/persistence/category-aware-query-persister";
+} from "../src/shared/lib/react-query/cache/query-key-utils";
 import {
   shouldPersistQuery,
   resolveQueryCachePolicy,
-} from "../src/shared/lib/query-cache-policy";
+} from "../src/shared/lib/react-query/cache/query-cache-policy";
 
 describe("application architecture contracts", () => {
   describe("service registry", () => {
@@ -32,7 +32,7 @@ describe("application architecture contracts", () => {
   });
 
   describe("query keys", () => {
-    it("isolates account keys by ephemeral session", () => {
+    it("isolates account keys by session without embedding the access token", () => {
       const first = queryCacheConfig.families.account.key(
         "anilist",
         "session-a",
@@ -42,8 +42,10 @@ describe("application architecture contracts", () => {
         "session-b",
       );
 
+      expect(first).toEqual(["identity", "account", "anilist", "session-a"]);
       expect(first).not.toEqual(second);
-      expect(first).not.toContain("access-token");
+      expect(first).not.toContain("secret-access-token");
+      expect(isUserScopedQueryKey(first)).toBe(false);
     });
 
     it("requires a stable non-empty user identifier for user-scoped keys", () => {
@@ -67,8 +69,16 @@ describe("application architecture contracts", () => {
       const userListKey = queryCacheConfig.families.userList.key("123");
       const detailsKey = queryCacheConfig.families.animeDetails.key(42);
 
+      const accountKey = queryCacheConfig.families.account.key(
+        "anilist",
+        "session-a",
+      );
+      const accountPolicy = resolveQueryCachePolicy(accountKey);
       const userListPolicy = resolveQueryCachePolicy(userListKey);
       const detailsPolicy = resolveQueryCachePolicy(detailsKey);
+      expect(accountPolicy.persistForMs).toBe(90 * 24 * 60 * 60 * 1_000);
+      expect(accountPolicy.staleTimeMs).toBe(24 * 60 * 60 * 1_000);
+      expect(shouldPersistQuery(accountKey, now - 1_000, now)).toBe(true);
       expect(userListPolicy.persistForMs).toBe(90 * 24 * 60 * 60 * 1_000);
       expect(detailsPolicy.persistForMs).toBe(30 * 24 * 60 * 60 * 1_000);
       expect(userListPolicy.staleTimeMs).toBe(24 * 60 * 60 * 1_000);
@@ -112,12 +122,29 @@ describe("application architecture contracts", () => {
                 dataUpdatedAt: now - 1_000,
               },
             },
+            {
+              queryHash: "account-anilist-session-a",
+              queryKey: queryCacheConfig.families.account.key(
+                "anilist",
+                "session-a",
+              ),
+              state: {
+                status: "success",
+                dataUpdatedAt: now - 1_000,
+                data: { id: "123", username: "viewer" },
+              },
+            },
           ],
         },
       } as unknown as PersistedClient;
 
       const result = retainUnexpiredQueries(persistedClient, now);
-      expect(result.client.clientState.queries).toHaveLength(1);
+      expect(result.client.clientState.queries).toHaveLength(2);
+      expect(
+        result.client.clientState.queries.map((query) => query.queryKey),
+      ).toContainEqual(
+        queryCacheConfig.families.account.key("anilist", "session-a"),
+      );
       expect(result.client.clientState.mutations).toEqual([]);
     });
 

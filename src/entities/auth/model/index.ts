@@ -4,7 +4,6 @@ export { identityProviderToken } from "./identity-provider";
 export type { AuthStatus, AuthContextValue } from "./auth-context";
 
 export type {
-  AccountProfile,
   IdentityProvider,
   AuthorizationCallback,
 } from "./identity-provider";

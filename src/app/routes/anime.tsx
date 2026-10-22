@@ -1,12 +1,13 @@
-import { Link, Navigate } from "react-router";
 import { useTranslation } from "react-i18next";
 import { useMemo, useState, useEffect } from "react";
+import { Link, useOutletContext } from "react-router";
 
-import { useQuery, useIsRestoring } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 import * as styles from "@/app/styles/anime-page.css";
 
 import { useAuth } from "@/entities/auth";
+import { AccountState } from "@/entities/account";
 import {
   type MyListEntry,
   type MyListStatus,
@@ -65,33 +66,15 @@ const titleVariants: Record<
 
 export default function AnimeListRoute() {
   const { t } = useTranslation(["common"]);
-  const isRestoring = useIsRestoring();
-  const {
-    logout,
-    sessionId,
-    accountId,
-    accessToken,
-    setAccountId,
-    identityProvider,
-    status: authStatus,
-  } = useAuth();
+  const { logout, accessToken } = useAuth();
+  const { account, accountError, accountPending } =
+    useOutletContext<AccountState>();
   const listService = useAppService(myListServiceToken);
   const [activeStatus, setActiveStatus] = useState<MyListStatus>("PLANNING");
   const [genre, setGenre] = useState("");
   const [sort, setSort] = useState("score");
   const [isManualRefreshPending, setIsManualRefreshPending] = useState(false);
-  const accountQuery = useQuery({
-    retry: 1,
-    enabled:
-      authStatus === "authenticated" && Boolean(accessToken && sessionId),
-    queryFn: ({ signal }) =>
-      identityProvider.getCurrentAccount(accessToken!, signal),
-    queryKey: queryCacheConfig.families.account.key(
-      identityProvider.id,
-      sessionId,
-    ),
-  });
-  const userId = accountId ?? accountQuery.data?.id;
+  const userId = account?.id;
   const listQuery = useQuery({
     enabled: Boolean(accessToken && userId),
     queryFn: ({ signal }) =>
@@ -104,12 +87,6 @@ export default function AnimeListRoute() {
   useEffect(() => {
     setGenre("");
   }, [activeStatus]);
-
-  useEffect(() => {
-    if (accountQuery.data?.id && accountQuery.data.id !== accountId) {
-      setAccountId(accountQuery.data.id);
-    }
-  }, [accountId, accountQuery.data?.id, setAccountId]);
 
   const entries = useMemo<MyListEntry[]>(
     () => listQuery.data ?? [],
@@ -150,17 +127,12 @@ export default function AnimeListRoute() {
     [activeStatus, entries, genre, sort],
   );
 
-  const waitingForFirstList =
-    authStatus === "authenticated" && !userId && accountQuery.isPending;
+  const waitingForFirstList = !userId && accountPending;
   const waitingForListData =
     Boolean(userId) && listQuery.isPending && listQuery.data === undefined;
 
   const isListPending =
-    isManualRefreshPending ||
-    isRestoring ||
-    authStatus === "initializing" ||
-    waitingForFirstList ||
-    waitingForListData;
+    isManualRefreshPending || waitingForFirstList || waitingForListData;
 
   const refreshList = async () => {
     setIsManualRefreshPending(true);
@@ -173,8 +145,6 @@ export default function AnimeListRoute() {
     }
   };
 
-  if (authStatus === "anonymous") return <Navigate replace to="/login" />;
-
   return (
     <main className={styles.page}>
       <div className={styles.top}>
@@ -183,16 +153,12 @@ export default function AnimeListRoute() {
             items={[{ label: "AniList" }, { label: t("common:myAnime") }]}
           />
           <div className={styles.profile}>
-            {accountQuery.data?.avatarUrl && (
-              <img
-                alt=""
-                className={styles.avatar}
-                src={accountQuery.data.avatarUrl}
-              />
+            {account?.avatarUrl && (
+              <img alt="" src={account.avatarUrl} className={styles.avatar} />
             )}
             <div>
               <h1 className={styles.userName}>
-                {accountQuery.data?.username ?? t("common:myAnime")}
+                {account?.username ?? t("common:myAnime")}
               </h1>
               {isListPending ? (
                 <div className={styles.textSkeleton} />
@@ -213,7 +179,7 @@ export default function AnimeListRoute() {
         </Button>
       </div>
 
-      {accountQuery.isError && (
+      {accountError && (
         <p className={`${styles.state} ${styles.error}`}>
           {t("common:profileError")}
         </p>
@@ -303,7 +269,7 @@ export default function AnimeListRoute() {
           </div>
         )}
         {!isListPending &&
-          !accountQuery.isError &&
+          !accountError &&
           !listQuery.isError &&
           filtered.length === 0 && (
             <div className={styles.state}>

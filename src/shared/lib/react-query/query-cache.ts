@@ -185,12 +185,6 @@ export const queryCacheConfig = {
     buster: "my-anime-list-v3",
   },
   families: {
-    /** Аккаунт зависит от текущей сессии и остаётся только в памяти. */
-    account: defineQueryFamily(
-      ["identity", "account"],
-      (providerId: string, sessionId: null | string) =>
-        [providerId, sessionId] as const,
-    ),
     /** Справочные списки хранятся до 90 дней; другие виды не включены. */
     reference: defineQueryFamily(
       ["reference"],
@@ -219,6 +213,20 @@ export const queryCacheConfig = {
         staleTimeMs: 24 * HOUR_MS,
         persistForMs: 90 * DAY_MS,
         keyConstraints: [{ index: 1, type: "non-empty-string" }],
+      },
+    ),
+    /** Профиль привязан к OAuth-сессии: свежесть 24 часа, хранение до 90 дней. */
+    account: defineQueryFamily(
+      ["identity", "account"],
+      (providerId: string, sessionId: null | string) =>
+        [providerId, sessionId] as const,
+      {
+        staleTimeMs: 24 * HOUR_MS,
+        persistForMs: 90 * DAY_MS,
+        keyConstraints: [
+          { index: 2, type: "non-empty-string" },
+          { index: 3, type: "non-empty-string" },
+        ],
       },
     ),
   },

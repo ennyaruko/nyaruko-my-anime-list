@@ -20,7 +20,6 @@ type StoredAuthSession = {
   version: 1;
   expiresAt: number;
   sessionId: string;
-  accountId?: string;
   accessToken: string;
 };
 
@@ -62,9 +61,6 @@ function parseStoredSession(raw: null | string): null | StoredAuthSession {
           typeof value.sessionId === "string" && value.sessionId.length > 0
             ? value.sessionId
             : createSessionId(),
-        ...(typeof value.accountId === "string" && value.accountId.length > 0
-          ? { accountId: value.accountId }
-          : {}),
       };
     }
   } catch {
@@ -79,7 +75,13 @@ function storeAuthSession(key: string, session: StoredAuthSession): void {
   try {
     window.localStorage.setItem(key, value);
   } catch {
-    // Keep the current browser-tab session usable if persistent storage is blocked.
+    // Do not leave an older persistent session (possibly with legacy user data)
+    // behind when falling back to tab-scoped storage.
+    try {
+      window.localStorage.removeItem(key);
+    } catch {
+      // Persistent storage may be completely unavailable.
+    }
     try {
       window.sessionStorage.setItem(key, value);
     } catch {
@@ -118,10 +120,29 @@ function readStoredAuthSession(key: string): null | StoredAuthSession {
 
   const persistentSession = parseStoredSession(raw);
   if (persistentSession) {
-    try {
-      window.sessionStorage.removeItem(key);
-    } catch {
-      // The persistent session remains valid.
+    let needsNormalization = false;
+    if (raw !== null) {
+      try {
+        const value = JSON.parse(raw) as Record<string, unknown>;
+        needsNormalization =
+          Object.prototype.hasOwnProperty.call(value, "accountId") ||
+          typeof value.sessionId !== "string" ||
+          value.sessionId.length === 0;
+      } catch {
+        // parseStoredSession already validated this value.
+      }
+    }
+
+    if (needsNormalization) {
+      // Rewrite legacy sessions so accountId no longer lives in localStorage
+      // and a generated sessionId stays stable across future app launches.
+      storeAuthSession(key, persistentSession);
+    } else {
+      try {
+        window.sessionStorage.removeItem(key);
+      } catch {
+        // The persistent session remains valid.
+      }
     }
     return persistentSession;
   }
@@ -173,7 +194,6 @@ export function AuthProvider({ children, onLogout }: AuthProviderProps) {
   const [accessToken, setAccessToken] = useState<null | string>(null);
   const [expiresAt, setExpiresAt] = useState<null | number>(null);
   const [sessionId, setSessionId] = useState<null | string>(null);
-  const [accountId, setAccountIdState] = useState<null | string>(null);
   const [authError, setAuthError] = useState<null | string>(null);
   const initializedProviderId = useRef<null | string>(null);
 
@@ -189,7 +209,6 @@ export function AuthProvider({ children, onLogout }: AuthProviderProps) {
     setAccessToken(null);
     setExpiresAt(null);
     setSessionId(null);
-    setAccountIdState(null);
     setAuthError(null);
 
     try {
@@ -206,7 +225,6 @@ export function AuthProvider({ children, onLogout }: AuthProviderProps) {
         setExpiresAt(callback.expiresAt);
         const newSessionId = createSessionId();
         setSessionId(newSessionId);
-        setAccountIdState(null);
         setStatus("authenticated");
         try {
           const storedSession: StoredAuthSession = {
@@ -234,7 +252,6 @@ export function AuthProvider({ children, onLogout }: AuthProviderProps) {
         setAccessToken(storedSession.accessToken);
         setExpiresAt(storedSession.expiresAt);
         setSessionId(storedSession.sessionId);
-        setAccountIdState(storedSession.accountId ?? null);
         setStatus("authenticated");
       } else {
         removeStoredAuthSession(tokenStorageKey);
@@ -255,26 +272,12 @@ export function AuthProvider({ children, onLogout }: AuthProviderProps) {
     }
   }, [identityProvider]);
 
-  const setAccountId = useCallback(
-    (nextAccountId: string) => {
-      setAccountIdState(nextAccountId);
-      const storedSession = readStoredAuthSession(tokenStorageKey);
-      if (storedSession)
-        storeAuthSession(tokenStorageKey, {
-          ...storedSession,
-          accountId: nextAccountId,
-        });
-    },
-    [tokenStorageKey],
-  );
-
   const logout = useCallback(async () => {
     removeStoredAuthSession(tokenStorageKey);
     const endingSessionId = sessionId;
     setAccessToken(null);
     setExpiresAt(null);
     setSessionId(null);
-    setAccountIdState(null);
     setStatus("anonymous");
     setAuthError(null);
     try {
@@ -308,8 +311,6 @@ export function AuthProvider({ children, onLogout }: AuthProviderProps) {
     };
   }, [expiresAt, logout, sessionId, status]);
 
-  const clearAuthError = useCallback(() => setAuthError(null), []);
-
   const value = useMemo(
     () => ({
       login,
@@ -317,10 +318,7 @@ export function AuthProvider({ children, onLogout }: AuthProviderProps) {
       logout,
       authError,
       sessionId,
-      accountId,
       accessToken,
-      setAccountId,
-      clearAuthError,
       identityProvider,
     }),
     [
@@ -328,12 +326,9 @@ export function AuthProvider({ children, onLogout }: AuthProviderProps) {
       status,
       accessToken,
       sessionId,
-      accountId,
-      setAccountId,
       authError,
       login,
       logout,
-      clearAuthError,
     ],
   );
 

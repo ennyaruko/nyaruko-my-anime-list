@@ -1,71 +1,72 @@
 export default {
-  "actions": {
-    "clearSelection": "Clear selection"
+  anime: "Anime",
+  genres: "Genres",
+  animeList: "List",
+  logout: "Log out",
+  sortBy: "Sort by:",
+  sortScore: "Score",
+  sortTitle: "Title",
+  myAnime: "My anime",
+  title: "Anime List",
+  loading: "Loading...",
+  tvSeries: "TV series",
+  sortProgress: "Progress",
+  sortYear: "Release year",
+  listRefresh: "Refresh list",
+  animeStatuses: "Anime statuses",
+  listRefreshing: "Refreshing...",
+  clearGenre: "Genre: {{genre}} ×",
+  emptyResults: "No results found",
+  progress: {
+    label: "Progress",
   },
-  "anime": "Anime",
-  "animeCount_one": "{{count}} anime in list",
-  "animeCount_other": "{{count}} anime in list",
-  "animeList": "List",
-  "animeStatuses": "Anime statuses",
-  "blockStatus": {
-    "emptyDescription": "Try changing your search criteria or adding a new anime",
-    "notFoundDescription": "The link may be outdated or the address may contain an error"
+  animeCount_one: "{{count}} anime in list",
+  animeCount_other: "{{count}} anime in list",
+  noGenreResults: "No anime found in this genre",
+  listError: "Could not load your list. Try again.",
+  combobox: {
+    placeholder: "Select an option",
   },
-  "clearGenre": "Genre: {{genre}} ×",
-  "combobox": {
-    "placeholder": "Select an option"
+  profileError: "Could not load your AniList profile.",
+  actions: {
+    clearSelection: "Clear selection",
   },
-  "description": "Anime List UI built with React and TypeScript",
-  "emptyAnimeList": "There are no anime in this category yet",
-  "emptyResults": "No results found",
-  "errorBoundary": {
-    "description": "Something went wrong. Try reloading the page.",
-    "notFoundTitle": "Page not found",
-    "reload": "Reload",
-    "retry": "Try again",
-    "title": "Something went wrong"
+  multiSelect: {
+    placeholder: "Select options",
   },
-  "genres": "Genres",
-  "language": {
-    "english": "English",
-    "label": "Language",
-    "russian": "Русский"
+  emptyAnimeList: "There are no anime in this category yet",
+  description: "Anime List UI built with React and TypeScript",
+  table: {
+    showLess: "Show less",
+    showAll: "Show more...",
   },
-  "listError": "Could not load your list. Try again.",
-  "listRefresh": "Refresh list",
-  "listRefreshing": "Refreshing...",
-  "loading": "Loading...",
-  "logout": "Log out",
-  "mediaStatus": {
-    "announced": "Announced",
-    "ongoing": "Ongoing",
-    "released": "Released"
+  language: {
+    label: "Language",
+    english: "English",
+    russian: "Русский",
   },
-  "multiSelect": {
-    "placeholder": "Select options"
+  mediaStatus: {
+    ongoing: "Ongoing",
+    released: "Released",
+    announced: "Announced",
   },
-  "myAnime": "My anime",
-  "noGenreResults": "No anime found in this genre",
-  "profileError": "Could not load your AniList profile.",
-  "progress": {
-    "label": "Progress"
+  watchStatus: {
+    onHold: "On hold",
+    dropped: "Dropped",
+    planned: "Planned",
+    watching: "Watching",
+    completed: "Completed",
   },
-  "sortBy": "Sort by:",
-  "sortProgress": "Progress",
-  "sortScore": "Score",
-  "sortTitle": "Title",
-  "sortYear": "Release year",
-  "table": {
-    "showAll": "Show more...",
-    "showLess": "Show less"
+  blockStatus: {
+    emptyDescription: "Try changing your search criteria or adding a new anime",
+    notFoundDescription:
+      "The link may be outdated or the address may contain an error",
   },
-  "title": "Anime List",
-  "tvSeries": "TV series",
-  "watchStatus": {
-    "completed": "Completed",
-    "dropped": "Dropped",
-    "onHold": "On hold",
-    "planned": "Planned",
-    "watching": "Watching"
-  }
+  errorBoundary: {
+    reload: "Reload",
+    retry: "Try again",
+    title: "Something went wrong",
+    notFoundTitle: "Page not found",
+    description: "Something went wrong. Try reloading the page.",
+  },
 } as const;

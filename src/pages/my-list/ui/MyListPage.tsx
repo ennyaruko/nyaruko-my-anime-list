@@ -4,21 +4,37 @@ import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 
 import { useAuth } from "@/entities/auth";
-import { MyListEntry, myListServiceToken } from "@/entities/my-list";
+import { type AccountProfile } from "@/entities/account";
+import { type MyListEntry, myListServiceToken } from "@/entities/my-list";
 
 import { useAppService, queryCacheConfig } from "@/shared/lib";
-import { Table, Column, Heading, Container, Breadcrumbs } from "@/shared/ui";
+import {
+  Table,
+  Column,
+  Heading,
+  Container,
+  Breadcrumbs,
+  TableSkeleton,
+} from "@/shared/ui";
 
 import * as styles from "./MyListPage.css";
 
-export function MyListPage() {
-  const { t } = useTranslation(["list"]);
+type MyListPageProps = {
+  accountError: boolean;
+  accountPending: boolean;
+  account: undefined | AccountProfile;
+};
 
+export function MyListPage({
+  account,
+  accountError,
+  accountPending,
+}: MyListPageProps) {
+  const { t } = useTranslation(["list", "common"]);
+  const { accessToken } = useAuth();
   const listService = useAppService(myListServiceToken);
+  const userId = account?.id;
 
-  const { accountId, accessToken } = useAuth();
-
-  const userId = accountId;
   const listQuery = useQuery({
     enabled: Boolean(accessToken && userId),
     queryFn: ({ signal }) =>
@@ -27,8 +43,6 @@ export function MyListPage() {
       format: "ANIME",
     }),
   });
-
-  console.log("accountId", accountId);
 
   const entries = useMemo<MyListEntry[]>(
     () => listQuery.data ?? [],
@@ -43,6 +57,10 @@ export function MyListPage() {
     [entries],
   );
 
+  const isListPending =
+    (accountPending && !userId) ||
+    (Boolean(userId) && listQuery.isPending && listQuery.data === undefined);
+
   return (
     <Container as="main" className={styles.page}>
       <Column gap="m">
@@ -50,15 +68,21 @@ export function MyListPage() {
           items={[{ to: "/", label: "Аниме" }, { label: "Моё аниме" }]}
         />
         <Heading variant="neutral">{t("list:genres")}</Heading>
-        <Table
-          numericList
-          initialVisibleCount={3}
-          items={genres.map((item) => ({
-            label: item,
-            value: entries.filter((entry) => entry.genres.includes(item))
-              .length,
-          }))}
-        />
+        {accountError && <p role="alert">{t("common:profileError")}</p>}
+        {listQuery.isError && <p role="alert">{t("common:listError")}</p>}
+        {isListPending ? (
+          <TableSkeleton values={[82, 64, 50]} />
+        ) : (
+          <Table
+            numericList
+            initialVisibleCount={3}
+            items={genres.map((item) => ({
+              label: item,
+              value: entries.filter((entry) => entry.genres.includes(item))
+                .length,
+            }))}
+          />
+        )}
       </Column>
     </Container>
   );

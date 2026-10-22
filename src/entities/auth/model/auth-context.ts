@@ -11,13 +11,9 @@ export type AuthContextValue = {
   authError: null | string;
   /** Non-secret identifier for the active auth session; never the access token. */
   sessionId: null | string;
-  /** AniList account ID cached alongside the active auth session. */
-  accountId: null | string;
   accessToken: null | string;
-  clearAuthError: () => void;
   logout: () => Promise<void>;
   identityProvider: IdentityProvider;
-  setAccountId: (accountId: string) => void;
 };
 
 export const AuthContext = createContext<null | AuthContextValue>(null);

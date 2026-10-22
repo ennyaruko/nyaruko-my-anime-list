@@ -1,5 +1,10 @@
+import { useOutletContext } from "react-router";
+
 import { MyListPage } from "@/pages/my-list";
 
+import { AccountState } from "@/entities/account";
+
 export default function HomeRoute() {
-  return <MyListPage />;
+  const accountContext = useOutletContext<AccountState>();
+  return <MyListPage {...accountContext} />;
 }

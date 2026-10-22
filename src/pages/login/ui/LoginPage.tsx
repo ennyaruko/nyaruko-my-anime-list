@@ -1,36 +1,14 @@
 import { useTranslation } from "react-i18next";
 
-import { useQuery } from "@tanstack/react-query";
-
 import { useAuth } from "@/entities/auth";
 
-import { queryCacheConfig } from "@/shared/lib";
 import { Button, Column, Container } from "@/shared/ui";
 
 import * as styles from "./LoginPage.css";
 
 export function LoginPage() {
   const { t } = useTranslation(["common", "login"]);
-  const {
-    login,
-    status,
-    authError,
-    sessionId,
-    accessToken,
-    clearAuthError,
-    identityProvider,
-  } = useAuth();
-  const accountQuery = useQuery({
-    retry: false,
-    enabled:
-      status === "authenticated" && Boolean(accessToken) && Boolean(sessionId),
-    queryFn: ({ signal }) =>
-      identityProvider.getCurrentAccount(accessToken!, signal),
-    queryKey: queryCacheConfig.families.account.key(
-      identityProvider.id,
-      sessionId,
-    ),
-  });
+  const { login, authError, identityProvider } = useAuth();
 
   return (
     <Container as="main" className={styles.page}>
@@ -49,10 +27,8 @@ export function LoginPage() {
           <Column gap="s">
             {authError && (
               <Column>
-                <p role="alert" onClick={clearAuthError}>
-                  {t("login:authFailed")}
-                </p>
-                <Button round size="l" onClick={() => accountQuery.refetch()}>
+                <p role="alert">{t("login:authFailed")}</p>
+                <Button round size="l" onClick={login}>
                   {t("login:retry")}
                 </Button>
               </Column>

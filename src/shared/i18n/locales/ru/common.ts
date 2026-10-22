@@ -1,73 +1,75 @@
 export default {
-  "actions": {
-    "clearSelection": "Очистить выбранные значения"
+  anime: "Аниме",
+  genres: "Жанры",
+  logout: "Выйти",
+  animeList: "Список",
+  title: "Anime List",
+  myAnime: "Моё аниме",
+  sortBy: "Сортировка:",
+  tvSeries: "ТВ сериал",
+  loading: "Загрузка...",
+  sortScore: "По оценке",
+  sortTitle: "По названию",
+  sortYear: "По году выхода",
+  sortProgress: "По прогрессу",
+  animeStatuses: "Статусы аниме",
+  listRefresh: "Обновить список",
+  clearGenre: "Жанр: {{genre}} ×",
+  listRefreshing: "Обновление...",
+  emptyResults: "Ничего не найдено",
+  progress: {
+    label: "Прогресс",
   },
-  "anime": "Аниме",
-  "animeCount_one": "{{count}} аниме в списке",
-  "animeCount_few": "{{count}} аниме в списке",
-  "animeCount_many": "{{count}} аниме в списке",
-  "animeCount_other": "{{count}} аниме в списке",
-  "animeList": "Список",
-  "animeStatuses": "Статусы аниме",
-  "blockStatus": {
-    "emptyDescription": "Попробуйте изменить параметры поиска или добавить новое аниме",
-    "notFoundDescription": "Возможно, ссылка устарела или в адресе допущена ошибка"
+  animeCount_one: "{{count}} аниме в списке",
+  animeCount_few: "{{count}} аниме в списке",
+  animeCount_many: "{{count}} аниме в списке",
+  animeCount_other: "{{count}} аниме в списке",
+  noGenreResults: "В этом жанре аниме не найдено",
+  emptyAnimeList: "В этой категории пока нет аниме",
+  combobox: {
+    placeholder: "Выберите вариант",
   },
-  "clearGenre": "Жанр: {{genre}} ×",
-  "combobox": {
-    "placeholder": "Выберите вариант"
+  profileError: "Не удалось загрузить профиль AniList.",
+  multiSelect: {
+    placeholder: "Выберите варианты",
   },
-  "description": "UI Kit для Anime List на React и TypeScript",
-  "emptyAnimeList": "В этой категории пока нет аниме",
-  "emptyResults": "Ничего не найдено",
-  "errorBoundary": {
-    "description": "Что-то пошло не так. Попробуйте перезагрузить страницу.",
-    "notFoundTitle": "Страница не найдена",
-    "reload": "Перезагрузить",
-    "retry": "Повторить",
-    "title": "Ошибка загрузки"
+  description: "UI Kit для Anime List на React и TypeScript",
+  listError: "Не удалось загрузить список. Попробуйте ещё раз.",
+  actions: {
+    clearSelection: "Очистить выбранные значения",
   },
-  "genres": "Жанры",
-  "language": {
-    "english": "English",
-    "label": "Язык",
-    "russian": "Русский"
+  table: {
+    showLess: "Свернуть",
+    showAll: "Показать ещё...",
   },
-  "listError": "Не удалось загрузить список. Попробуйте ещё раз.",
-  "listRefresh": "Обновить список",
-  "listRefreshing": "Обновление...",
-  "loading": "Загрузка...",
-  "logout": "Выйти",
-  "mediaStatus": {
-    "announced": "Анонс",
-    "ongoing": "Онгоинг",
-    "released": "Вышел"
+  language: {
+    label: "Язык",
+    english: "English",
+    russian: "Русский",
   },
-  "multiSelect": {
-    "placeholder": "Выберите варианты"
+  mediaStatus: {
+    released: "Вышел",
+    announced: "Анонс",
+    ongoing: "Онгоинг",
   },
-  "myAnime": "Моё аниме",
-  "noGenreResults": "В этом жанре аниме не найдено",
-  "profileError": "Не удалось загрузить профиль AniList.",
-  "progress": {
-    "label": "Прогресс"
+  watchStatus: {
+    dropped: "Брошено",
+    onHold: "Отложено",
+    watching: "Смотрю",
+    completed: "Просмотрено",
+    planned: "Запланировано",
   },
-  "sortBy": "Сортировка:",
-  "sortProgress": "По прогрессу",
-  "sortScore": "По оценке",
-  "sortTitle": "По названию",
-  "sortYear": "По году выхода",
-  "table": {
-    "showAll": "Показать ещё...",
-    "showLess": "Свернуть"
+  blockStatus: {
+    notFoundDescription:
+      "Возможно, ссылка устарела или в адресе допущена ошибка",
+    emptyDescription:
+      "Попробуйте изменить параметры поиска или добавить новое аниме",
   },
-  "title": "Anime List",
-  "tvSeries": "ТВ сериал",
-  "watchStatus": {
-    "completed": "Просмотрено",
-    "dropped": "Брошено",
-    "onHold": "Отложено",
-    "planned": "Запланировано",
-    "watching": "Смотрю"
-  }
+  errorBoundary: {
+    retry: "Повторить",
+    reload: "Перезагрузить",
+    title: "Ошибка загрузки",
+    notFoundTitle: "Страница не найдена",
+    description: "Что-то пошло не так. Попробуйте перезагрузить страницу.",
+  },
 } as const;

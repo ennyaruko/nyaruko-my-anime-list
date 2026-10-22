@@ -1,12 +1,4 @@
-import { createServiceToken } from "@/shared/lib/app-services";
-
-/** Provider-neutral account shape exposed to application code. */
-export type AccountProfile = {
-  id: string;
-  username: string;
-  avatarUrl?: null | string;
-  profileUrl?: null | string;
-};
+import { createServiceToken } from "@/shared/lib";
 
 export type AuthorizationCallback =
   | { type: "none" }
@@ -14,18 +6,14 @@ export type AuthorizationCallback =
   | { type: "success"; expiresAt: number; accessToken: string };
 
 /**
- * Port for an identity provider. Provider DTOs and SDK types must not cross
- * this boundary; implementations map them to AccountProfile.
+ * OAuth/session establishment port. Profile fetching is a separate query
+ * concern and is provided through AccountProvider.
  */
 export interface IdentityProvider {
   readonly id: string;
   beginAuthorization(): void;
   readonly displayName: string;
   consumeAuthorizationCallback(): AuthorizationCallback;
-  getCurrentAccount(
-    accessToken: string,
-    signal?: AbortSignal,
-  ): Promise<AccountProfile>;
 }
 
 /** Shared typed DI token; the concrete implementation is registered by app/. */

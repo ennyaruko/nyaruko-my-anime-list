@@ -21,10 +21,10 @@ void i18n
     load: "languageOnly",
     enableSelector: false,
     supportedLngs: [...supportedLanguages],
-    ns: ["common", "login", "validation, list"],
     interpolation: {
       escapeValue: false,
     },
+    ns: ["common", "login", "validation", "list", "ui"],
     detection: {
       order: [],
       caches: [],

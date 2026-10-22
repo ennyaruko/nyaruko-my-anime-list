@@ -1,10 +1,8 @@
 query ViewerAnimeList($userId: Int!, $type: MediaType = ANIME) {
   MediaListCollection(userId: $userId, type: $type) {
     lists {
-      name
       status
       entries {
-        id
         status
         score
         progress
@@ -21,10 +19,24 @@ query ViewerAnimeList($userId: Int!, $type: MediaType = ANIME) {
           }
           averageScore
           episodes
+          duration
+          startDate {
+            year
+            month
+            day
+          }
+          endDate {
+            year
+            month
+            day
+          }
           seasonYear
           format
+          source
           genres
           type
+          description
+          bannerImage
         }
       }
     }

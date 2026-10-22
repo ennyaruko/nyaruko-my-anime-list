@@ -1,6 +1,6 @@
 /* eslint-disable */
-import * as types from "./graphql";
-import type { TypedDocumentNode as DocumentNode } from "@graphql-typed-document-node/core";
+import * as types from './graphql';
+import type { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
 
 /**
  * Map of all GraphQL operations in the project.
@@ -14,14 +14,12 @@ import type { TypedDocumentNode as DocumentNode } from "@graphql-typed-document-
  * Learn more about it here: https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#reducing-bundle-size
  */
 type Documents = {
-  "query CurrentViewer {\n  Viewer {\n    id\n    name\n    siteUrl\n    avatar {\n      large\n      medium\n    }\n  }\n}": typeof types.CurrentViewerDocument;
-  "query ViewerAnimeList($userId: Int!, $type: MediaType = ANIME) {\n  MediaListCollection(userId: $userId, type: $type) {\n    lists {\n      name\n      status\n      entries {\n        id\n        status\n        score\n        progress\n        media {\n          id\n          title {\n            romaji\n            english\n            native\n          }\n          coverImage {\n            large\n            medium\n          }\n          averageScore\n          episodes\n          seasonYear\n          format\n          genres\n          type\n        }\n      }\n    }\n  }\n}": typeof types.ViewerAnimeListDocument;
+    "query CurrentViewer {\n  Viewer {\n    id\n    name\n    siteUrl\n    avatar {\n      large\n      medium\n    }\n  }\n}": typeof types.CurrentViewerDocument,
+    "query ViewerAnimeList($userId: Int!, $type: MediaType = ANIME) {\n  MediaListCollection(userId: $userId, type: $type) {\n    lists {\n      status\n      entries {\n        status\n        score\n        progress\n        media {\n          id\n          title {\n            romaji\n            english\n            native\n          }\n          coverImage {\n            large\n            medium\n          }\n          averageScore\n          episodes\n          duration\n          startDate {\n            year\n            month\n            day\n          }\n          endDate {\n            year\n            month\n            day\n          }\n          seasonYear\n          format\n          source\n          genres\n          type\n          description\n          bannerImage\n        }\n      }\n    }\n  }\n}": typeof types.ViewerAnimeListDocument,
 };
 const documents: Documents = {
-  "query CurrentViewer {\n  Viewer {\n    id\n    name\n    siteUrl\n    avatar {\n      large\n      medium\n    }\n  }\n}":
-    types.CurrentViewerDocument,
-  "query ViewerAnimeList($userId: Int!, $type: MediaType = ANIME) {\n  MediaListCollection(userId: $userId, type: $type) {\n    lists {\n      name\n      status\n      entries {\n        id\n        status\n        score\n        progress\n        media {\n          id\n          title {\n            romaji\n            english\n            native\n          }\n          coverImage {\n            large\n            medium\n          }\n          averageScore\n          episodes\n          seasonYear\n          format\n          genres\n          type\n        }\n      }\n    }\n  }\n}":
-    types.ViewerAnimeListDocument,
+    "query CurrentViewer {\n  Viewer {\n    id\n    name\n    siteUrl\n    avatar {\n      large\n      medium\n    }\n  }\n}": types.CurrentViewerDocument,
+    "query ViewerAnimeList($userId: Int!, $type: MediaType = ANIME) {\n  MediaListCollection(userId: $userId, type: $type) {\n    lists {\n      status\n      entries {\n        status\n        score\n        progress\n        media {\n          id\n          title {\n            romaji\n            english\n            native\n          }\n          coverImage {\n            large\n            medium\n          }\n          averageScore\n          episodes\n          duration\n          startDate {\n            year\n            month\n            day\n          }\n          endDate {\n            year\n            month\n            day\n          }\n          seasonYear\n          format\n          source\n          genres\n          type\n          description\n          bannerImage\n        }\n      }\n    }\n  }\n}": types.ViewerAnimeListDocument,
 };
 
 /**
@@ -41,19 +39,14 @@ export function graphql(source: string): unknown;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(
-  source: "query CurrentViewer {\n  Viewer {\n    id\n    name\n    siteUrl\n    avatar {\n      large\n      medium\n    }\n  }\n}",
-): (typeof documents)["query CurrentViewer {\n  Viewer {\n    id\n    name\n    siteUrl\n    avatar {\n      large\n      medium\n    }\n  }\n}"];
+export function graphql(source: "query CurrentViewer {\n  Viewer {\n    id\n    name\n    siteUrl\n    avatar {\n      large\n      medium\n    }\n  }\n}"): (typeof documents)["query CurrentViewer {\n  Viewer {\n    id\n    name\n    siteUrl\n    avatar {\n      large\n      medium\n    }\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(
-  source: "query ViewerAnimeList($userId: Int!, $type: MediaType = ANIME) {\n  MediaListCollection(userId: $userId, type: $type) {\n    lists {\n      name\n      status\n      entries {\n        id\n        status\n        score\n        progress\n        media {\n          id\n          title {\n            romaji\n            english\n            native\n          }\n          coverImage {\n            large\n            medium\n          }\n          averageScore\n          episodes\n          seasonYear\n          format\n          genres\n          type\n        }\n      }\n    }\n  }\n}",
-): (typeof documents)["query ViewerAnimeList($userId: Int!, $type: MediaType = ANIME) {\n  MediaListCollection(userId: $userId, type: $type) {\n    lists {\n      name\n      status\n      entries {\n        id\n        status\n        score\n        progress\n        media {\n          id\n          title {\n            romaji\n            english\n            native\n          }\n          coverImage {\n            large\n            medium\n          }\n          averageScore\n          episodes\n          seasonYear\n          format\n          genres\n          type\n        }\n      }\n    }\n  }\n}"];
+export function graphql(source: "query ViewerAnimeList($userId: Int!, $type: MediaType = ANIME) {\n  MediaListCollection(userId: $userId, type: $type) {\n    lists {\n      status\n      entries {\n        status\n        score\n        progress\n        media {\n          id\n          title {\n            romaji\n            english\n            native\n          }\n          coverImage {\n            large\n            medium\n          }\n          averageScore\n          episodes\n          duration\n          startDate {\n            year\n            month\n            day\n          }\n          endDate {\n            year\n            month\n            day\n          }\n          seasonYear\n          format\n          source\n          genres\n          type\n          description\n          bannerImage\n        }\n      }\n    }\n  }\n}"): (typeof documents)["query ViewerAnimeList($userId: Int!, $type: MediaType = ANIME) {\n  MediaListCollection(userId: $userId, type: $type) {\n    lists {\n      status\n      entries {\n        status\n        score\n        progress\n        media {\n          id\n          title {\n            romaji\n            english\n            native\n          }\n          coverImage {\n            large\n            medium\n          }\n          averageScore\n          episodes\n          duration\n          startDate {\n            year\n            month\n            day\n          }\n          endDate {\n            year\n            month\n            day\n          }\n          seasonYear\n          format\n          source\n          genres\n          type\n          description\n          bannerImage\n        }\n      }\n    }\n  }\n}"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};
 }
 
-export type DocumentType<TDocumentNode extends DocumentNode<any, any>> =
-  TDocumentNode extends DocumentNode<infer TType, any> ? TType : never;
+export type DocumentType<TDocumentNode extends DocumentNode<any, any>> = TDocumentNode extends DocumentNode<  infer TType,  any>  ? TType  : never;

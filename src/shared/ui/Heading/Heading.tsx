@@ -13,11 +13,11 @@ export type HeadingProps = HTMLAttributes<HTMLDivElement> & {
 };
 
 const labelKeys = {
-  info: "common:watchStatus.watching",
-  warning: "common:watchStatus.onHold",
-  neutral: "common:watchStatus.planned",
-  negative: "common:watchStatus.dropped",
-  positive: "common:watchStatus.completed",
+  info: "ui:watchStatus.watching",
+  warning: "ui:watchStatus.paused",
+  neutral: "ui:watchStatus.planned",
+  negative: "ui:watchStatus.dropped",
+  positive: "ui:watchStatus.completed",
 } as const satisfies Record<NonNullable<HeadingProps["variant"]>, string>;
 
 export function Heading({
@@ -28,7 +28,7 @@ export function Heading({
   variant = "info",
   ...props
 }: HeadingProps) {
-  const { t } = useTranslation(["common"]);
+  const { t } = useTranslation(["ui"]);
 
   return (
     <div

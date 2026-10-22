@@ -11,6 +11,6 @@ export default {
     () => "npm run locales:remove",
     "prettier --write",
     "eslint --fix",
-    // () => "npm run steiger",
+    () => "npm run steiger",
   ],
 };

@@ -1,3 +1,5 @@
+import ruUI from "./locales/ru/ui";
+import enUI from "./locales/en/ui";
 import ruList from "./locales/ru/list";
 import enList from "./locales/en/list";
 import enLogin from "./locales/en/login";
@@ -9,12 +11,14 @@ import ruValidation from "./locales/ru/validation";
 
 export const resources = {
   en: {
+    ui: enUI,
     list: enList,
     login: enLogin,
     common: enCommon,
     validation: enValidation,
   },
   ru: {
+    ui: ruUI,
     list: ruList,
     login: ruLogin,
     common: ruCommon,

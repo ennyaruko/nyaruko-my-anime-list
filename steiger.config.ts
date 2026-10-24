@@ -12,7 +12,8 @@ export default defineConfig([
   },
   {
     rules: {
-      "fsd/insignificant-slice": "off",
+      "fsd/inconsistent-naming": 'off',
+      "fsd/insignificant-slice": "off"
     },
   },
 ]);

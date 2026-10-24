@@ -4,11 +4,10 @@ import { colors, primitives, typography } from "../../styles";
 
 export const root = style({
   width: "100%",
-  minWidth: "160px",
+  minWidth: "130px",
 });
 
 export const labeled = style({
-  width: "100%",
   display: "flex",
   alignItems: "center",
   gap: primitives.spacing.xxs,
@@ -134,7 +133,7 @@ export const content = style({
   overflow: "hidden",
   maxHeight: "150px",
   color: colors.text.primary,
-  zIndex: primitives.zIndex.dropdown,
+  zIndex: primitives.zIndex.popover,
   boxShadow: primitives.shadow.popup,
   background: colors.background.elevation1,
 });

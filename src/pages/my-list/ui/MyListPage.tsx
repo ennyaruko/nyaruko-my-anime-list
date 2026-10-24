@@ -3,8 +3,11 @@ import { useTranslation } from "react-i18next";
 
 import { useQuery } from "@tanstack/react-query";
 
+import { MyListFilters } from "@/features/filters";
+
 import { useAuth } from "@/entities/auth";
 import { AccountState } from "@/entities/account";
+import { filterOptionsProviderToken } from "@/entities/filters";
 import {
   MyListCard,
   type MyListEntry,
@@ -18,9 +21,11 @@ import {
   Table,
   Column,
   Heading,
+  Spinner,
   GridList,
   Container,
   Breadcrumbs,
+  PullToRefresh,
   TableSkeleton,
 } from "@/shared/ui";
 
@@ -39,22 +44,39 @@ const statusSections = [
 ] as const;
 
 export function MyListPage({ account, accountPending }: MyListPageProps) {
-  const [selectedStatus, setSelectedStatus] =
-    useState<MyListStatus>("PLANNING");
+  const userId = account?.id;
+
   const { t } = useTranslation(["list", "common", "ui"]);
+
   const { accessToken } = useAuth();
   const listService = useAppService(myListServiceToken);
-  const userId = account?.id;
+  const filterOptionsProvider = useAppService(filterOptionsProviderToken);
+
+  const [selectedStatus, setSelectedStatus] =
+    useState<MyListStatus>("PLANNING");
+  const [isManualRefreshPending, setIsManualRefreshPending] = useState(false);
 
   const listQuery = useQuery({
     enabled: Boolean(accessToken && userId),
+    queryKey: queryCacheConfig.families.userList.key(userId ?? ""),
     queryFn: ({ signal }) =>
       listService.getMyList(accessToken!, userId!, signal),
-    queryKey: queryCacheConfig.families.userList.key(userId ?? "", {
-      format: "ANIME",
-      contractVersion: 1,
-    }),
   });
+
+  const filterOptionsQuery = useQuery({
+    enabled: Boolean(userId),
+    queryKey: queryCacheConfig.families.filters.key(userId ?? ""),
+    queryFn: ({ signal }) => filterOptionsProvider.getFilterOptions(signal),
+  });
+
+  const refreshList = async () => {
+    setIsManualRefreshPending(true);
+    try {
+      await listQuery.refetch();
+    } finally {
+      setIsManualRefreshPending(false);
+    }
+  };
 
   const entries = useMemo<MyListEntry[]>(
     () => listQuery.data?.flatMap(({ list }) => list) ?? [],
@@ -79,57 +101,70 @@ export function MyListPage({ account, accountPending }: MyListPageProps) {
   const selectedSection = statusSections.find(
     (section) => section.key === selectedStatus,
   )!;
-  const selectedEntries = entries.filter(
-    (entry) => entry.status === selectedStatus,
-  );
-
   const isListPending =
+    isManualRefreshPending ||
     (accountPending && !userId) ||
     (Boolean(userId) && listQuery.isPending && listQuery.data === undefined);
 
   return (
     <Container as="main" className={styles.page}>
-      <Column gap="m">
-        <Breadcrumbs
-          items={[{ to: "/", label: "Аниме" }, { label: "Моё аниме" }]}
-        />
-        <Heading variant="neutral">{t("list:genres")}</Heading>
-        {isListPending ? (
-          <TableSkeleton values={[82, 64, 50]} />
-        ) : (
-          <Table numericList items={genres} initialVisibleCount={3} />
-        )}
-        <Heading variant="neutral">{t("list:list")}</Heading>
-        <StatusNavigation
-          onSelect={setSelectedStatus}
-          selectedStatus={selectedStatus}
-          items={statusSections.map(({ key }) => ({
-            status: key,
-            count: entries.filter((entry) => entry.status === key).length,
-          }))}
-        />
-        <Heading id={selectedSection.key} variant={selectedSection.variant}>
-          {t(`ui:watchStatus.${selectedSection.label}`)}
-        </Heading>
-        {isListPending ? (
-          <GridList
-            renderItem={() => <MyListCardSkeleton size="l" />}
-            data={Array.from({ length: 4 }, (_, index) => index)}
+      <PullToRefresh
+        pullingContent=""
+        onRefresh={refreshList}
+        refreshingContent={<Spinner />}
+      >
+        <Column gap="m">
+          <Breadcrumbs
+            items={[{ to: "/", label: "Аниме" }, { label: "Моё аниме" }]}
           />
-        ) : (
-          <GridList
-            data={selectedEntries}
-            getKey={(entry) => entry.id}
-            renderItem={(entry) => (
-              <MyListCard
-                size="l"
-                entry={entry}
-                showActions={selectedStatus === "CURRENT"}
-              />
-            )}
+          <Heading variant="neutral">{t("list:genres")}</Heading>
+          {isListPending ? (
+            <TableSkeleton values={[82, 64, 50]} />
+          ) : (
+            <Table numericList items={genres} initialVisibleCount={3} />
+          )}
+          <Heading variant="neutral">{t("list:list")}</Heading>
+          <StatusNavigation
+            onSelect={setSelectedStatus}
+            selectedStatus={selectedStatus}
+            items={statusSections.map(({ key }) => ({
+              status: key,
+              count: entries.filter((entry) => entry.status === key).length,
+            }))}
           />
-        )}
-      </Column>
+          <Heading id={selectedSection.key} variant={selectedSection.variant}>
+            {t(`ui:watchStatus.${selectedSection.label}`)}
+          </Heading>
+          <MyListFilters
+            entries={entries}
+            status={selectedStatus}
+            options={filterOptionsQuery.data}
+            optionsLoading={filterOptionsQuery.isPending}
+          >
+            {(filteredEntries) =>
+              isListPending ? (
+                <GridList
+                  renderItem={() => <MyListCardSkeleton size="l" />}
+                  data={Array.from({ length: 4 }, (_, index) => index)}
+                />
+              ) : (
+                <GridList
+                  virtualize
+                  data={filteredEntries}
+                  getKey={(entry) => entry.id}
+                  renderItem={(entry) => (
+                    <MyListCard
+                      size="l"
+                      entry={entry}
+                      showActions={selectedStatus === "CURRENT"}
+                    />
+                  )}
+                />
+              )
+            }
+          </MyListFilters>
+        </Column>
+      </PullToRefresh>
     </Container>
   );
 }

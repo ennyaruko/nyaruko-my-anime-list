@@ -1,4 +1,5 @@
 export default {
+  sortLabel: "Sort:",
   title: "Anime List",
   loading: "Loading...",
   tvSeries: "TV series",
@@ -41,5 +42,17 @@ export default {
     title: "Something went wrong",
     notFoundTitle: "Page not found",
     description: "Something went wrong. Try reloading the page.",
+  },
+  sort: {
+    score: "By Score",
+    title: "By Title",
+    lastAdded: "By Date Added",
+    startDate: "By Start Date",
+    popularity: "By Popularity",
+    lastUpdated: "By Last Updated",
+    releaseDate: "By Release Date",
+    progress: "By Viewing Progress",
+    averageScore: "By Average Score",
+    completedDate: "By Completion Date",
   },
 } as const;

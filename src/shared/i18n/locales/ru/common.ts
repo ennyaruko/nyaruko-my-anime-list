@@ -2,6 +2,7 @@ export default {
   title: "Anime List",
   tvSeries: "TV сериал",
   loading: "Загрузка...",
+  sortLabel: "Сортировка:",
   emptyResults: "Ничего не найдено",
   progress: {
     label: "Прогресс",
@@ -42,5 +43,17 @@ export default {
     title: "Ошибка загрузки",
     notFoundTitle: "Страница не найдена",
     description: "Что-то пошло не так. Попробуйте перезагрузить страницу.",
+  },
+  sort: {
+    score: "По рейтингу",
+    title: "По названию",
+    startDate: "По дате старта",
+    popularity: "По популярности",
+    releaseDate: "По дате выхода",
+    progress: "По прогрессу просмотра",
+    completedDate: "По дате завершения",
+    averageScore: "По среднему рейтингу",
+    lastAdded: "По последнему добавленному",
+    lastUpdated: "По последнему обновлению",
   },
 } as const;

@@ -14,8 +14,14 @@ export type MyListEntry = {
   id: number;
   /** Media title */
   title: string;
+  /** Media tags */
+  tags: string[];
   /** Media genres */
   genres: string[];
+  /** Timestamp when the list entry was created (Unix seconds) */
+  createdAt: number;
+  /** Timestamp when the list entry was last updated (Unix seconds) */
+  updatedAt: number;
   /** Media status by user */
   status: MyListStatus;
   /** Media score by user */
@@ -30,6 +36,8 @@ export type MyListEntry = {
   progress: null | number;
   /** Media episodes */
   episodes: null | number;
+  /** Media popularity */
+  popularity: null | number;
   /** Media season year */
   seasonYear: null | number;
   /** Media banner image */
@@ -40,8 +48,12 @@ export type MyListEntry = {
   averageScore: null | number;
   /** Media end date */
   endDate: null | PartialDate;
+  /** Date the user started watching */
+  startedAt: null | PartialDate;
   /** Media start date */
   startDate: null | PartialDate;
+  /** Date the user completed watching */
+  completedAt: null | PartialDate;
   /** Media cover image */
   coverImage: null | {
     large: null | string;

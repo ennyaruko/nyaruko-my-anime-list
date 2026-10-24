@@ -3,6 +3,18 @@ query ViewerAnimeList($userId: Int!, $type: MediaType = ANIME) {
     lists {
       status
       entries {
+        createdAt
+        updatedAt
+        startedAt {
+          year
+          month
+          day
+        }
+        completedAt {
+          year
+          month
+          day
+        }
         status
         score
         progress
@@ -18,6 +30,7 @@ query ViewerAnimeList($userId: Int!, $type: MediaType = ANIME) {
             medium
           }
           averageScore
+          popularity
           episodes
           duration
           startDate {
@@ -34,6 +47,9 @@ query ViewerAnimeList($userId: Int!, $type: MediaType = ANIME) {
           format
           source
           genres
+          tags {
+            name
+          }
           type
           description
           bannerImage

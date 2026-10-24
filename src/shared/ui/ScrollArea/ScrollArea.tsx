@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { Ref, ReactNode } from "react";
 
 import clsx from "clsx";
 import { ScrollArea as RadixScrollArea } from "radix-ui";
@@ -9,11 +9,13 @@ export type ScrollAreaProps = {
   className?: string;
   children: ReactNode;
   viewportClassName?: string;
+  viewportRef?: Ref<HTMLDivElement>;
 };
 
 export function ScrollArea({
   children,
   className,
+  viewportRef,
   viewportClassName,
 }: ScrollAreaProps) {
   return (
@@ -23,6 +25,7 @@ export function ScrollArea({
       className={clsx(styles.root, className)}
     >
       <RadixScrollArea.Viewport
+        ref={viewportRef}
         className={clsx(styles.viewport, viewportClassName)}
       >
         {children}

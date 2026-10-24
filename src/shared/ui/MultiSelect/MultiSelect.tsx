@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
+import { Virtuoso } from "react-virtuoso";
 import { useTranslation } from "react-i18next";
-import { useRef, useMemo, useState, useCallback } from "react";
+import { useRef, useMemo, useState, useEffect, useCallback } from "react";
 
 import clsx from "clsx";
 import { Popover } from "radix-ui";
@@ -25,6 +26,7 @@ export type MultiSelectProps = {
   className?: string;
   cleanable?: boolean;
   searchable?: boolean;
+  virtualize?: boolean;
   placeholder?: string;
   defaultValue?: string[];
   options: MultiSelectOption[];
@@ -35,6 +37,82 @@ export type LabeledMultiSelectProps = Omit<MultiSelectProps, "className"> & {
   label: ReactNode;
   className?: string;
 };
+
+type VirtualizedOptionsProps = {
+  disabled: boolean;
+  scrollResetKey: string;
+  options: MultiSelectOption[];
+  selectedValues: ReadonlySet<string>;
+  onToggleOption: (value: string, checked: boolean | "indeterminate") => void;
+};
+
+function VirtualizedOptions({
+  options,
+  disabled,
+  selectedValues,
+  scrollResetKey,
+  onToggleOption,
+}: VirtualizedOptionsProps) {
+  const { t } = useTranslation(["common"]);
+  const [viewportElement, setViewportElement] = useState<null | HTMLDivElement>(
+    null,
+  );
+  const [listHeight, setListHeight] = useState(0);
+  const viewportHeight = Math.min(
+    150,
+    Math.max(44, listHeight || options.length * 44),
+  );
+
+  useEffect(() => {
+    viewportElement?.scrollTo({ top: 0 });
+  }, [scrollResetKey, viewportElement]);
+
+  useEffect(() => {
+    setListHeight(Math.min(150, Math.max(44, options.length * 44)));
+  }, [options]);
+
+  return (
+    <div className={styles.virtualViewport} style={{ height: viewportHeight }}>
+      <ScrollArea
+        viewportRef={setViewportElement}
+        className={styles.virtualScrollArea}
+        viewportClassName={styles.virtualScrollViewport}
+      >
+        {options.length > 0 ? (
+          viewportElement && (
+            <Virtuoso
+              data={options}
+              defaultItemHeight={44}
+              customScrollParent={viewportElement}
+              computeItemKey={(_, option) => option.value}
+              totalListHeightChanged={(height) => setListHeight(height)}
+              itemContent={(_, option) => {
+                const checked = selectedValues.has(option.value);
+
+                return (
+                  <LabeledCheckbox
+                    size="l"
+                    checked={checked}
+                    disabled={disabled}
+                    label={option.label}
+                    onCheckedChange={(nextChecked) =>
+                      onToggleOption(option.value, nextChecked)
+                    }
+                    className={clsx(styles.optionCheckbox, {
+                      [styles.optionCheckboxSelected]: checked,
+                    })}
+                  />
+                );
+              }}
+            />
+          )
+        ) : (
+          <div className={styles.empty}>{t("common:emptyResults")}</div>
+        )}
+      </ScrollArea>
+    </div>
+  );
+}
 
 export function MultiSelect({
   id,
@@ -48,6 +126,7 @@ export function MultiSelect({
   disabled = false,
   cleanable = false,
   searchable = false,
+  virtualize = false,
 }: MultiSelectProps) {
   const { t } = useTranslation(["common"]);
   const effectivePlaceholder =
@@ -59,13 +138,17 @@ export function MultiSelect({
   const [query, setQuery] = useState("");
 
   const selectedValues = value ?? internalValue;
+  const selectedValueSet = useMemo(
+    () => new Set(selectedValues),
+    [selectedValues],
+  );
   const selectedLabels = useMemo(
     () =>
       options
-        .filter((option) => selectedValues.includes(option.value))
+        .filter((option) => selectedValueSet.has(option.value))
         .map((option) => option.label)
         .join(", "),
-    [options, selectedValues],
+    [options, selectedValueSet],
   );
   const filteredOptions = useMemo(() => {
     const filter = query.trim().toLocaleLowerCase();
@@ -74,7 +157,6 @@ export function MultiSelect({
       option.label.toLocaleLowerCase().includes(filter),
     );
   }, [options, query]);
-
   const openMenu = useCallback(() => {
     if (disabled || loading) return;
 
@@ -221,30 +303,44 @@ export function MultiSelect({
               }
             }}
           >
-            <ScrollArea>
-              <div className={styles.options}>
-                {filteredOptions.map((option) => (
-                  <LabeledCheckbox
-                    size="l"
-                    key={option.value}
-                    disabled={disabled}
-                    label={option.label}
-                    checked={selectedValues.includes(option.value)}
-                    onCheckedChange={(checked) =>
-                      toggleOption(option.value, checked)
-                    }
-                    className={clsx(styles.optionCheckbox, {
-                      [styles.optionCheckboxSelected]: selectedValues.includes(
-                        option.value,
-                      ),
-                    })}
-                  />
-                ))}
-                {filteredOptions.length === 0 && (
-                  <div className={styles.empty}>{t("common:emptyResults")}</div>
-                )}
-              </div>
-            </ScrollArea>
+            {virtualize ? (
+              <VirtualizedOptions
+                disabled={disabled}
+                scrollResetKey={query}
+                options={filteredOptions}
+                onToggleOption={toggleOption}
+                selectedValues={selectedValueSet}
+              />
+            ) : (
+              <ScrollArea>
+                <div className={styles.options}>
+                  {filteredOptions.map((option) => {
+                    const checked = selectedValueSet.has(option.value);
+
+                    return (
+                      <LabeledCheckbox
+                        size="l"
+                        checked={checked}
+                        key={option.value}
+                        disabled={disabled}
+                        label={option.label}
+                        onCheckedChange={(nextChecked) =>
+                          toggleOption(option.value, nextChecked)
+                        }
+                        className={clsx(styles.optionCheckbox, {
+                          [styles.optionCheckboxSelected]: checked,
+                        })}
+                      />
+                    );
+                  })}
+                  {filteredOptions.length === 0 && (
+                    <div className={styles.empty}>
+                      {t("common:emptyResults")}
+                    </div>
+                  )}
+                </div>
+              </ScrollArea>
+            )}
           </Popover.Content>
         </Popover.Portal>
       </Popover.Root>

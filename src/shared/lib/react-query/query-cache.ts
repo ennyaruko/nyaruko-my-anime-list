@@ -139,8 +139,8 @@ type QueryCacheConfiguration = {
     readonly buster: string;
     /**
      * Максимальный возраст всего snapshot в миллисекундах, а не отдельного
-     * запроса. QueryClient использует то же значение для `gcTime`. Возраст
-     * данных каждого семейства независимо ограничивается через `persistForMs`.
+     * запроса. Возраст данных каждого семейства независимо ограничивается
+     * через `persistForMs`.
      */
     readonly maxAgeMs: number;
   };
@@ -185,25 +185,18 @@ export const queryCacheConfig = {
     buster: "my-anime-list-v3",
   },
   families: {
-    /** Справочные списки хранятся до 90 дней; другие виды не включены. */
-    reference: defineQueryFamily(
-      ["reference"],
-      (kind: ReferenceDataKind) => [kind] as const,
+    /** Фильтры считаются свежими 90 дней. */
+    filters: defineQueryFamily(
+      ["filters"],
+      (userId: string) => [userId] as const,
       {
+        userIdIndex: 1,
+        staleTimeMs: 90 * DAY_MS,
         persistForMs: 90 * DAY_MS,
-        keyConstraints: [{ index: 1, oneOf: referenceDataKinds }],
+        keyConstraints: [{ index: 1, type: "non-empty-string" }],
       },
     ),
-    /** Детали аниме хранятся до 30 дней после последнего успешного запроса. */
-    animeDetails: defineQueryFamily(
-      ["anime", "details"],
-      (animeId: number) => [animeId] as const,
-      {
-        persistForMs: 30 * DAY_MS,
-        keyConstraints: [{ index: 2, type: "finite-number" }],
-      },
-    ),
-    /** Список аниме пользователя: свежесть 24 часа, хранение до 90 дней. */
+    /** Список пользователя: свежесть 24 часа, хранение до 90 дней. */
     userList: defineQueryFamily(
       ["user-list"],
       (userId: string, parameters?: UserListParameters) =>

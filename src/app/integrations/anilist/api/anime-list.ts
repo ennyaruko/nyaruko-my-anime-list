@@ -48,13 +48,17 @@ export function mapAniListMyListEntry(entry: AniListEntry): MyListEntry {
     score: entry.score ?? null,
     format: media.format ?? null,
     source: media.source ?? null,
+    createdAt: entry.createdAt ?? 0,
+    updatedAt: entry.updatedAt ?? 0,
     duration: media.duration ?? null,
     progress: entry.progress ?? null,
     episodes: media.episodes ?? null,
+    popularity: media.popularity ?? null,
     seasonYear: media.seasonYear ?? null,
     bannerImage: media.bannerImage ?? null,
     description: media.description ?? null,
     averageScore: media.averageScore ?? null,
+    tags: media.tags?.flatMap((tag) => (tag?.name ? [tag.name] : [])) ?? [],
     title:
       media.title?.english ||
       media.title?.romaji ||
@@ -75,11 +79,25 @@ export function mapAniListMyListEntry(entry: AniListEntry): MyListEntry {
           month: media.endDate.month,
         }
       : null,
+    startedAt: entry.startedAt
+      ? {
+          day: entry.startedAt.day,
+          year: entry.startedAt.year,
+          month: entry.startedAt.month,
+        }
+      : null,
     startDate: media.startDate
       ? {
           day: media.startDate.day,
           year: media.startDate.year,
           month: media.startDate.month,
+        }
+      : null,
+    completedAt: entry.completedAt
+      ? {
+          day: entry.completedAt.day,
+          year: entry.completedAt.year,
+          month: entry.completedAt.month,
         }
       : null,
   };

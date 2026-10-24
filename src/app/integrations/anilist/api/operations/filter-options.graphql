@@ -1,0 +1,8 @@
+query FilterOptions {
+  genres: GenreCollection
+  tags: MediaTagCollection {
+    id
+    name
+    isAdult
+  }
+}

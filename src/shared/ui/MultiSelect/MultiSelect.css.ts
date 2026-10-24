@@ -103,7 +103,7 @@ export const content = style({
   overflow: "hidden",
   maxHeight: "150px",
   color: colors.text.primary,
-  zIndex: primitives.zIndex.dropdown,
+  zIndex: primitives.zIndex.popover,
   boxShadow: primitives.shadow.popup,
   background: colors.background.elevation1,
 });
@@ -112,6 +112,22 @@ export const options = style({
   display: "flex",
   flexDirection: "column",
   padding: `${primitives.spacing.xxs} 0`,
+});
+
+export const virtualViewport = style({
+  width: "100%",
+  flex: "0 0 auto",
+  overflow: "hidden",
+  maxHeight: "inherit",
+});
+
+export const virtualScrollArea = style({
+  width: "100%",
+  height: "100%",
+});
+
+export const virtualScrollViewport = style({
+  overscrollBehavior: "contain",
 });
 
 export const optionCheckbox = style({

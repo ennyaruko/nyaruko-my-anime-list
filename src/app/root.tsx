@@ -3,6 +3,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { useEffect, type ReactNode } from "react";
 import { Meta, Links, Outlet, Scripts, ScrollRestoration } from "react-router";
 
+import { THEME_STORAGE_KEY } from "@/features/change-theme";
+
 import { darkTheme, lightTheme } from "@/shared/styles";
 import { GlobalErrorFallback, NotificationContainer } from "@/shared/ui";
 import i18n, { LOCALE_STORAGE_KEY, supportedLanguages } from "@/shared/i18n";
@@ -13,14 +15,20 @@ import "./styles/global.css";
 
 const themeInitializerScript = `
   (function() {
-    const storedTheme = window.localStorage.getItem("theme");
+    let storedTheme = null;
+    try {
+      storedTheme = window.localStorage.getItem("${THEME_STORAGE_KEY}");
+    } catch {}
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    
+
     const isDark = storedTheme === "dark" || (storedTheme !== "light" && prefersDark);
-    
+
     document.documentElement.classList.add(isDark ? "${darkTheme}" : "${lightTheme}");
-    
+
     document.documentElement.style.colorScheme = isDark ? "dark" : "light";
+    document
+      .querySelector('meta[name="theme-color"]')
+      ?.setAttribute("content", isDark ? "#151719" : "#FFFFFF");
   })();
 `;
 

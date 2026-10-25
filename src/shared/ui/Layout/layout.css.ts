@@ -21,6 +21,7 @@ export const alignItem = styleVariants({
 });
 
 export const justifyContent = styleVariants({
+  end: { justifyContent: "flex-end" },
   center: { justifyContent: "center" },
   "flex-start": { justifyContent: "flex-start" },
   "space-between": { justifyContent: "space-between" },

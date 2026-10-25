@@ -10,6 +10,7 @@ export * from "./Status";
 export * from "./Rating";
 export * from "./Button";
 export * from "./Drawer";
+export * from "./Switch";
 export * from "./Heading";
 export * from "./Spinner";
 export * from "./GridList";

@@ -4,6 +4,9 @@ export default {
   loading: "Загрузка...",
   sortLabel: "Сортировка:",
   emptyResults: "Ничего не найдено",
+  language: {
+    label: "Язык",
+  },
   progress: {
     label: "Прогресс",
   },
@@ -14,6 +17,9 @@ export default {
     placeholder: "Выберите варианты",
   },
   description: "UI Kit для Anime List на React и TypeScript",
+  search: {
+    placeholder: "Название аниме из моего списка",
+  },
   actions: {
     clearSelection: "Очистить выбранные значения",
   },
@@ -21,10 +27,10 @@ export default {
     showLess: "Свернуть",
     showAll: "Показать ещё...",
   },
-  language: {
-    label: "Язык",
-    english: "English",
-    russian: "Русский",
+  navigation: {
+    search: "Поиск",
+    profile: "Профиль",
+    myAnime: "Моё аниме",
   },
   mediaStatus: {
     released: "Вышел",
@@ -36,6 +42,15 @@ export default {
       "Возможно, ссылка устарела или в адресе допущена ошибка",
     emptyDescription:
       "Попробуйте изменить параметры поиска или добавить новое аниме",
+  },
+  profileMenu: {
+    logout: "Выход",
+    session: "Сессия",
+    settings: "Настройки",
+    darkTheme: "Темная тема",
+    lightTheme: "Светлая тема",
+    adultContent: "18+ Контент",
+    provider: "{{provider}} API",
   },
   errorBoundary: {
     retry: "Повторить",

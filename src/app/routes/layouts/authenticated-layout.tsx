@@ -3,7 +3,8 @@ import { Outlet, Navigate } from "react-router";
 import { useQuery, useIsRestoring } from "@tanstack/react-query";
 
 import { useAuth } from "@/entities/auth";
-import { AccountState, accountProviderToken } from "@/entities/account";
+import type { AccountState } from "@/entities/account";
+import { accountProviderToken } from "@/entities/account";
 
 import { Spinner } from "@/shared/ui";
 import { useAppService, queryCacheConfig } from "@/shared/lib";

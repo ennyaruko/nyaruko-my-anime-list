@@ -4,6 +4,9 @@ export default {
   loading: "Loading...",
   tvSeries: "TV series",
   emptyResults: "No results found",
+  language: {
+    label: "Language",
+  },
   progress: {
     label: "Progress",
   },
@@ -16,15 +19,18 @@ export default {
   multiSelect: {
     placeholder: "Select options",
   },
+  search: {
+    placeholder: "Anime title from my list",
+  },
   description: "Anime List UI built with React and TypeScript",
   table: {
     showLess: "Show less",
     showAll: "Show more...",
   },
-  language: {
-    label: "Language",
-    english: "English",
-    russian: "Русский",
+  navigation: {
+    search: "Search",
+    profile: "Profile",
+    myAnime: "My Anime",
   },
   mediaStatus: {
     ongoing: "Ongoing",
@@ -42,6 +48,15 @@ export default {
     title: "Something went wrong",
     notFoundTitle: "Page not found",
     description: "Something went wrong. Try reloading the page.",
+  },
+  profileMenu: {
+    logout: "Log out",
+    session: "Session",
+    settings: "Settings",
+    darkTheme: "Dark theme",
+    lightTheme: "Light theme",
+    adultContent: "18+ Content",
+    provider: "{{provider}} API",
   },
   sort: {
     score: "By Score",

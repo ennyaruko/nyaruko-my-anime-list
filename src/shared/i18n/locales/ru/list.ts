@@ -1,5 +1,5 @@
 export default {
-  tags: "Теги",
-  list: "Список",
-  genres: "Жанры",
+  "genres": "Жанры",
+  "list": "Список",
+  "tags": "Теги"
 } as const;

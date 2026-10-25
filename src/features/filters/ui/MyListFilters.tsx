@@ -56,7 +56,7 @@ export function MyListFilters({
 
   return (
     <>
-      <Row gap="m">
+      <Row gap="m" justifyContent="end">
         <LabeledCombobox
           value={sort}
           label={t("common:sortLabel")}

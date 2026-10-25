@@ -1,14 +1,14 @@
 export default {
-  filters: {
-    close: "Close",
-    open: "Filters",
-    title: "List filters",
+  "filters": {
+    "close": "Close",
+    "open": "Filters",
+    "title": "List filters"
   },
-  watchStatus: {
-    paused: "On hold",
-    dropped: "Dropped",
-    planned: "Planned",
-    watching: "Watching",
-    completed: "Completed",
-  },
+  "watchStatus": {
+    "completed": "Completed",
+    "dropped": "Dropped",
+    "paused": "On hold",
+    "planned": "Planned",
+    "watching": "Watching"
+  }
 } as const;

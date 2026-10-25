@@ -6,4 +6,4 @@ export type FlexDirection = "row" | "column" | "row-reverse" | "column-reverse";
 
 export type AlignItem = "start" | "center" | "stretch" | "flex-start";
 
-export type JustifyContent = "center" | "flex-start" | "space-between";
+export type JustifyContent = "end" | "center" | "flex-start" | "space-between";

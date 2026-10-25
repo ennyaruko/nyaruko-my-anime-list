@@ -1,14 +1,14 @@
 export default {
-  filters: {
-    open: "Фильтры",
-    close: "Закрыть",
-    title: "Фильтры списка",
+  "filters": {
+    "close": "Закрыть",
+    "open": "Фильтры",
+    "title": "Фильтры списка"
   },
-  watchStatus: {
-    dropped: "Брошено",
-    paused: "Отложено",
-    watching: "Смотрю",
-    completed: "Просмотрено",
-    planned: "Запланировано",
-  },
+  "watchStatus": {
+    "completed": "Просмотрено",
+    "dropped": "Брошено",
+    "paused": "Отложено",
+    "planned": "Запланировано",
+    "watching": "Смотрю"
+  }
 } as const;

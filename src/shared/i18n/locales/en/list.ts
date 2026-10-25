@@ -1,5 +1,5 @@
 export default {
-  list: "List",
-  tags: "Tags",
-  genres: "Genres",
+  "genres": "Genres",
+  "list": "List",
+  "tags": "Tags"
 } as const;

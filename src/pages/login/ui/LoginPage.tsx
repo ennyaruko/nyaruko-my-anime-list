@@ -7,7 +7,7 @@ import { Button, Column, Container } from "@/shared/ui";
 import * as styles from "./LoginPage.css";
 
 export function LoginPage() {
-  const { t } = useTranslation(["common", "login"]);
+  const { t } = useTranslation(["common"]);
   const { login, authError, identityProvider } = useAuth();
 
   return (
@@ -15,9 +15,9 @@ export function LoginPage() {
       <section className={styles.content}>
         <header className={styles.header}>
           <h1 id="login-title" className={styles.title}>
-            {t("login:title")}
+            {t("common:login.title")}
           </h1>
-          <p className={styles.description}>{t("login:description")}</p>
+          <p className={styles.description}>{t("common:login.description")}</p>
         </header>
 
         <div className={styles.illustration} />
@@ -27,14 +27,14 @@ export function LoginPage() {
           <Column gap="s">
             {authError && (
               <Column>
-                <p role="alert">{t("login:authFailed")}</p>
+                <p role="alert">{t("common:login.authFailed")}</p>
                 <Button round size="l" onClick={login}>
-                  {t("login:retry")}
+                  {t("common:login.retry")}
                 </Button>
               </Column>
             )}
             <Button round size="l" onClick={login} variant="secondary">
-              {t("login:continueWithProvider", {
+              {t("common:login.continueWithProvider", {
                 provider: identityProvider.displayName,
               })}
             </Button>

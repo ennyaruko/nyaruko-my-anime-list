@@ -49,7 +49,7 @@ export function MyListFilters({
   children,
   optionsLoading = false,
 }: MyListFiltersProps) {
-  const { t } = useTranslation(["ui", "common", "list"]);
+  const { t } = useTranslation(["common"]);
   const [isOpen, setIsOpen] = useState(false);
   const { sort, tags, genres, setSort, setTags, setGenres, filteredEntries } =
     useMyListFilters(entries, status);
@@ -67,7 +67,7 @@ export function MyListFilters({
           }))}
         />
         <Button rightIcon={<FilterIcon />} onClick={() => setIsOpen(true)}>
-          {t("ui:filters.open")}
+          {t("common:ui.filters.open")}
         </Button>
       </Row>
       <Drawer
@@ -76,11 +76,11 @@ export function MyListFilters({
         onClose={() => setIsOpen(false)}
       >
         <div className={styles.drawerHeader}>
-          <Heading variant="neutral">{t("ui:filters.title")}</Heading>
-          <DrawerClose>{t("ui:filters.close")}</DrawerClose>
+          <Heading variant="neutral">{t("common:ui.filters.title")}</Heading>
+          <DrawerClose>{t("common:ui.filters.close")}</DrawerClose>
         </div>
         <Column gap="s">
-          <Heading variant="neutral">{t("list:genres")}</Heading>
+          <Heading variant="neutral">{t("common:list.genres")}</Heading>
           <MultiSelect
             cleanable
             searchable
@@ -92,7 +92,7 @@ export function MyListFilters({
           />
         </Column>
         <Column gap="s">
-          <Heading variant="neutral">{t("list:tags")}</Heading>
+          <Heading variant="neutral">{t("common:list.tags")}</Heading>
           <MultiSelect
             cleanable
             searchable

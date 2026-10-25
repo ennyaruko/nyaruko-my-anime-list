@@ -27,6 +27,11 @@ export default {
     showLess: "Show less",
     showAll: "Show more...",
   },
+  list: {
+    list: "List",
+    tags: "Tags",
+    genres: "Genres",
+  },
   navigation: {
     search: "Search",
     profile: "Profile",
@@ -36,6 +41,11 @@ export default {
     ongoing: "Ongoing",
     released: "Released",
     announced: "Announced",
+  },
+  validation: {
+    loginRequired: "Username is required",
+    passwordRequired: "Password is required",
+    loginLatinOnly: "Username must not contain Cyrillic characters",
   },
   blockStatus: {
     emptyDescription: "Try changing your search criteria or adding a new anime",
@@ -57,6 +67,28 @@ export default {
     lightTheme: "Light theme",
     adultContent: "18+ Content",
     provider: "{{provider}} API",
+  },
+  ui: {
+    filters: {
+      close: "Close",
+      open: "Filters",
+      title: "List filters",
+    },
+    watchStatus: {
+      paused: "On hold",
+      dropped: "Dropped",
+      planned: "Planned",
+      watching: "Watching",
+      completed: "Completed",
+    },
+  },
+  login: {
+    title: "Sign in",
+    retry: "Try again",
+    continueWithProvider: "Continue with {{provider}}",
+    description: "On this page, you will be able to log in to our website.",
+    authFailed:
+      "AniList authorization could not be completed. Please try again.",
   },
   sort: {
     score: "By Score",

@@ -46,7 +46,7 @@ const statusSections = [
 export function MyListPage({ account, accountPending }: MyListPageProps) {
   const userId = account?.id;
 
-  const { t } = useTranslation(["list", "common", "ui"]);
+  const { t } = useTranslation(["common"]);
 
   const { accessToken } = useAuth();
   const listService = useAppService(myListServiceToken);
@@ -117,13 +117,13 @@ export function MyListPage({ account, accountPending }: MyListPageProps) {
           <Breadcrumbs
             items={[{ to: "/", label: "Аниме" }, { label: "Моё аниме" }]}
           />
-          <Heading variant="neutral">{t("list:genres")}</Heading>
+          <Heading variant="neutral">{t("common:list.genres")}</Heading>
           {isListPending ? (
             <TableSkeleton values={[82, 64, 50]} />
           ) : (
             <Table numericList items={genres} initialVisibleCount={3} />
           )}
-          <Heading variant="neutral">{t("list:list")}</Heading>
+          <Heading variant="neutral">{t("common:list.list")}</Heading>
           <StatusNavigation
             onSelect={setSelectedStatus}
             selectedStatus={selectedStatus}
@@ -133,7 +133,7 @@ export function MyListPage({ account, accountPending }: MyListPageProps) {
             }))}
           />
           <Heading id={selectedSection.key} variant={selectedSection.variant}>
-            {t(`ui:watchStatus.${selectedSection.label}`)}
+            {t(`common:ui.watchStatus.${selectedSection.label}`)}
           </Heading>
           <MyListFilters
             entries={entries}

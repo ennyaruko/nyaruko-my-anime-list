@@ -31,7 +31,7 @@ export function StatusNavigation({
   selectedStatus,
   ...props
 }: StatusNavigationProps) {
-  const { t } = useTranslation(["ui"]);
+  const { t } = useTranslation(["common"]);
 
   return (
     <nav {...props} className={clsx(styles.root, className)}>
@@ -44,7 +44,7 @@ export function StatusNavigation({
               styles.button[selectedStatus === status ? "active" : "default"]
             }
           >
-            {t(`ui:watchStatus.${statusLabels[status]}`)} ({count})
+            {t(`common:ui.watchStatus.${statusLabels[status]}`)} ({count})
           </button>
           {index < items.length - 1 && (
             <span className={styles.separator}>/</span>

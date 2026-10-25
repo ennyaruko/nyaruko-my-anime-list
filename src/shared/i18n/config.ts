@@ -15,6 +15,7 @@ void i18n
   .init({
     ...(activeLanguage ? { lng: activeLanguage } : {}),
     resources,
+    ns: ["common"],
     fallbackLng: "ru",
     returnNull: false,
     defaultNS: "common",
@@ -24,7 +25,6 @@ void i18n
     interpolation: {
       escapeValue: false,
     },
-    ns: ["common", "login", "validation", "list", "ui"],
     detection: {
       order: [],
       caches: [],

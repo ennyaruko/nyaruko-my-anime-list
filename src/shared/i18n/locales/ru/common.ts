@@ -23,6 +23,11 @@ export default {
   actions: {
     clearSelection: "Очистить выбранные значения",
   },
+  list: {
+    tags: "Теги",
+    list: "Список",
+    genres: "Жанры",
+  },
   table: {
     showLess: "Свернуть",
     showAll: "Показать ещё...",
@@ -36,6 +41,11 @@ export default {
     released: "Вышел",
     announced: "Анонс",
     ongoing: "Онгоинг",
+  },
+  validation: {
+    passwordRequired: "Введите пароль",
+    loginRequired: "Введите имя пользователя",
+    loginLatinOnly: "Имя пользователя не должно содержать кириллицу",
   },
   blockStatus: {
     notFoundDescription:
@@ -58,6 +68,27 @@ export default {
     title: "Ошибка загрузки",
     notFoundTitle: "Страница не найдена",
     description: "Что-то пошло не так. Попробуйте перезагрузить страницу.",
+  },
+  ui: {
+    filters: {
+      open: "Фильтры",
+      close: "Закрыть",
+      title: "Фильтры списка",
+    },
+    watchStatus: {
+      dropped: "Брошено",
+      paused: "Отложено",
+      watching: "Смотрю",
+      completed: "Просмотрено",
+      planned: "Запланировано",
+    },
+  },
+  login: {
+    retry: "Повторить",
+    title: "Авторизация",
+    continueWithProvider: "Продолжить с {{provider}}",
+    authFailed: "Не удалось завершить авторизацию AniList. Попробуйте ещё раз.",
+    description: "На данной странице вы сможете авторизоваться на нашем сайте.",
   },
   sort: {
     score: "По рейтингу",

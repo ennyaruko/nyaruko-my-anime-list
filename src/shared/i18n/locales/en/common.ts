@@ -10,6 +10,9 @@ export default {
   progress: {
     label: "Progress",
   },
+  search: {
+    placeholder: "Enter the name",
+  },
   combobox: {
     placeholder: "Select an option",
   },
@@ -18,9 +21,6 @@ export default {
   },
   multiSelect: {
     placeholder: "Select options",
-  },
-  search: {
-    placeholder: "Anime title from my list",
   },
   description: "Anime List UI built with React and TypeScript",
   table: {
@@ -68,20 +68,6 @@ export default {
     adultContent: "18+ Content",
     provider: "{{provider}} API",
   },
-  ui: {
-    filters: {
-      close: "Close",
-      open: "Filters",
-      title: "List filters",
-    },
-    watchStatus: {
-      paused: "On hold",
-      dropped: "Dropped",
-      planned: "Planned",
-      watching: "Watching",
-      completed: "Completed",
-    },
-  },
   login: {
     title: "Sign in",
     retry: "Try again",
@@ -101,5 +87,30 @@ export default {
     progress: "By Viewing Progress",
     averageScore: "By Average Score",
     completedDate: "By Completion Date",
+  },
+  ui: {
+    watchStatus: {
+      paused: "On hold",
+      dropped: "Dropped",
+      planned: "Planned",
+      watching: "Watching",
+      completed: "Completed",
+    },
+    filters: {
+      save: "Save",
+      adult: "Adult",
+      close: "Close",
+      applied_one: "",
+      open: "Filters",
+      format: "Format",
+      source: "Source",
+      status: "Status",
+      applied_other: "",
+      default: "Default",
+      exclude: "Exclude",
+      include: "Include",
+      resetAll: "Reset all",
+      ageRating: "Age rating",
+    },
   },
 } as const;

@@ -1,5 +1,10 @@
 import { useState } from "react";
-import type { ReactNode, ChangeEventHandler, InputHTMLAttributes } from "react";
+import type {
+  Ref,
+  ReactNode,
+  ChangeEventHandler,
+  InputHTMLAttributes,
+} from "react";
 
 import clsx from "clsx";
 
@@ -18,6 +23,7 @@ export type InputProps = Omit<
   leftSlot?: ReactNode;
   rightSlot?: ReactNode;
   onClear?: VoidFunction;
+  inputRef?: Ref<HTMLInputElement>;
   variant?: "default" | "grayscale";
   value?: string | number | readonly string[];
   onChange?: ChangeEventHandler<HTMLInputElement>;
@@ -29,6 +35,7 @@ export function Input({
   onClear,
   leftSlot,
   onChange,
+  inputRef,
   className,
   rightSlot,
   size = "m",
@@ -70,6 +77,7 @@ export function Input({
       {leftSlot && <span className={styles.slot}>{leftSlot}</span>}
       <input
         {...props}
+        ref={inputRef}
         value={currentValue}
         onChange={handleChange}
         className={styles.input}

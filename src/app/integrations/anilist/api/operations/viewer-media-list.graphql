@@ -1,4 +1,4 @@
-query ViewerAnimeList($userId: Int!, $type: MediaType = ANIME) {
+query ViewerMediaList($userId: Int!, $type: MediaType = ANIME) {
   MediaListCollection(userId: $userId, type: $type) {
     lists {
       status
@@ -53,6 +53,8 @@ query ViewerAnimeList($userId: Int!, $type: MediaType = ANIME) {
           type
           description
           bannerImage
+          isAdult
+          status
         }
       }
     }

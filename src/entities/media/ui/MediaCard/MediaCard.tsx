@@ -4,24 +4,36 @@ import clsx from "clsx";
 
 import { NoImageIcon } from "@/shared/icons";
 import { skeletonAnimation } from "@/shared/styles";
-import { Image, Score, Title, Column, Progress } from "@/shared/ui";
+import {
+  Image,
+  Score,
+  Title,
+  Column,
+  Progress,
+  type TitleState,
+} from "@/shared/ui";
 
-import type { MyListEntry } from "../../model/my-list";
+import type { Media, MediaListStatus } from "../../model/media";
 
-import * as styles from "./MyListCard.css";
+import * as styles from "./MediaCard.css";
 
-export type MyListCardProps = {
+export type MediaCardProps = {
+  media: Media;
   size?: "l" | "s";
-  entry?: MyListEntry;
-  showActions?: boolean;
-  variant?: "default" | "placeholder";
+  editableProgress?: boolean;
 };
 
-export type MyListCardSkeletonProps = {
-  size?: "l" | "s";
+export type MediaCardSkeletonProps = { size?: "l" | "s" };
+
+const titleVariantByStatus: Record<MediaListStatus, TitleState> = {
+  PAUSED: "paused",
+  DROPPED: "dropped",
+  CURRENT: "watching",
+  PLANNING: "planning",
+  COMPLETED: "completed",
 };
 
-export function MyListCardSkeleton({ size = "l" }: MyListCardSkeletonProps) {
+export function MediaCardSkeleton({ size = "l" }: MediaCardSkeletonProps) {
   return (
     <article className={styles.root}>
       <Column gap="xxs">
@@ -40,68 +52,69 @@ export function MyListCardSkeleton({ size = "l" }: MyListCardSkeletonProps) {
   );
 }
 
-export function MyListCard({
-  entry,
+export function MediaCard({
+  media,
   size = "l",
-  showActions = false,
-  variant = "default",
-}: MyListCardProps) {
+  editableProgress = false,
+}: MediaCardProps) {
   const { t } = useTranslation(["common"]);
-  const coverUrl = entry?.coverImage?.large ?? entry?.coverImage?.preview;
-  const isPlaceholder = variant === "placeholder" || !coverUrl;
-  const scoreSize = size === "l" ? "m" : "s";
-  const progressSize = size === "l" ? "m" : "s";
-  const displayScore = entry?.averageScore;
+  const coverUrl = media.coverImage?.large ?? media.coverImage?.preview;
+  const isPlaceholder = !coverUrl;
   const formatLabel =
-    entry?.format === "TV" ? t("common:tvSeries") : entry?.format;
+    media.format === "TV" ? t("common:tvSeries") : media.format;
 
   return (
-    <article className={clsx(styles.root)}>
+    <article className={styles.root}>
       <Column gap="xxs">
         <div>
           <div className={styles.cover[size]}>
             <Image
               className={styles.image}
+              alt={isPlaceholder ? "" : media.title}
               loading={isPlaceholder ? "eager" : "lazy"}
-              alt={isPlaceholder ? "" : (entry?.title ?? "")}
               imageClassName={
                 isPlaceholder ? styles.placeholderImage : undefined
               }
               preview={
-                !isPlaceholder && entry?.coverImage?.preview
-                  ? { url: entry.coverImage.preview }
+                !isPlaceholder && media.coverImage?.preview
+                  ? { url: media.coverImage.preview }
                   : undefined
               }
               image={{
                 url: isPlaceholder
-                  ? "/images/anime-no-image.png"
-                  : (entry?.coverImage?.large ?? coverUrl ?? ""),
+                  ? "/images/media-no-image.png"
+                  : (media.coverImage?.large ?? coverUrl ?? ""),
               }}
             />
-            {displayScore !== null && displayScore !== undefined && (
+            {media.averageScore !== null && (
               <Score
-                size={scoreSize}
                 className={styles.score}
-                value={displayScore / 10}
+                size={size === "l" ? "m" : "s"}
+                value={media.averageScore / 10}
               />
             )}
             {isPlaceholder && <NoImageIcon className={styles.noImageIcon} />}
-            {showActions && entry && (
+            {media.status === "CURRENT" && media.progress !== null && (
               <Progress
-                editable
-                size={progressSize}
-                max={entry.episodes ?? 12}
+                max={media.episodes ?? 12}
+                editable={editableProgress}
                 className={styles.progress}
-                defaultValue={entry.progress ?? 0}
+                defaultValue={media.progress}
+                size={size === "l" ? "m" : "s"}
               />
             )}
           </div>
         </div>
-        <Title title={entry?.title ?? ""} />
+        <Title
+          title={media.title}
+          variant={
+            media.status ? titleVariantByStatus[media.status] : "default"
+          }
+        />
       </Column>
       <div className={styles.metadata}>
         <span>{formatLabel}</span>
-        <span>{entry?.seasonYear}</span>
+        <span>{media.seasonYear}</span>
       </div>
     </article>
   );

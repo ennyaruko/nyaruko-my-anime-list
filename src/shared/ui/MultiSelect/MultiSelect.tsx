@@ -24,10 +24,12 @@ export type MultiSelectProps = {
   loading?: boolean;
   disabled?: boolean;
   className?: string;
+  footer?: ReactNode;
   cleanable?: boolean;
   searchable?: boolean;
   virtualize?: boolean;
   placeholder?: string;
+  expandInFlow?: boolean;
   defaultValue?: string[];
   options: MultiSelectOption[];
   onValueChange?: (value: string[]) => void;
@@ -117,6 +119,7 @@ function VirtualizedOptions({
 export function MultiSelect({
   id,
   value,
+  footer,
   options,
   className,
   placeholder,
@@ -127,6 +130,7 @@ export function MultiSelect({
   cleanable = false,
   searchable = false,
   virtualize = false,
+  expandInFlow = false,
 }: MultiSelectProps) {
   const { t } = useTranslation(["common"]);
   const effectivePlaceholder =
@@ -204,6 +208,15 @@ export function MultiSelect({
     [],
   );
 
+  const handleArrowClick = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      event.stopPropagation();
+      if (open && searchable) inputRef.current?.blur();
+      toggleMenu();
+    },
+    [open, searchable, toggleMenu],
+  );
+
   const clearSelection = useCallback(
     (event: React.MouseEvent<HTMLButtonElement>) => {
       event.stopPropagation();
@@ -215,8 +228,68 @@ export function MultiSelect({
     [setSelectedValues],
   );
 
+  useEffect(() => {
+    if (!open || !expandInFlow) return;
+
+    const handlePointerDown = (event: PointerEvent) => {
+      if (
+        event.target instanceof Node &&
+        !rootRef.current?.contains(event.target)
+      ) {
+        closeMenu();
+      }
+    };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") closeMenu();
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [closeMenu, expandInFlow, open]);
+
+  const optionsContent = virtualize ? (
+    <VirtualizedOptions
+      disabled={disabled}
+      scrollResetKey={query}
+      options={filteredOptions}
+      onToggleOption={toggleOption}
+      selectedValues={selectedValueSet}
+    />
+  ) : (
+    <ScrollArea>
+      <div className={styles.options}>
+        {filteredOptions.map((option) => {
+          const checked = selectedValueSet.has(option.value);
+
+          return (
+            <LabeledCheckbox
+              size="l"
+              checked={checked}
+              key={option.value}
+              disabled={disabled}
+              label={option.label}
+              onCheckedChange={(nextChecked) =>
+                toggleOption(option.value, nextChecked)
+              }
+              className={clsx(styles.optionCheckbox, {
+                [styles.optionCheckboxSelected]: checked,
+              })}
+            />
+          );
+        })}
+        {filteredOptions.length === 0 && (
+          <div className={styles.empty}>{t("common:emptyResults")}</div>
+        )}
+      </div>
+    </ScrollArea>
+  );
+
   return (
-    <div className={clsx(styles.root, className)}>
+    <div ref={rootRef} className={clsx(styles.root, className)}>
       <Popover.Root
         open={open}
         modal={false}
@@ -224,7 +297,6 @@ export function MultiSelect({
       >
         <Popover.Anchor asChild>
           <div
-            ref={rootRef}
             onClick={(event) => {
               if (event.target === event.currentTarget) toggleMenu();
             }}
@@ -237,7 +309,7 @@ export function MultiSelect({
               id={id}
               ref={inputRef}
               autoComplete="off"
-              onClick={toggleMenu}
+              onClick={openMenu}
               onChange={handleQueryChange}
               disabled={disabled || loading}
               readOnly={!searchable || loading}
@@ -269,12 +341,9 @@ export function MultiSelect({
                 <button
                   type="button"
                   disabled={disabled}
+                  onClick={handleArrowClick}
                   className={styles.iconButton}
                   onPointerDown={(event) => event.preventDefault()}
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    toggleMenu();
-                  }}
                 >
                   <ArrowDownIcon
                     className={clsx(styles.chevron, {
@@ -287,63 +356,34 @@ export function MultiSelect({
           </div>
         </Popover.Anchor>
 
-        <Popover.Portal>
-          <Popover.Content
-            align="start"
-            sideOffset={0}
-            collisionPadding={8}
-            className={styles.content}
-            onOpenAutoFocus={(event) => event.preventDefault()}
-            style={{ width: "var(--radix-popper-anchor-width)" }}
-            onInteractOutside={(event) => {
-              const target = event.target;
+        {expandInFlow ? (
+          open && <div className={styles.inlineContent}>{optionsContent}</div>
+        ) : (
+          <Popover.Portal>
+            <Popover.Content
+              align="start"
+              sideOffset={0}
+              collisionPadding={8}
+              className={styles.content}
+              onOpenAutoFocus={(event) => event.preventDefault()}
+              style={{ width: "var(--radix-popper-anchor-width)" }}
+              onInteractOutside={(event) => {
+                const target = event.target;
 
-              if (target instanceof Node && rootRef.current?.contains(target)) {
-                event.preventDefault();
-              }
-            }}
-          >
-            {virtualize ? (
-              <VirtualizedOptions
-                disabled={disabled}
-                scrollResetKey={query}
-                options={filteredOptions}
-                onToggleOption={toggleOption}
-                selectedValues={selectedValueSet}
-              />
-            ) : (
-              <ScrollArea>
-                <div className={styles.options}>
-                  {filteredOptions.map((option) => {
-                    const checked = selectedValueSet.has(option.value);
-
-                    return (
-                      <LabeledCheckbox
-                        size="l"
-                        checked={checked}
-                        key={option.value}
-                        disabled={disabled}
-                        label={option.label}
-                        onCheckedChange={(nextChecked) =>
-                          toggleOption(option.value, nextChecked)
-                        }
-                        className={clsx(styles.optionCheckbox, {
-                          [styles.optionCheckboxSelected]: checked,
-                        })}
-                      />
-                    );
-                  })}
-                  {filteredOptions.length === 0 && (
-                    <div className={styles.empty}>
-                      {t("common:emptyResults")}
-                    </div>
-                  )}
-                </div>
-              </ScrollArea>
-            )}
-          </Popover.Content>
-        </Popover.Portal>
+                if (
+                  target instanceof Node &&
+                  rootRef.current?.contains(target)
+                ) {
+                  event.preventDefault();
+                }
+              }}
+            >
+              {optionsContent}
+            </Popover.Content>
+          </Popover.Portal>
+        )}
       </Popover.Root>
+      {footer}
     </div>
   );
 }

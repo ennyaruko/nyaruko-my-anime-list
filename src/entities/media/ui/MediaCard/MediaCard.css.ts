@@ -35,18 +35,13 @@ export const cover = styleVariants({
   },
 });
 
-export const image = style({
-  inset: 0,
-  position: "absolute",
-});
-
+export const image = style({ inset: 0, position: "absolute" });
 export const placeholderImage = style({
   width: "87%",
   height: "62.5%",
   display: "block",
   objectFit: "contain",
 });
-
 export const noImageIcon = style({
   width: "20px",
   height: "20px",
@@ -55,42 +50,31 @@ export const noImageIcon = style({
   top: primitives.spacing.xxxs,
   right: primitives.spacing.xxxs,
 });
-
 export const score = style({
   position: "absolute",
   top: primitives.spacing.xxs,
   left: primitives.spacing.xxxs,
 });
-
 export const progress = style({
   left: 0,
   bottom: 0,
   position: "absolute",
   background: colors.background.neutral1,
 });
-
 export const metadata = style({
   ...typography.caption["2xs"],
+  flexShrink: 0,
   display: "flex",
   overflow: "hidden",
   whiteSpace: "nowrap",
   color: colors.text.secondary,
   justifyContent: "space-between",
+  height: typography.caption["2xs"].lineHeight,
 });
-
 export const skeletonCover = styleVariants({
-  l: {
-    width: "100%",
-    position: "relative",
-    aspectRatio: "179 / 256",
-  },
-  s: {
-    width: "100%",
-    position: "relative",
-    aspectRatio: "126 / 180",
-  },
+  l: { width: "100%", position: "relative", aspectRatio: "179 / 256" },
+  s: { width: "100%", position: "relative", aspectRatio: "126 / 180" },
 });
-
 export const skeletonScore = styleVariants({
   l: {
     width: "38px",
@@ -107,17 +91,9 @@ export const skeletonScore = styleVariants({
     left: primitives.spacing.xxxs,
   },
 });
-
-export const skeletonTitle = style({
-  height: "32px",
-});
-
+export const skeletonTitle = style({ height: "32px" });
 export const skeletonMeta = style({
   display: "flex",
   justifyContent: "space-between",
 });
-
-export const skeletonMetaValue = style({
-  width: "60px",
-  height: "13px",
-});
+export const skeletonMetaValue = style({ width: "60px", height: "13px" });

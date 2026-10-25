@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import clsx from "clsx";
 
-import type { MyListStatus } from "@/entities/my-list";
+import type { MyListStatus } from "@/entities/media";
 
 import * as styles from "./StatusNavigation.css";
 

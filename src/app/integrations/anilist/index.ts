@@ -1,4 +1,5 @@
 export { aniListAccountProvider } from "./account-provider";
-export { aniListAnimeListService } from "./anime-list-service";
+export { aniListMediaListService } from "./media-list-service";
 export { aniListIdentityProvider } from "./auth/identity-provider";
+export { aniListMediaSearchService } from "./media-search-service";
 export { aniListFilterOptionsProvider } from "./filter-options-provider";

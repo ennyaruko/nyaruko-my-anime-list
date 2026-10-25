@@ -108,6 +108,15 @@ export const content = style({
   background: colors.background.elevation1,
 });
 
+export const inlineContent = style({
+  width: "100%",
+  overflow: "hidden",
+  maxHeight: "150px",
+  color: colors.text.primary,
+  boxShadow: primitives.shadow.popup,
+  background: colors.background.elevation1,
+});
+
 export const options = style({
   display: "flex",
   flexDirection: "column",

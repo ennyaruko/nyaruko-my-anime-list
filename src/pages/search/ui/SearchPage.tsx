@@ -1,19 +1,33 @@
-import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useOutletContext } from "react-router";
+import { useRef, useMemo, useState, useEffect } from "react";
 
-import { useQuery } from "@tanstack/react-query";
+import type { InfiniteData } from "@tanstack/react-query";
+import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
+
+import { MediaSearchFilters } from "@/features/filters";
 
 import { useAuth } from "@/entities/auth";
 import type { AccountState } from "@/entities/account";
-import { MyListCard, myListServiceToken } from "@/entities/my-list";
+import { filterOptionsProviderToken } from "@/entities/filters";
+import type {
+  Media,
+  MediaSearchResult,
+  MediaSearchParameters,
+} from "@/entities/media";
+import {
+  MediaCard,
+  MediaCardSkeleton,
+  myListServiceToken,
+  mediaSearchServiceToken,
+} from "@/entities/media";
 
 import { SearchIcon } from "@/shared/icons";
+import { SEARCH_INPUT_FOCUS_EVENT } from "@/shared/lib";
 import { useAppService, queryCacheConfig } from "@/shared/lib";
 import {
   Input,
   Column,
-  Heading,
   Spinner,
   GridList,
   Container,
@@ -23,31 +37,140 @@ import {
 
 import * as styles from "./SearchPage.css";
 
-export function SearchPage() {
-  const { t } = useTranslation(["common"]);
-  const { accessToken } = useAuth();
-  const { account, accountPending } = useOutletContext<AccountState>();
-  const listService = useAppService(myListServiceToken);
-  const [searchTerm, setSearchTerm] = useState("");
-  const userId = account?.id;
+const RESULTS_PER_PAGE = 50;
+const SKELETON_COUNT = 4;
 
-  const listQuery = useQuery({
-    enabled: Boolean(accessToken && userId),
-    queryKey: queryCacheConfig.families.userList.key(userId ?? ""),
-    queryFn: ({ signal }) =>
-      listService.getMyList(accessToken!, userId!, signal),
+type SearchResultsProps = {
+  account: AccountState["account"];
+  parameters: MediaSearchParameters;
+};
+
+function SearchResults({ account, parameters }: SearchResultsProps) {
+  const { accessToken } = useAuth();
+  const searchService = useAppService(mediaSearchServiceToken);
+  const myListService = useAppService(myListServiceToken);
+
+  const searchQuery = useInfiniteQuery<
+    MediaSearchResult,
+    Error,
+    InfiniteData<MediaSearchResult>,
+    ReturnType<typeof queryCacheConfig.families.mediaSearch.key>,
+    number
+  >({
+    gcTime: 0,
+    initialPageParam: 1,
+    queryKey: queryCacheConfig.families.mediaSearch.key(parameters),
+    getNextPageParam: (lastPage, pages) =>
+      lastPage.hasNextPage ? pages.length + 1 : undefined,
+    queryFn: ({ signal, pageParam }) =>
+      searchService.searchMedia(
+        {
+          ...parameters,
+          page: pageParam,
+        },
+        signal,
+      ),
   });
 
-  const normalizedSearchTerm = searchTerm.trim().toLocaleLowerCase();
-  const entries = useMemo(
+  const myListQuery = useQuery({
+    enabled: Boolean(accessToken && account?.id),
+    queryKey: queryCacheConfig.families.userList.key(account?.id ?? ""),
+    queryFn: ({ signal }) =>
+      myListService.getMyList(accessToken!, account!.id, signal),
+  });
+
+  const listEntriesByMediaId = useMemo(
     () =>
-      (listQuery.data?.flatMap(({ list }) => list) ?? []).filter((entry) =>
-        entry.title.toLocaleLowerCase().includes(normalizedSearchTerm),
+      new Map(
+        myListQuery.data
+          ?.flatMap(({ list }) => list)
+          .map((entry) => [entry.id, entry] as const) ?? [],
       ),
-    [listQuery.data, normalizedSearchTerm],
+    [myListQuery.data],
   );
-  const isLoading = accountPending || (Boolean(userId) && listQuery.isPending);
-  const hasSearchTerm = normalizedSearchTerm.length > 0;
+
+  const results = useMemo(
+    () =>
+      searchQuery.data?.pages
+        .flatMap(({ items }) => items)
+        .map((media): Media => {
+          const listEntry = listEntriesByMediaId.get(media.id);
+
+          return {
+            ...media,
+            score: listEntry?.score ?? null,
+            status: listEntry?.status ?? null,
+            progress: listEntry?.progress ?? null,
+          };
+        }) ?? [],
+    [listEntriesByMediaId, searchQuery.data],
+  );
+  const loadMore = () => {
+    if (searchQuery.hasNextPage && !searchQuery.isFetchingNextPage) {
+      void searchQuery.fetchNextPage();
+    }
+  };
+  const skeletons = searchQuery.isFetchingNextPage ? (
+    <div className={styles.skeletonGrid}>
+      {Array.from({ length: SKELETON_COUNT }, (_, index) => (
+        <MediaCardSkeleton size="l" key={index} />
+      ))}
+    </div>
+  ) : null;
+
+  return (
+    <div className={styles.resultsContainer}>
+      {searchQuery.isPending ? (
+        <Spinner className={styles.initialLoading} />
+      ) : results.length === 0 ? (
+        <BlockStatusEmpty className={styles.empty} />
+      ) : (
+        <GridList
+          virtualize
+          data={results}
+          footer={skeletons}
+          endReached={loadMore}
+          getKey={(media) => media.id}
+          renderItem={(media) => <MediaCard size="l" media={media} />}
+        />
+      )}
+    </div>
+  );
+}
+
+// TODO: 1. Нужно поправить no content, а так же другие состояния на страницах.
+// TODO: 2. Есть баг с иконкой check, когда я выбираю sort это влияет
+// TODO: 3. В sort фильтр По рейтингу и По среднему рейтингу кажется одинаковые
+
+export function SearchPage() {
+  const { t } = useTranslation(["common"]);
+  const { account } = useOutletContext<AccountState>();
+  const filterOptionsProvider = useAppService(filterOptionsProviderToken);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+
+  useEffect(() => {
+    searchInputRef.current?.focus();
+    const focusSearchInput = () => searchInputRef.current?.focus();
+    window.addEventListener(SEARCH_INPUT_FOCUS_EVENT, focusSearchInput);
+    return () =>
+      window.removeEventListener(SEARCH_INPUT_FOCUS_EVENT, focusSearchInput);
+  }, []);
+
+  useEffect(() => {
+    const timeoutId = window.setTimeout(
+      () => setDebouncedSearchTerm(searchTerm.trim()),
+      250,
+    );
+    return () => window.clearTimeout(timeoutId);
+  }, [searchTerm]);
+
+  const filterOptionsQuery = useQuery({
+    enabled: Boolean(account?.id),
+    queryFn: ({ signal }) => filterOptionsProvider.getFilterOptions(signal),
+    queryKey: queryCacheConfig.families.filters.key(String(account?.id ?? "")),
+  });
 
   return (
     <Container as="main" className={styles.page}>
@@ -58,28 +181,28 @@ export function SearchPage() {
             { label: t("common:navigation.search") },
           ]}
         />
-        <Heading variant="neutral">{t("common:navigation.search")}</Heading>
         <Input
+          cleanable
           autoComplete="off"
           value={searchTerm}
+          variant="grayscale"
+          inputRef={searchInputRef}
+          onClear={() => setSearchTerm("")}
           placeholder={t("common:search.placeholder")}
           leftSlot={<SearchIcon className={styles.searchIcon} />}
           onChange={(event) => setSearchTerm(event.currentTarget.value)}
         />
-        {isLoading ? (
-          <Spinner />
-        ) : (
-          hasSearchTerm &&
-          (entries.length > 0 ? (
-            <GridList
-              data={entries}
-              getKey={(entry) => entry.id}
-              renderItem={(entry) => <MyListCard size="l" entry={entry} />}
-            />
-          ) : (
-            <BlockStatusEmpty />
-          ))
-        )}
+        <MediaSearchFilters
+          userId={account?.id}
+          perPage={RESULTS_PER_PAGE}
+          search={debouncedSearchTerm}
+          options={filterOptionsQuery.data}
+          optionsLoading={filterOptionsQuery.isPending}
+        >
+          {(parameters) => (
+            <SearchResults account={account} parameters={parameters} />
+          )}
+        </MediaSearchFilters>
       </Column>
     </Container>
   );

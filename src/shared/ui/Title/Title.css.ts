@@ -5,9 +5,10 @@ import { colors, primitives, typography } from "../../styles";
 export const root = style({
   minWidth: 0,
   width: "100%",
+  flexShrink: 0,
+  height: "32px",
   display: "flex",
   maxWidth: "100%",
-  minHeight: "32px",
   alignItems: "flex-start",
   gap: primitives.spacing.tiny,
 });

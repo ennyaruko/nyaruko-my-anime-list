@@ -185,6 +185,11 @@ export const queryCacheConfig = {
     buster: "my-anime-list-v3",
   },
   families: {
+    /** Search results are deliberately excluded from IndexedDB persistence. */
+    mediaSearch: defineQueryFamily(
+      ["media-search"],
+      (parameters: object) => [parameters] as const,
+    ),
     /** Фильтры считаются свежими 90 дней. */
     filters: defineQueryFamily(
       ["filters"],

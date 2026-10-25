@@ -1,11 +1,11 @@
-import type { MyListEntry, MyListStatus } from "@/entities/my-list";
+import type { MyListEntry, MyListStatus } from "@/entities/media";
 
-import { ViewerAnimeListDocument } from "./queries";
+import { ViewerMediaListDocument } from "./queries";
 import { createAniListGraphQLClient } from "./client";
-import type { ViewerAnimeListQuery } from "./generated/graphql";
+import type { ViewerMediaListQuery } from "./generated/graphql";
 
 type AniListGroup = NonNullable<
-  NonNullable<ViewerAnimeListQuery["MediaListCollection"]>["lists"]
+  NonNullable<ViewerMediaListQuery["MediaListCollection"]>["lists"]
 >[number];
 type AniListNonNullGroup = NonNullable<AniListGroup>;
 type AniListEntry = NonNullable<
@@ -13,7 +13,7 @@ type AniListEntry = NonNullable<
 >;
 
 /** Provider-specific GraphQL request. DTO mapping stays inside this integration. */
-export async function getViewerAnimeList(
+export async function getViewerMediaList(
   accessToken: string,
   userId: number,
   signal?: AbortSignal,
@@ -21,7 +21,7 @@ export async function getViewerAnimeList(
   const client = createAniListGraphQLClient(accessToken);
   const response = await client.request({
     signal,
-    document: ViewerAnimeListDocument,
+    document: ViewerMediaListDocument,
     variables: { userId, type: "ANIME" },
   });
   return (response.MediaListCollection?.lists ?? [])
@@ -50,9 +50,11 @@ export function mapAniListMyListEntry(entry: AniListEntry): MyListEntry {
     source: media.source ?? null,
     createdAt: entry.createdAt ?? 0,
     updatedAt: entry.updatedAt ?? 0,
+    isAdult: media.isAdult ?? false,
     duration: media.duration ?? null,
     progress: entry.progress ?? null,
     episodes: media.episodes ?? null,
+    releaseStatus: media.status ?? null,
     popularity: media.popularity ?? null,
     seasonYear: media.seasonYear ?? null,
     bannerImage: media.bannerImage ?? null,

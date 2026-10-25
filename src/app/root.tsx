@@ -53,7 +53,10 @@ export function Layout({ children }: { children: ReactNode }) {
     <html lang={language} suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, viewport-fit=cover"
+        />
         <meta content="#10131a" name="theme-color" />
         <meta name="description" content={t("common:description")} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />

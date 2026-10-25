@@ -1,13 +1,7 @@
-import type { MyListEntry } from "@/entities/my-list";
+import type { MyListEntry } from "@/entities/media";
 import type { MediaSortKey } from "@/entities/filters";
 
-function dateSortValue(
-  date: null | {
-    day: null | number;
-    year: null | number;
-    month: null | number;
-  },
-): null | number {
+function getDateSortValue(date: MyListEntry["startedAt"]): null | number {
   if (!date || date.year === null) return null;
   return date.year * 10_000 + (date.month ?? 0) * 100 + (date.day ?? 0);
 }
@@ -23,7 +17,7 @@ function compareNullableNumbers(
   return descending ? second - first : first - second;
 }
 
-/** Applies the selected sort mode to entries in a user's media list. */
+/** Applies the selected sort mode to a user's media list. */
 export function sortMyListEntries(
   entries: MyListEntry[],
   sort: MediaSortKey,
@@ -42,18 +36,18 @@ export function sortMyListEntries(
         return compareNullableNumbers(first.createdAt, second.createdAt);
       case "startDate":
         return compareNullableNumbers(
-          dateSortValue(first.startedAt),
-          dateSortValue(second.startedAt),
+          getDateSortValue(first.startedAt),
+          getDateSortValue(second.startedAt),
         );
       case "completedDate":
         return compareNullableNumbers(
-          dateSortValue(first.completedAt),
-          dateSortValue(second.completedAt),
+          getDateSortValue(first.completedAt),
+          getDateSortValue(second.completedAt),
         );
       case "releaseDate":
         return compareNullableNumbers(
-          dateSortValue(first.startDate),
-          dateSortValue(second.startDate),
+          getDateSortValue(first.startDate),
+          getDateSortValue(second.startDate),
         );
       case "averageScore":
         return compareNullableNumbers(first.averageScore, second.averageScore);

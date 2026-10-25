@@ -10,6 +10,9 @@ export default {
   progress: {
     label: "Прогресс",
   },
+  search: {
+    placeholder: "Введите название",
+  },
   combobox: {
     placeholder: "Выберите вариант",
   },
@@ -17,9 +20,6 @@ export default {
     placeholder: "Выберите варианты",
   },
   description: "UI Kit для Anime List на React и TypeScript",
-  search: {
-    placeholder: "Название аниме из моего списка",
-  },
   actions: {
     clearSelection: "Очистить выбранные значения",
   },
@@ -69,20 +69,6 @@ export default {
     notFoundTitle: "Страница не найдена",
     description: "Что-то пошло не так. Попробуйте перезагрузить страницу.",
   },
-  ui: {
-    filters: {
-      open: "Фильтры",
-      close: "Закрыть",
-      title: "Фильтры списка",
-    },
-    watchStatus: {
-      dropped: "Брошено",
-      paused: "Отложено",
-      watching: "Смотрю",
-      completed: "Просмотрено",
-      planned: "Запланировано",
-    },
-  },
   login: {
     retry: "Повторить",
     title: "Авторизация",
@@ -101,5 +87,32 @@ export default {
     averageScore: "По среднему рейтингу",
     lastAdded: "По последнему добавленному",
     lastUpdated: "По последнему обновлению",
+  },
+  ui: {
+    watchStatus: {
+      dropped: "Брошено",
+      paused: "Отложено",
+      watching: "Смотрю",
+      completed: "Просмотрено",
+      planned: "Запланировано",
+    },
+    filters: {
+      close: "Назад",
+      open: "Фильтры",
+      format: "Формат",
+      status: "Статус",
+      adult: "Взрослое",
+      save: "Сохранить",
+      include: "Включить",
+      exclude: "Исключить",
+      default: "По умолчанию",
+      source: "Первоисточник",
+      resetAll: "Сбросить всё",
+      ageRating: "Возрастной рейтинг",
+      applied_one: "ui.filters.applied",
+      applied_few: "ui.filters.applied",
+      applied_many: "ui.filters.applied",
+      applied_other: "ui.filters.applied",
+    },
   },
 } as const;

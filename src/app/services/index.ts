@@ -1,13 +1,15 @@
 import {
   aniListAccountProvider,
-  aniListAnimeListService,
+  aniListMediaListService,
   aniListIdentityProvider,
+  aniListMediaSearchService,
   aniListFilterOptionsProvider,
 } from "@/app/integrations/anilist";
 
+import { myListServiceToken } from "@/entities/media";
 import { identityProviderToken } from "@/entities/auth";
-import { myListServiceToken } from "@/entities/my-list";
 import { accountProviderToken } from "@/entities/account";
+import { mediaSearchServiceToken } from "@/entities/media";
 import { filterOptionsProviderToken } from "@/entities/filters";
 
 import { createServiceRegistry } from "@/shared/lib";
@@ -16,6 +18,7 @@ import { createServiceRegistry } from "@/shared/lib";
 export const appServices = createServiceRegistry()
   .register(identityProviderToken, aniListIdentityProvider)
   .register(accountProviderToken, aniListAccountProvider)
-  .register(myListServiceToken, aniListAnimeListService)
+  .register(myListServiceToken, aniListMediaListService)
   .register(filterOptionsProviderToken, aniListFilterOptionsProvider)
+  .register(mediaSearchServiceToken, aniListMediaSearchService)
   .build();

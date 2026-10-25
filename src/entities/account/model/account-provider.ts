@@ -1,12 +1,6 @@
 import { createServiceToken } from "@/shared/lib";
 
-/** Provider-neutral public profile returned by the current-account query. */
-export type AccountProfile = {
-  id: string;
-  username: string;
-  avatarUrl?: null | string;
-  profileUrl?: null | string;
-};
+import type { AccountProfile } from "./account";
 
 /** Data port for retrieving the profile associated with an active OAuth token. */
 export interface AccountProvider {

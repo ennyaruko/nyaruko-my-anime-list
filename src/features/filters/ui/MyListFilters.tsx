@@ -1,110 +1,59 @@
-import { useTranslation } from "react-i18next";
-import { useState, type ReactNode } from "react";
+import { useMemo, type ReactNode } from "react";
 
-import type { MyListEntry, MyListStatus } from "@/entities/my-list";
-import type { MediaSortKey, FilterOptions } from "@/entities/filters";
+import type { FilterOptions } from "@/entities/filters";
+import type { MyListEntry, MyListStatus } from "@/entities/media";
 
-import { FilterIcon } from "@/shared/icons";
-import {
-  Row,
-  Button,
-  Column,
-  Drawer,
-  Heading,
-  DrawerClose,
-  MultiSelect,
-  LabeledCombobox,
-} from "@/shared/ui";
+import { useMediaFilters } from "../model/useMediaFilters";
+import { listSortOptions } from "../model/media-filter-options";
+import { filterMyListEntries } from "../model/filter-my-list-entries";
 
-import { useMyListFilters } from "../model/my-list/useMyListFilters";
-
-import * as styles from "./MyListFilters.css";
+import { MediaFiltersPanel } from "./MediaFiltersPanel";
 
 type MyListFiltersProps = {
+  userId?: string;
   status: MyListStatus;
+  entries: MyListEntry[];
   options?: FilterOptions;
   optionsLoading?: boolean;
-  entries: readonly MyListEntry[];
   children: (filteredEntries: MyListEntry[]) => ReactNode;
 };
 
-const sortKeys: MediaSortKey[] = [
-  "releaseDate",
-  "popularity",
-  "averageScore",
-  "score",
-  "title",
-  "startDate",
-  "completedDate",
-  "lastUpdated",
-  "lastAdded",
-  "progress",
-];
-
-/** My List's concrete filter controls and filtered result. */
+/** Owns list filter settings and exposes only the resulting entries. */
 export function MyListFilters({
   status,
+  userId,
   entries,
   options,
   children,
-  optionsLoading = false,
+  optionsLoading,
 }: MyListFiltersProps) {
-  const { t } = useTranslation(["common"]);
-  const [isOpen, setIsOpen] = useState(false);
-  const { sort, tags, genres, setSort, setTags, setGenres, filteredEntries } =
-    useMyListFilters(entries, status);
+  const {
+    filters,
+    saveFilters,
+    savedFilters,
+    resetFilters,
+    updateFilters,
+    hasUnsavedChanges,
+  } = useMediaFilters("my-list", userId);
+
+  const filteredEntries = useMemo(
+    () => filterMyListEntries(entries, status, filters),
+    [entries, filters, status],
+  );
 
   return (
     <>
-      <Row gap="m" justifyContent="end">
-        <LabeledCombobox
-          value={sort}
-          label={t("common:sortLabel")}
-          onValueChange={(value) => setSort(value as MediaSortKey)}
-          options={sortKeys.map((value) => ({
-            value,
-            label: t(`common:sort.${value}`),
-          }))}
-        />
-        <Button rightIcon={<FilterIcon />} onClick={() => setIsOpen(true)}>
-          {t("common:ui.filters.open")}
-        </Button>
-      </Row>
-      <Drawer
-        open={isOpen}
-        className={styles.drawer}
-        onClose={() => setIsOpen(false)}
-      >
-        <div className={styles.drawerHeader}>
-          <Heading variant="neutral">{t("common:ui.filters.title")}</Heading>
-          <DrawerClose>{t("common:ui.filters.close")}</DrawerClose>
-        </div>
-        <Column gap="s">
-          <Heading variant="neutral">{t("common:list.genres")}</Heading>
-          <MultiSelect
-            cleanable
-            searchable
-            value={genres}
-            id="my-list-genres"
-            loading={optionsLoading}
-            onValueChange={setGenres}
-            options={options?.genres ?? []}
-          />
-        </Column>
-        <Column gap="s">
-          <Heading variant="neutral">{t("common:list.tags")}</Heading>
-          <MultiSelect
-            cleanable
-            searchable
-            virtualize
-            value={tags}
-            id="my-list-tags"
-            onValueChange={setTags}
-            loading={optionsLoading}
-            options={options?.tags ?? []}
-          />
-        </Column>
-      </Drawer>
+      <MediaFiltersPanel
+        filters={filters}
+        options={options}
+        onSave={saveFilters}
+        onReset={resetFilters}
+        onChange={updateFilters}
+        savedFilters={savedFilters}
+        sortOptions={listSortOptions}
+        optionsLoading={optionsLoading}
+        hasUnsavedChanges={hasUnsavedChanges}
+      />
       {children(filteredEntries)}
     </>
   );

@@ -8,6 +8,7 @@ import { AdultContentProvider } from "@/features/toggle-adult-content";
 
 import type { AccountProfile } from "@/entities/account";
 
+import { SEARCH_INPUT_FOCUS_EVENT } from "@/shared/lib";
 import { ListIcon, UserIcon, SearchIcon } from "@/shared/icons";
 
 import { ProfileMenu } from "./ProfileMenu";
@@ -43,6 +44,9 @@ export function BottomNavigation({ account }: BottomNavigationProps) {
               to="/search"
               label={t("common:navigation.search")}
               icon={<SearchIcon className={navigationItemStyles.icon} />}
+              onClick={() =>
+                window.dispatchEvent(new Event(SEARCH_INPUT_FOCUS_EVENT))
+              }
             />
             <Popover.Trigger
               type="button"

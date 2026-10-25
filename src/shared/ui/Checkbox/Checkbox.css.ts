@@ -124,7 +124,6 @@ export const labelSizes = styleVariants({
 
 export const description = style({
   ...typography.caption["2xs"],
-  width: "100%",
   minWidth: "90px",
   marginLeft: "auto",
   overflow: "hidden",

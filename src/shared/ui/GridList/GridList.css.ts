@@ -37,3 +37,8 @@ export const virtualizedItem = style({
   width: "100%",
   boxSizing: "border-box",
 });
+
+export const virtualizedFooter = style({
+  width: "100%",
+  gridColumn: "1 / -1",
+});

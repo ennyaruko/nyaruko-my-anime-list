@@ -21,6 +21,8 @@ export type MediaCardProps = {
   media: Media;
   size?: "l" | "s";
   editableProgress?: boolean;
+  progressUpdating?: boolean;
+  onProgressChange?: (progress: number) => void;
 };
 
 export type MediaCardSkeletonProps = { size?: "l" | "s" };
@@ -55,7 +57,9 @@ export function MediaCardSkeleton({ size = "l" }: MediaCardSkeletonProps) {
 export function MediaCard({
   media,
   size = "l",
+  onProgressChange,
   editableProgress = false,
+  progressUpdating = false,
 }: MediaCardProps) {
   const { t } = useTranslation(["common"]);
   const coverUrl = media.coverImage?.large ?? media.coverImage?.preview;
@@ -98,9 +102,11 @@ export function MediaCard({
               <Progress
                 max={media.episodes ?? 12}
                 editable={editableProgress}
+                disabled={progressUpdating}
                 className={styles.progress}
-                defaultValue={media.progress}
+                value={media.progress ?? 0}
                 size={size === "l" ? "m" : "s"}
+                onValueChange={onProgressChange}
               />
             )}
           </div>

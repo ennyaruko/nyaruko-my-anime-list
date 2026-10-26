@@ -1,33 +1,34 @@
 import { style, styleVariants } from "@vanilla-extract/css";
 
-import { colors, primitives, typography } from "../../styles";
+import { colors, typography } from "../../styles";
 
 export const root = style({
   minWidth: 0,
   width: "100%",
   flexShrink: 0,
   height: "32px",
-  display: "flex",
+  display: "block",
   maxWidth: "100%",
-  alignItems: "flex-start",
-  gap: primitives.spacing.tiny,
+  position: "relative",
 });
 export const text = style({
   ...typography.heading["s-medium"],
   minWidth: 0,
+  width: "100%",
   overflow: "hidden",
   WebkitLineClamp: 2,
   display: "-webkit-box",
   color: colors.text.action,
   WebkitBoxOrient: "vertical",
 });
+export const textWithMarker = style({ textIndent: "14px" });
 export const marker = style({
+  left: 0,
+  top: "2px",
   width: "10px",
   height: "10px",
-  flex: "0 0 10px",
-  marginTop: "2px",
   borderRadius: "50%",
-  marginRight: primitives.spacing.xxxs,
+  position: "absolute",
 });
 export const state = styleVariants({
   default: { background: "transparent" },

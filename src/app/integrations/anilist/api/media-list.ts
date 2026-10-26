@@ -46,6 +46,7 @@ export function mapAniListMyListEntry(entry: AniListEntry): MyListEntry {
   return {
     status,
     id: media.id,
+    listEntryId: entry.id,
     score: entry.score ?? null,
     format: media.format ?? null,
     source: media.source ?? null,
@@ -53,7 +54,6 @@ export function mapAniListMyListEntry(entry: AniListEntry): MyListEntry {
     updatedAt: entry.updatedAt ?? 0,
     isAdult: media.isAdult ?? false,
     duration: media.duration ?? null,
-    progress: entry.progress ?? null,
     episodes: media.episodes ?? null,
     releaseStatus: media.status ?? null,
     popularity: media.popularity ?? null,
@@ -61,6 +61,7 @@ export function mapAniListMyListEntry(entry: AniListEntry): MyListEntry {
     bannerImage: media.bannerImage ?? null,
     description: media.description ?? null,
     averageScore: media.averageScore ?? null,
+    progress: entry.progress ?? (status === "CURRENT" ? 0 : null),
     tags: media.tags?.flatMap((tag) => (tag?.name ? [tag.name] : [])) ?? [],
     title:
       media.title?.english ||

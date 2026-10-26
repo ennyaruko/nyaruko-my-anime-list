@@ -6,6 +6,7 @@ import type { InfiniteData } from "@tanstack/react-query";
 import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
 
 import { MediaSearchFilters } from "@/features/filters";
+import { MediaCardContextMenu } from "@/features/manage-media-list";
 
 import { useAuth } from "@/entities/auth";
 import type { AccountState } from "@/entities/account";
@@ -16,7 +17,6 @@ import type {
   MediaSearchParameters,
 } from "@/entities/media";
 import {
-  MediaCard,
   MediaCardSkeleton,
   myListServiceToken,
   mediaSearchServiceToken,
@@ -99,7 +99,10 @@ function SearchResults({ account, parameters }: SearchResultsProps) {
             ...media,
             score: listEntry?.score ?? null,
             status: listEntry?.status ?? null,
-            progress: listEntry?.progress ?? null,
+            listEntryId: listEntry?.listEntryId ?? null,
+            progress:
+              listEntry?.progress ??
+              (listEntry?.status === "CURRENT" ? 0 : null),
           };
         }) ?? [],
     [listEntriesByMediaId, searchQuery.data],
@@ -133,7 +136,9 @@ function SearchResults({ account, parameters }: SearchResultsProps) {
           footer={skeletons}
           endReached={loadMore}
           getKey={(media) => media.id}
-          renderItem={(media) => <MediaCard size="l" media={media} />}
+          renderItem={(media) => (
+            <MediaCardContextMenu size="l" media={media} userId={account?.id} />
+          )}
         />
       )}
     </div>

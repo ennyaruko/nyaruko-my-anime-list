@@ -70,6 +70,7 @@ function mapAniListSearchMedia(media: SearchMediaItem): Media {
     id: media.id,
     status: null,
     progress: null,
+    listEntryId: null,
     format: media.format ?? null,
     source: media.source ?? null,
     isAdult: media.isAdult ?? false,

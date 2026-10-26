@@ -13,6 +13,9 @@ export default {
   search: {
     placeholder: "Enter the name",
   },
+  mediaList: {
+    remove: "Remove from list",
+  },
   combobox: {
     placeholder: "Select an option",
   },
@@ -21,9 +24,6 @@ export default {
   },
   multiSelect: {
     placeholder: "Select options",
-  },
-  notify: {
-    saveFilters: "The filters are saved",
   },
   description: "Anime List UI built with React and TypeScript",
   table: {
@@ -70,6 +70,12 @@ export default {
     lightTheme: "Light theme",
     adultContent: "18+ Content",
     provider: "{{provider}} API",
+  },
+  notify: {
+    saveFilters: "The filters are saved",
+    mediaStatusChanged: "Status changed to {{status}}",
+    mediaRemovedFromList: "Entry removed from your list",
+    mediaListActionFailed: "Could not update your list. Please try again.",
   },
   login: {
     title: "Sign in",

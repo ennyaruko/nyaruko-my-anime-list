@@ -22,7 +22,14 @@ export function Title({
       {variant !== "default" && (
         <span className={clsx(styles.marker, styles.state[variant])} />
       )}
-      <span className={styles.text}>{title}</span>
+      <span
+        className={clsx(
+          styles.text,
+          variant !== "default" && styles.textWithMarker,
+        )}
+      >
+        {title}
+      </span>
     </div>
   );
 }

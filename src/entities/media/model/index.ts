@@ -3,3 +3,4 @@ export * from "./my-list";
 export * from "./media-search";
 export * from "./my-list-service";
 export * from "./media-search-service";
+export * from "./media-list-actions-service";

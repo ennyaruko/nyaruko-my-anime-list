@@ -29,6 +29,12 @@ export const control = style({
   cursor: "pointer",
   placeItems: "center",
   color: colors.text.action,
+  selectors: {
+    "&:disabled": {
+      cursor: "not-allowed",
+      color: colors.text.tertiary,
+    },
+  },
 });
 export const controlsSize = styleVariants({
   l: { gap: primitives.spacing.xxs },
@@ -43,5 +49,5 @@ export const controlSize = styleVariants({
 export const controlIcon = style({
   width: "100%",
   height: "100%",
-  color: colors.text.action,
+  color: "inherit",
 });

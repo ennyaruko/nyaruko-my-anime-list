@@ -3,6 +3,7 @@ query ViewerMediaList($userId: Int!, $type: MediaType = ANIME) {
     lists {
       status
       entries {
+        id
         createdAt
         updatedAt
         startedAt {

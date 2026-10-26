@@ -63,6 +63,7 @@ export const score = style({
 export const progress = style({
   left: 0,
   bottom: 0,
+  zIndex: 2,
   position: "absolute",
   background: colors.background.neutral1,
 });

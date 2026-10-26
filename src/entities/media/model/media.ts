@@ -40,6 +40,8 @@ export type Media = {
   popularity: null | number;
   /** Release season year. */
   seasonYear: null | number;
+  /** User-list entry identifier for this media, or null when not in the list. */
+  listEntryId: null | number;
   /** AniList banner image URL. */
   bannerImage: null | string;
   /** AniList description. */

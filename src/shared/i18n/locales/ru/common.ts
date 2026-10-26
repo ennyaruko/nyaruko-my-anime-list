@@ -10,11 +10,11 @@ export default {
   progress: {
     label: "Прогресс",
   },
+  mediaList: {
+    remove: "Удалить из списка",
+  },
   search: {
     placeholder: "Введите название",
-  },
-  notify: {
-    saveFilters: "Фильтры сохранены",
   },
   combobox: {
     placeholder: "Выберите вариант",
@@ -71,6 +71,12 @@ export default {
     title: "Ошибка загрузки",
     notFoundTitle: "Страница не найдена",
     description: "Что-то пошло не так. Попробуйте перезагрузить страницу.",
+  },
+  notify: {
+    saveFilters: "Фильтры сохранены",
+    mediaRemovedFromList: "Запись удалена из списка",
+    mediaStatusChanged: "Статус изменён: {{status}}",
+    mediaListActionFailed: "Не удалось обновить список. Попробуйте ещё раз.",
   },
   login: {
     retry: "Повторить",

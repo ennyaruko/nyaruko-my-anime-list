@@ -4,12 +4,12 @@ import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 
 import { MyListFilters } from "@/features/filters";
+import { MediaCardContextMenu } from "@/features/manage-media-list";
 
 import { useAuth } from "@/entities/auth";
 import type { AccountState } from "@/entities/account";
 import { filterOptionsProviderToken } from "@/entities/filters";
 import {
-  MediaCard,
   type MyListEntry,
   type MyListStatus,
   MediaCardSkeleton,
@@ -35,10 +35,10 @@ import { StatusNavigation } from "./StatusNavigation";
 import * as styles from "./MyListPage.css";
 
 const statusSections = [
-  { key: "PLANNING", label: "planned", variant: "neutral" },
+  { key: "PLANNING", label: "planned", variant: "warning" },
   { key: "CURRENT", variant: "info", label: "watching" },
   { key: "COMPLETED", label: "completed", variant: "positive" },
-  { key: "PAUSED", label: "paused", variant: "warning" },
+  { key: "PAUSED", label: "paused", variant: "neutral" },
   { key: "DROPPED", label: "dropped", variant: "negative" },
 ] as const;
 
@@ -154,10 +154,10 @@ export function MyListPage({ account, accountPending }: AccountState) {
                     data={filteredEntries}
                     getKey={(entry) => entry.id}
                     renderItem={(entry) => (
-                      <MediaCard
+                      <MediaCardContextMenu
                         size="l"
                         media={entry}
-                        editableProgress={selectedStatus === "CURRENT"}
+                        userId={userId}
                       />
                     )}
                   />

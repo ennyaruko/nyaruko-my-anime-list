@@ -45,8 +45,8 @@ export function ErrorFallback({
       className={clsx(styles.root, styles.size[size], className)}
     >
       <img
-        src="/images/critical.png"
         alt={title ?? t("common:errorBoundary.title")}
+        src={`${import.meta.env.BASE_URL}images/critical.png`}
         className={clsx(styles.illustration, styles.illustrationSize[size])}
       />
       <Column gap="s" alignItem="center">

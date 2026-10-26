@@ -57,6 +57,7 @@ export function Layout({ children }: { children: ReactNode }) {
           name="viewport"
           content="width=device-width, initial-scale=1, viewport-fit=cover"
         />
+        <base href={import.meta.env.BASE_URL} />
         <meta content="#10131a" name="theme-color" />
         <meta name="description" content={t("common:description")} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />

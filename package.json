@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "react-router dev",
     "build": "react-router typegen && tsc -b && react-router build",
+    "postbuild": "node scripts/prepare-github-pages.mjs",
     "prepare": "husky",
     "commitlint": "commitlint",
     "preview": "vite preview",
@@ -26,7 +27,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d build/client"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

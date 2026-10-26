@@ -86,7 +86,7 @@ export function MediaCard({
               }
               image={{
                 url: isPlaceholder
-                  ? "/images/media-no-image.png"
+                  ? `${import.meta.env.BASE_URL}images/media-no-image.png`
                   : (media.coverImage?.large ?? coverUrl ?? ""),
               }}
             />

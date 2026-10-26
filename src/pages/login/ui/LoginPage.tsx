@@ -20,7 +20,12 @@ export function LoginPage() {
           <p className={styles.description}>{t("common:login.description")}</p>
         </header>
 
-        <div className={styles.illustration} />
+        <div
+          className={styles.illustration}
+          style={{
+            backgroundImage: `url("${import.meta.env.BASE_URL}images/login.png")`,
+          }}
+        />
         <div className={styles.illustrationFade} />
 
         <Column wide tall gap="xxl" className={styles.login}>

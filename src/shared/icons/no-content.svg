@@ -30,6 +30,6 @@
         <pattern id="b" width="1" height="1" patternContentUnits="objectBoundingBox">
             <use xlink:href="#c" transform="matrix(.001 0 0 .0014 .103 -.009)" />
         </pattern>
-        <image href="/images/nothing.png" id="c" width="920" height="720" preserveAspectRatio="none" />
+        <image href="images/nothing.png" id="c" width="920" height="720" preserveAspectRatio="none" />
     </defs>
 </svg>

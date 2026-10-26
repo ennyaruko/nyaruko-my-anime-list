@@ -51,7 +51,6 @@ export const illustration = style({
   backgroundSize: "100%",
   backgroundRepeat: "no-repeat",
   backgroundPosition: "center top",
-  backgroundImage: "url('/images/login.png')",
 });
 
 export const illustrationFade = style({

@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.1",
   "type": "module",
+  "homepage": "https://nyar1othotep.github.io/my-anime-list/",
   "scripts": {
     "dev": "react-router dev",
     "build": "react-router typegen && tsc -b && react-router build",
@@ -23,7 +24,9 @@
     "locales:unused": "i18next-cli status --unused",
     "locales:remove": "i18next-cli extract",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

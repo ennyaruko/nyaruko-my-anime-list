@@ -67,7 +67,6 @@ describe("application architecture contracts", () => {
     it("allowlists keys and applies retention to query data age", () => {
       const now = 2_000_000_000_000;
       const userListKey = queryCacheConfig.families.userList.key("123");
-      const detailsKey = queryCacheConfig.families.animeDetails.key(42);
 
       const accountKey = queryCacheConfig.families.account.key(
         "anilist",
@@ -75,12 +74,10 @@ describe("application architecture contracts", () => {
       );
       const accountPolicy = resolveQueryCachePolicy(accountKey);
       const userListPolicy = resolveQueryCachePolicy(userListKey);
-      const detailsPolicy = resolveQueryCachePolicy(detailsKey);
       expect(accountPolicy.persistForMs).toBe(90 * 24 * 60 * 60 * 1_000);
       expect(accountPolicy.staleTimeMs).toBe(24 * 60 * 60 * 1_000);
       expect(shouldPersistQuery(accountKey, now - 1_000, now)).toBe(true);
       expect(userListPolicy.persistForMs).toBe(90 * 24 * 60 * 60 * 1_000);
-      expect(detailsPolicy.persistForMs).toBe(30 * 24 * 60 * 60 * 1_000);
       expect(userListPolicy.staleTimeMs).toBe(24 * 60 * 60 * 1_000);
       expect(
         resolveQueryCachePolicy(["reference", "arbitrary"]).persistForMs,

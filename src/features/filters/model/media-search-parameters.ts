@@ -7,9 +7,8 @@ function getSearchSort(sort: string): MediaSearchParameters["sort"] {
   switch (sort) {
     case "popularity":
     case "averageScore":
-    case "score":
     case "title":
-      return sort === "score" ? "averageScore" : sort;
+      return sort;
     default:
       return "releaseDate";
   }

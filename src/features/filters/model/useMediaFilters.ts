@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect } from "react";
 
-import type { MediaSortKey, MediaFiltersState } from "@/entities/filters";
+import type { MediaFiltersState } from "@/entities/filters";
 
 import {
   allFormatValues,
@@ -32,19 +32,6 @@ const DEFAULT_FILTERS: MediaFiltersState = {
   sourceMode: "include",
 };
 
-const LIST_SORT_KEYS: readonly MediaSortKey[] = [
-  "score",
-  "title",
-  "progress",
-  "startDate",
-  "lastAdded",
-  "popularity",
-  "releaseDate",
-  "lastUpdated",
-  "averageScore",
-  "completedDate",
-];
-
 function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
 }
@@ -73,6 +60,12 @@ function areValuesEqual(first: unknown, second: unknown): boolean {
         Object.hasOwn(second, key) && areValuesEqual(first[key], second[key]),
     )
   );
+}
+
+function omitSort(filters: MediaFiltersState): Omit<MediaFiltersState, "sort"> {
+  return Object.fromEntries(
+    Object.entries(filters).filter(([key]) => key !== "sort"),
+  ) as Omit<MediaFiltersState, "sort">;
 }
 
 function filterValues<T extends string>(
@@ -112,6 +105,7 @@ function readSavedFilters(key: string): MediaFiltersState {
 
     return {
       ...DEFAULT_FILTERS,
+      sort: DEFAULT_FILTERS.sort,
       tags: filterStrings(saved.tags),
       isAdult: saved.isAdult === true,
       genres: filterStrings(saved.genres),
@@ -121,9 +115,6 @@ function readSavedFilters(key: string): MediaFiltersState {
       statusMode: saved.statusMode === "exclude" ? "exclude" : "include",
       formatMode: saved.formatMode === "exclude" ? "exclude" : "include",
       sourceMode: saved.sourceMode === "exclude" ? "exclude" : "include",
-      sort: LIST_SORT_KEYS.includes(saved.sort as MediaSortKey)
-        ? (saved.sort as MediaSortKey)
-        : DEFAULT_FILTERS.sort,
     };
   } catch {
     return DEFAULT_FILTERS;
@@ -151,16 +142,17 @@ export function useMediaFilters(scope: MediaFilterScope, userId?: string) {
   };
 
   const saveFilters = () => {
-    setSavedFilters(filters);
+    const filterValues = omitSort(filters);
+    setSavedFilters({ ...filterValues, sort: savedFilters.sort });
     try {
-      localStorage.setItem(storageKey, JSON.stringify(filters));
+      localStorage.setItem(storageKey, JSON.stringify(filterValues));
     } catch {
       // Storage can be unavailable or full.
     }
   };
 
   const resetFilters = () => {
-    setFilters(savedFilters);
+    setFilters((current) => ({ ...savedFilters, sort: current.sort }));
   };
 
   const appliedValues = useMemo(
@@ -186,6 +178,9 @@ export function useMediaFilters(scope: MediaFilterScope, userId?: string) {
     resetFilters,
     updateFilters,
     appliedValues,
-    hasUnsavedChanges: !areValuesEqual(filters, savedFilters),
+    hasUnsavedChanges: !areValuesEqual(
+      omitSort(filters),
+      omitSort(savedFilters),
+    ),
   };
 }

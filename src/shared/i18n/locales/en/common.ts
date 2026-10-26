@@ -22,6 +22,9 @@ export default {
   multiSelect: {
     placeholder: "Select options",
   },
+  notify: {
+    saveFilters: "The filters are saved",
+  },
   description: "Anime List UI built with React and TypeScript",
   table: {
     showLess: "Show less",

@@ -37,10 +37,15 @@ export const cover = styleVariants({
 
 export const image = style({ inset: 0, position: "absolute" });
 export const placeholderImage = style({
+  top: "50%",
+  left: "50%",
   width: "87%",
+  right: "auto",
+  bottom: "auto",
   height: "62.5%",
   display: "block",
   objectFit: "contain",
+  transform: "translate(-50%, -50%)",
 });
 export const noImageIcon = style({
   width: "20px",

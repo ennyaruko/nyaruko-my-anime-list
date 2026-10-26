@@ -2,12 +2,6 @@ export * from "./persistence";
 
 export { queryCacheConfig, referenceDataKinds } from "./query-cache";
 export {
-  queryClient,
-  clearUserQueries,
-  shouldPersistQuery,
-} from "./query-client";
-
-export {
   isUserScopedQueryKey,
   getUserIdFromQueryKey,
 } from "./cache/query-key-utils";
@@ -17,3 +11,10 @@ export type {
   QueryKeyConstraint,
   UserListParameters,
 } from "./query-cache";
+
+export {
+  queryClient,
+  getQueryClient,
+  clearUserQueries,
+  shouldPersistQuery,
+} from "./queryClient";

@@ -28,7 +28,6 @@ import { useAppService, queryCacheConfig } from "@/shared/lib";
 import {
   Input,
   Column,
-  Spinner,
   GridList,
   Container,
   Breadcrumbs,
@@ -38,7 +37,7 @@ import {
 import * as styles from "./SearchPage.css";
 
 const RESULTS_PER_PAGE = 50;
-const SKELETON_COUNT = 4;
+const SKELETON_COUNT = 6;
 
 type SearchResultsProps = {
   account: AccountState["account"];
@@ -121,7 +120,10 @@ function SearchResults({ account, parameters }: SearchResultsProps) {
   return (
     <div className={styles.resultsContainer}>
       {searchQuery.isPending ? (
-        <Spinner className={styles.initialLoading} />
+        <GridList
+          renderItem={() => <MediaCardSkeleton size="l" />}
+          data={Array.from({ length: SKELETON_COUNT }, (_, index) => index)}
+        />
       ) : results.length === 0 ? (
         <BlockStatusEmpty className={styles.empty} />
       ) : (
@@ -137,10 +139,6 @@ function SearchResults({ account, parameters }: SearchResultsProps) {
     </div>
   );
 }
-
-// TODO: 1. Нужно поправить no content, а так же другие состояния на страницах.
-// TODO: 2. Есть баг с иконкой check, когда я выбираю sort это влияет
-// TODO: 3. В sort фильтр По рейтингу и По среднему рейтингу кажется одинаковые
 
 export function SearchPage() {
   const { t } = useTranslation(["common"]);

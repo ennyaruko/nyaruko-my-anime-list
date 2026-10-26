@@ -122,6 +122,7 @@ export function MyListPage({ account, accountPending }: AccountState) {
             )}
             <Heading variant="neutral">{t("common:list.list")}</Heading>
             <StatusNavigation
+              loading={isListPending}
               onSelect={setSelectedStatus}
               selectedStatus={selectedStatus}
               items={statusSections.map(({ key }) => ({
@@ -146,7 +147,7 @@ export function MyListPage({ account, accountPending }: AccountState) {
                     data={Array.from({ length: 4 }, (_, index) => index)}
                   />
                 ) : filteredEntries.length === 0 ? (
-                  <BlockStatusEmpty />
+                  <BlockStatusEmpty className={styles.empty} />
                 ) : (
                   <GridList
                     virtualize

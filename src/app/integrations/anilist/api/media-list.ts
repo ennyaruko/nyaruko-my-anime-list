@@ -1,5 +1,6 @@
 import type { MyListEntry, MyListStatus } from "@/entities/media";
 
+import { mapAniListCoverUrl } from "./cover-image";
 import { ViewerMediaListDocument } from "./queries";
 import { createAniListGraphQLClient } from "./client";
 import type { ViewerMediaListQuery } from "./generated/graphql";
@@ -66,14 +67,14 @@ export function mapAniListMyListEntry(entry: AniListEntry): MyListEntry {
       media.title?.romaji ||
       media.title?.native ||
       "Untitled",
-    coverImage: {
-      large: media.coverImage?.large ?? null,
-      preview: media.coverImage?.medium ?? null,
-    },
     genres:
       media.genres?.filter(
         (genre: null | string): genre is string => genre !== null,
       ) ?? [],
+    coverImage: {
+      large: mapAniListCoverUrl(media.coverImage?.large),
+      preview: mapAniListCoverUrl(media.coverImage?.medium),
+    },
     endDate: media.endDate
       ? {
           day: media.endDate.day,

@@ -2,7 +2,7 @@ import type { Media } from "./media";
 
 /** Search result ordering supported by the media search service. */
 export type MediaSearchSort =
-  "score" | "title" | "popularity" | "releaseDate" | "averageScore";
+  "title" | "popularity" | "releaseDate" | "averageScore";
 
 /** Search and filtering options sent to a media search provider. */
 export type MediaSearchParameters = {

@@ -11,9 +11,7 @@ export const page = style({
 });
 
 export const searchIcon = style({ width: "20px", height: "20px" });
-export const initialLoading = style({ margin: "auto" });
 export const empty = style({
-  width: "100%",
   margin: "auto",
   alignSelf: "center",
 });

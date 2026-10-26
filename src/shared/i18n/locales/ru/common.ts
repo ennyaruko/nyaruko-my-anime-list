@@ -13,6 +13,9 @@ export default {
   search: {
     placeholder: "Введите название",
   },
+  notify: {
+    saveFilters: "Фильтры сохранены",
+  },
   combobox: {
     placeholder: "Выберите вариант",
   },

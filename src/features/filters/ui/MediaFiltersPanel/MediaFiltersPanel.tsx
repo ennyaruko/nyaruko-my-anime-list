@@ -26,6 +26,7 @@ import {
   MultiSelect,
   LabeledCheckbox,
   LabeledCombobox,
+  showNotification,
 } from "@/shared/ui";
 
 import {
@@ -160,6 +161,7 @@ export function MediaFiltersPanel({
   const handleSaveAndClose = () => {
     onSave();
     handleCloseDrawer();
+    showNotification(t("notify.saveFilters"), "success");
   };
   const handleSortChange = (value: string) =>
     onChange({ sort: value as MediaSortKey });

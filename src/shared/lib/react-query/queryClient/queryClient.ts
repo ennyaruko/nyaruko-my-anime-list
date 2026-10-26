@@ -1,13 +1,15 @@
-import { type Query, QueryClient } from "@tanstack/react-query";
+import type { Query } from "@tanstack/react-query";
 
-import { queryCacheConfig } from "./query-cache";
-import { getUserIdFromQueryKey } from "./cache/query-key-utils";
+import { queryCacheConfig } from "../query-cache";
+import { getUserIdFromQueryKey } from "../cache/query-key-utils";
 import {
   resolveQueryCachePolicy,
   shouldPersistQuery as shouldPersistByKey,
-} from "./cache/query-cache-policy";
+} from "../cache/query-cache-policy";
 
-export const queryClient = new QueryClient({
+import { getQueryClient } from "./getQueryClient";
+
+export const queryClient = getQueryClient({
   defaultOptions: {
     mutations: { retry: 0 },
     queries: {
@@ -22,6 +24,7 @@ export const queryClient = new QueryClient({
           response?: { status?: number };
         };
         const status = apiError.status ?? apiError.response?.status;
+
         return (
           failureCount < 2 && status !== 401 && status !== 403 && status !== 429
         );
@@ -37,11 +40,12 @@ export function shouldPersistQuery(query: Query): boolean {
   );
 }
 
-/** Remove every query whose key follows the user-scoped key contract. */
+/** Removes every query whose key follows the user-scoped key contract. */
 export function clearUserQueries(userId?: string | number): void {
   queryClient.removeQueries({
     predicate: (query) => {
       const cachedUserId = getUserIdFromQueryKey(query.queryKey);
+
       return (
         cachedUserId !== null &&
         (userId === undefined || cachedUserId === String(userId))

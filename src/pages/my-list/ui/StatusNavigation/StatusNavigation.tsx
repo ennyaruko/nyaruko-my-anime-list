@@ -11,6 +11,7 @@ export type StatusNavigationProps = Omit<
   HTMLAttributes<HTMLElement>,
   "children" | "onSelect"
 > & {
+  loading?: boolean;
   selectedStatus: MyListStatus;
   onSelect: (status: MyListStatus) => void;
   items: { count: number; status: MyListStatus }[];
@@ -29,20 +30,32 @@ export function StatusNavigation({
   onSelect,
   className,
   selectedStatus,
+  loading = false,
   ...props
 }: StatusNavigationProps) {
   const { t } = useTranslation(["common"]);
 
   return (
-    <nav {...props} className={clsx(styles.root, className)}>
+    <nav
+      {...props}
+      className={clsx(
+        styles.root,
+        {
+          [styles.loading]: loading,
+        },
+        className,
+      )}
+    >
       {items.map(({ count, status }, index) => (
         <span key={status} className={styles.item}>
           <button
             type="button"
+            disabled={loading}
             onClick={() => onSelect(status)}
-            className={
-              styles.button[selectedStatus === status ? "active" : "default"]
-            }
+            className={clsx({
+              [styles.button.active]: selectedStatus === status,
+              [styles.button.default]: selectedStatus !== status,
+            })}
           >
             {t(`common:ui.watchStatus.${statusLabels[status]}`)} ({count})
           </button>

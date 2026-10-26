@@ -19,6 +19,9 @@ export const item = style({
 const buttonBase = {
   font: "inherit",
   cursor: "pointer",
+  selectors: {
+    "&:disabled": { cursor: "not-allowed" },
+  },
 };
 
 export const button = styleVariants({
@@ -36,4 +39,9 @@ export const button = styleVariants({
 
 export const separator = style({
   color: colors.text.secondary,
+});
+
+export const loading = style({
+  opacity: 0.5,
+  cursor: "not-allowed",
 });

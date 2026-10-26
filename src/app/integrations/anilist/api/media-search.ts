@@ -5,6 +5,7 @@ import type {
 } from "@/entities/media";
 
 import { SearchMediaDocument } from "./queries";
+import { mapAniListCoverUrl } from "./cover-image";
 import { createAniListGraphQLClient } from "./client";
 import type { SearchMediaQuery } from "./generated/graphql";
 import type {
@@ -15,7 +16,6 @@ import type {
 } from "./generated/graphql";
 
 const searchSort: Record<MediaSearchParameters["sort"], MediaSort> = {
-  score: "SCORE_DESC",
   title: "TITLE_ROMAJI",
   averageScore: "SCORE_DESC",
   popularity: "POPULARITY_DESC",
@@ -91,12 +91,6 @@ function mapAniListSearchMedia(media: SearchMediaItem): Media {
       media.genres?.filter(
         (genre: null | string): genre is string => genre !== null,
       ) ?? [],
-    coverImage: media.coverImage
-      ? {
-          large: media.coverImage.large ?? null,
-          preview: media.coverImage.medium ?? null,
-        }
-      : null,
     endDate: media.endDate
       ? {
           day: media.endDate.day,
@@ -109,6 +103,12 @@ function mapAniListSearchMedia(media: SearchMediaItem): Media {
           day: media.startDate.day,
           year: media.startDate.year,
           month: media.startDate.month,
+        }
+      : null,
+    coverImage: media.coverImage
+      ? {
+          large: mapAniListCoverUrl(media.coverImage.large),
+          preview: mapAniListCoverUrl(media.coverImage.medium),
         }
       : null,
   };

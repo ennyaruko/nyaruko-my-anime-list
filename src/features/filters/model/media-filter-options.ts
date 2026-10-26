@@ -57,7 +57,6 @@ export const searchSortOptions: MediaSortKey[] = [
   "releaseDate",
   "popularity",
   "averageScore",
-  "score",
   "title",
 ];
 

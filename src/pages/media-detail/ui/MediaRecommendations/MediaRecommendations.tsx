@@ -3,7 +3,8 @@ import { Link, useLocation } from "react-router";
 import { useRef, useEffect, useCallback } from "react";
 
 import clsx from "clsx";
-import useEmblaCarousel from "embla-carousel-react";
+
+import { MediaCarousel } from "@/widgets/media-carousel";
 
 import {
   useMediaListActions,
@@ -15,19 +16,11 @@ import type { Media, MediaListStatus } from "@/entities/media";
 
 import { NoImageIcon } from "@/shared/icons";
 import { skeletonAnimation } from "@/shared/styles";
-import {
-  Image,
-  Score,
-  Title,
-  Heading,
-  Progress,
-  type TitleState,
-} from "@/shared/ui";
+import { Image, Score, Title, Progress, type TitleState } from "@/shared/ui";
 
 import { formatLabelKey } from "../media-detail-labels";
 import { useMediaRecommendations } from "../../model/useMediaRecommendations";
 
-import * as pageStyles from "../MediaDetailPage.css";
 import * as styles from "./MediaRecommendations.css";
 
 const titleVariantByStatus: Record<MediaListStatus, TitleState> = {
@@ -49,11 +42,6 @@ export function MediaRecommendations({
 }: MediaRecommendationsProps) {
   const { t } = useTranslation(["common"]);
   const recommendationsQuery = useMediaRecommendations({ userId, mediaId });
-  const [viewportRef, emblaApi] = useEmblaCarousel({
-    align: "start",
-    dragFree: true,
-    containScroll: "trimSnaps",
-  });
   const isFetchingMore = useRef(false);
   const { hasNextPage, fetchNextPage, isFetchingNextPage } =
     recommendationsQuery;
@@ -65,26 +53,6 @@ export function MediaRecommendations({
       isFetchingMore.current = false;
     });
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
-
-  useEffect(() => {
-    if (!emblaApi) return;
-
-    const fetchNextPageAtEnd = () => {
-      const lastSnapIndex = emblaApi.scrollSnapList().length - 1;
-
-      if (
-        lastSnapIndex >= 0 &&
-        emblaApi.selectedScrollSnap() >= lastSnapIndex
-      ) {
-        requestNextPage();
-      }
-    };
-
-    emblaApi.on("select", fetchNextPageAtEnd);
-    return () => {
-      emblaApi.off("select", fetchNextPageAtEnd);
-    };
-  }, [emblaApi, requestNextPage]);
 
   useEffect(() => {
     const pages = recommendationsQuery.data?.pages ?? [];
@@ -108,34 +76,21 @@ export function MediaRecommendations({
   if (!recommendationsQuery.isPending && media.length === 0) return null;
 
   return (
-    <section className={pageStyles.section}>
-      <Heading size="m" variant="neutral">
-        {t("common:mediaDetail.recommendations")}
-      </Heading>
-      <div ref={viewportRef} className={styles.carouselViewport}>
-        <div className={styles.carouselTrack}>
-          {recommendationsQuery.isPending ? (
-            <RecommendationsSkeleton />
-          ) : (
-            media.map((item) => (
-              <div key={item.id} className={styles.recommendationSlide}>
-                <MediaListContextMenu media={item} userId={userId}>
-                  <LinkedMediaCard media={item} userId={userId} />
-                </MediaListContextMenu>
-              </div>
-            ))
-          )}
-          {recommendationsQuery.isFetchingNextPage && (
-            <div
-              key="recommendation-loading"
-              className={styles.recommendationSlide}
-            >
-              <RecommendationCardSkeleton />
-            </div>
-          )}
-        </div>
-      </div>
-    </section>
+    <MediaCarousel
+      items={media}
+      getKey={(item) => item.id}
+      onFetchNextPage={requestNextPage}
+      hasNextPage={hasNextPage ?? false}
+      isFetchingNextPage={isFetchingNextPage}
+      isPending={recommendationsQuery.isPending}
+      title={t("common:mediaDetail.recommendations")}
+      renderSkeleton={() => <RecommendationCardSkeleton />}
+      renderItem={(item) => (
+        <MediaListContextMenu media={item} userId={userId}>
+          <LinkedMediaCard media={item} userId={userId} />
+        </MediaListContextMenu>
+      )}
+    />
   );
 }
 
@@ -210,14 +165,6 @@ function LinkedMediaCard({
       </div>
     </div>
   );
-}
-
-function RecommendationsSkeleton() {
-  return Array.from({ length: 3 }, (_, index) => (
-    <div key={index} className={styles.recommendationSlide}>
-      <RecommendationCardSkeleton />
-    </div>
-  ));
 }
 
 function RecommendationCardSkeleton() {

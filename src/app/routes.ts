@@ -11,6 +11,7 @@ export default [
       index("routes/home.tsx"),
       route("media/:id", "routes/media-detail.tsx"),
       route("search", "routes/search.tsx"),
+      route("*", "routes/not-found.tsx"),
     ]),
   ]),
   route("login", "routes/login.tsx"),

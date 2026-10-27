@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router";
 import { useTranslation } from "react-i18next";
 
 import type { MediaTag } from "@/entities/media";
@@ -9,6 +10,7 @@ import * as pageStyles from "../MediaDetailPage.css";
 
 export function MediaTags({ tags }: { tags: undefined | MediaTag[] }) {
   const { t } = useTranslation(["common"]);
+  const navigate = useNavigate();
 
   return (
     <section className={pageStyles.section}>
@@ -22,6 +24,10 @@ export function MediaTags({ tags }: { tags: undefined | MediaTag[] }) {
             valueMode="percentage"
             initialVisibleCount={10}
             items={tags.map(({ name, rank }) => ({ label: name, value: rank }))}
+            onItemClick={({ label }) => {
+              const searchParams = new URLSearchParams({ tag: label });
+              navigate(`/search?${searchParams.toString()}`);
+            }}
           />
         </div>
       ) : (

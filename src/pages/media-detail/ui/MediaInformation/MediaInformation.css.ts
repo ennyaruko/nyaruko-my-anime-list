@@ -26,7 +26,18 @@ export const releaseDate = style({
   color: colors.text.secondary,
 });
 
-export const genreList = style({ color: colors.text.primary });
+export const genreList = style({
+  display: "inline",
+  color: colors.text.primary,
+});
+
+export const genreLink = style({
+  textDecoration: "none",
+  color: colors.text.action,
+  selectors: {
+    "&:hover": { textDecoration: "underline" },
+  },
+});
 
 export const skeletonLines = style({
   display: "flex",

@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useCallback } from "react";
 
 import type { MediaFiltersState } from "@/entities/filters";
 
@@ -31,6 +31,7 @@ const DEFAULT_FILTERS: MediaFiltersState = {
   formatMode: "include",
   sourceMode: "include",
 };
+const EMPTY_INITIAL_FILTERS: Partial<MediaFiltersState> = {};
 
 function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
@@ -125,21 +126,29 @@ function getStorageKey(scope: MediaFilterScope, userId?: string): string {
   return `media-filter-settings:v2:${scope}:${userId ?? "anonymous"}`;
 }
 
-export function useMediaFilters(scope: MediaFilterScope, userId?: string) {
+export function useMediaFilters(
+  scope: MediaFilterScope,
+  userId?: string,
+  initialFilters: Partial<MediaFiltersState> = EMPTY_INITIAL_FILTERS,
+) {
   const storageKey = getStorageKey(scope, userId);
-  const [filters, setFilters] = useState(() => readSavedFilters(storageKey));
+  const [filters, setFilters] = useState(() => ({
+    ...readSavedFilters(storageKey),
+    ...initialFilters,
+  }));
   const [savedFilters, setSavedFilters] = useState(() =>
     readSavedFilters(storageKey),
   );
 
   useEffect(() => {
-    setFilters(readSavedFilters(storageKey));
-    setSavedFilters(readSavedFilters(storageKey));
-  }, [storageKey]);
+    const saved = readSavedFilters(storageKey);
+    setFilters({ ...saved, ...initialFilters });
+    setSavedFilters(saved);
+  }, [initialFilters, storageKey]);
 
-  const updateFilters = (updates: Partial<MediaFiltersState>) => {
+  const updateFilters = useCallback((updates: Partial<MediaFiltersState>) => {
     setFilters((current) => ({ ...current, ...updates }));
-  };
+  }, []);
 
   const saveFilters = () => {
     const filterValues = omitSort(filters);

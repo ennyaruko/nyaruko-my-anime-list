@@ -8,5 +8,8 @@ export type ServiceToken<T> = {
 };
 
 export function createServiceToken<T>(name: string): ServiceToken<T> {
-  return { name, key: Symbol(name) } as ServiceToken<T>;
+  return {
+    name,
+    key: Symbol.for(`my-anime-list.service.${name}`),
+  } as ServiceToken<T>;
 }

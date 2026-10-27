@@ -1,13 +1,14 @@
 import { useMemo, type ReactNode } from "react";
 
-import type { FilterOptions } from "@/entities/filters";
 import type { MediaSearchParameters } from "@/entities/media";
+import type { FilterOptions, MediaFiltersState } from "@/entities/filters";
 
 import { useMediaFilters } from "../model/useMediaFilters";
 import { searchSortOptions } from "../model/media-filter-options";
 import { getMediaSearchParameters } from "../model/media-search-parameters";
 
 import { MediaFiltersPanel } from "./MediaFiltersPanel";
+import { useFilterDrawerState } from "./useFilterDrawerState";
 
 type MediaSearchFiltersProps = {
   search: string;
@@ -15,6 +16,7 @@ type MediaSearchFiltersProps = {
   perPage: number;
   options?: FilterOptions;
   optionsLoading?: boolean;
+  initialFilters?: Partial<MediaFiltersState>;
   children: (parameters: MediaSearchParameters) => ReactNode;
 };
 
@@ -26,7 +28,9 @@ export function MediaSearchFilters({
   perPage,
   children,
   optionsLoading,
+  initialFilters = {},
 }: MediaSearchFiltersProps) {
+  const filterDrawer = useFilterDrawerState();
   const {
     filters,
     saveFilters,
@@ -35,7 +39,7 @@ export function MediaSearchFilters({
     updateFilters,
     appliedValues,
     hasUnsavedChanges,
-  } = useMediaFilters("search", userId);
+  } = useMediaFilters("search", userId, initialFilters);
 
   const parameters = useMemo(
     () => getMediaSearchParameters(search, filters, appliedValues, perPage),
@@ -49,11 +53,13 @@ export function MediaSearchFilters({
         options={options}
         onSave={saveFilters}
         onReset={resetFilters}
+        open={filterDrawer.open}
         onChange={updateFilters}
         savedFilters={savedFilters}
         sortOptions={searchSortOptions}
         optionsLoading={optionsLoading}
         hasUnsavedChanges={hasUnsavedChanges}
+        onOpenChange={filterDrawer.onOpenChange}
       />
       {children(parameters)}
     </>

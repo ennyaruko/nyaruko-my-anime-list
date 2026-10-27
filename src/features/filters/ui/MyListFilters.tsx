@@ -8,6 +8,7 @@ import { listSortOptions } from "../model/media-filter-options";
 import { filterMyListEntries } from "../model/filter-my-list-entries";
 
 import { MediaFiltersPanel } from "./MediaFiltersPanel";
+import { useFilterDrawerState } from "./useFilterDrawerState";
 
 type MyListFiltersProps = {
   userId?: string;
@@ -15,7 +16,11 @@ type MyListFiltersProps = {
   entries: MyListEntry[];
   options?: FilterOptions;
   optionsLoading?: boolean;
-  children: (filteredEntries: MyListEntry[]) => ReactNode;
+  children: (
+    filteredEntries: MyListEntry[],
+    resetFilters: VoidFunction,
+    hasUnsavedChanges: boolean,
+  ) => ReactNode;
 };
 
 /** Owns list filter settings and exposes only the resulting entries. */
@@ -27,6 +32,7 @@ export function MyListFilters({
   children,
   optionsLoading,
 }: MyListFiltersProps) {
+  const filterDrawer = useFilterDrawerState();
   const {
     filters,
     saveFilters,
@@ -49,12 +55,14 @@ export function MyListFilters({
         onSave={saveFilters}
         onReset={resetFilters}
         onChange={updateFilters}
+        open={filterDrawer.open}
         savedFilters={savedFilters}
         sortOptions={listSortOptions}
         optionsLoading={optionsLoading}
         hasUnsavedChanges={hasUnsavedChanges}
+        onOpenChange={filterDrawer.onOpenChange}
       />
-      {children(filteredEntries)}
+      {children(filteredEntries, resetFilters, hasUnsavedChanges)}
     </>
   );
 }

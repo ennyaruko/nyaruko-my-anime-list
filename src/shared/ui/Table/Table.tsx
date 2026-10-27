@@ -34,12 +34,13 @@ export type TableItemProps = HTMLAttributes<HTMLDivElement> & TableDatum;
 
 type TableRowProps = TableDatum & {
   widthPercent: number;
+  originalLabel: string;
   showPercent?: boolean;
   onItemClick?: (item: TableDatum) => void;
 };
 
 function clampValue(value: number) {
-  return Math.min(100, Math.max(0, value));
+  return Math.min(1000, Math.max(0, value));
 }
 
 function getRelativeWidth(value: number, maxValue: number) {
@@ -60,12 +61,13 @@ function TableRow({
   value,
   onItemClick,
   widthPercent,
+  originalLabel,
   showPercent = false,
 }: TableRowProps) {
   const normalizedValue = clampValue(value);
   const backgroundClass = getItemBackground(normalizedValue);
   const hasBackground = Boolean(backgroundClass);
-  const item = { label, value };
+  const item = { value, label: originalLabel };
   const valueLabel = showPercent ? `${value}%` : value;
   const valueAfterLabel = !hasBackground || widthPercent < 35;
   const itemContentClassName = clsx(styles.itemContent, {
@@ -220,6 +222,7 @@ export function Table({
             key={`${item.label}-${index}`}
             {...item}
             onItemClick={onItemClick}
+            originalLabel={item.label}
             showPercent={valueMode === "percentage"}
             label={numericList ? `${index + 1}. ${item.label}` : item.label}
             widthPercent={

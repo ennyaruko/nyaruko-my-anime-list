@@ -2,26 +2,6 @@ import { style } from "@vanilla-extract/css";
 
 import { colors, primitives, typography } from "@/shared/styles";
 
-export const carouselViewport = style({
-  overflow: "hidden",
-  touchAction: "pan-y pinch-zoom",
-});
-
-export const carouselTrack = style({
-  display: "flex",
-  gap: primitives.spacing.xs,
-});
-
-export const recommendationSlide = style({
-  minWidth: 0,
-  flex: "0 0 32%",
-  position: "relative",
-  "@media": {
-    "(min-width: 520px)": { flexBasis: "23%" },
-    "(min-width: 768px)": { flexBasis: "20%" },
-  },
-});
-
 export const recommendationCard = style({
   minWidth: 0,
   display: "flex",

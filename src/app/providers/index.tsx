@@ -1,6 +1,7 @@
 import { PropsWithChildren } from "react";
 
 import { ThemeProvider } from "@/features/change-theme";
+import { AdultContentProvider } from "@/features/toggle-adult-content";
 
 import { QueryProvider } from "./QueryProvider";
 import { AppAuthProvider } from "./AppAuthProvider";
@@ -10,13 +11,15 @@ import { AppDiagnosticsProvider } from "./AppDiagnosticsProvider";
 export function Providers({ children }: PropsWithChildren) {
   return (
     <ThemeProvider>
-      <AppDiagnosticsProvider>
-        <QueryProvider>
-          <AppServicesProvider>
-            <AppAuthProvider>{children}</AppAuthProvider>
-          </AppServicesProvider>
-        </QueryProvider>
-      </AppDiagnosticsProvider>
+      <AdultContentProvider>
+        <AppDiagnosticsProvider>
+          <QueryProvider>
+            <AppServicesProvider>
+              <AppAuthProvider>{children}</AppAuthProvider>
+            </AppServicesProvider>
+          </QueryProvider>
+        </AppDiagnosticsProvider>
+      </AdultContentProvider>
     </ThemeProvider>
   );
 }

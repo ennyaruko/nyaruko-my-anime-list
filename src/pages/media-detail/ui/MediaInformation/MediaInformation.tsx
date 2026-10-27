@@ -1,5 +1,6 @@
-import type { ReactNode } from "react";
+import { Link } from "react-router";
 import { useTranslation } from "react-i18next";
+import { Fragment, type ReactNode } from "react";
 
 import clsx from "clsx";
 
@@ -127,7 +128,19 @@ function MediaInformationContent({
       </InfoRow>
       <InfoRow label={t("common:mediaDetail.genres")}>
         {media.genres.length > 0 ? (
-          <span className={styles.genreList}>{media.genres.join(", ")}</span>
+          <span className={styles.genreList}>
+            {media.genres.map((genre, index) => (
+              <Fragment key={genre}>
+                {index > 0 && ", "}
+                <Link
+                  className={styles.genreLink}
+                  to={`/search?genre=${encodeURIComponent(genre)}`}
+                >
+                  {genre}
+                </Link>
+              </Fragment>
+            ))}
+          </span>
         ) : (
           <span>—</span>
         )}

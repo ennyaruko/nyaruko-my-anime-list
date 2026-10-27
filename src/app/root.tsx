@@ -1,13 +1,24 @@
 import { useTranslation } from "react-i18next";
 import "react-toastify/dist/ReactToastify.css";
 import { useEffect, type ReactNode } from "react";
-import { Meta, Links, Outlet, Scripts, ScrollRestoration } from "react-router";
+import {
+  Meta,
+  Links,
+  Outlet,
+  Scripts,
+  useLocation,
+  ScrollRestoration,
+} from "react-router";
 
 import { THEME_STORAGE_KEY } from "@/features/change-theme";
 
 import { darkTheme, lightTheme } from "@/shared/styles";
-import { GlobalErrorFallback, NotificationContainer } from "@/shared/ui";
 import i18n, { LOCALE_STORAGE_KEY, supportedLanguages } from "@/shared/i18n";
+import {
+  QueryErrorBoundary,
+  GlobalErrorFallback,
+  NotificationContainer,
+} from "@/shared/ui";
 
 import { Providers } from "./providers";
 
@@ -85,10 +96,14 @@ export function Layout({ children }: { children: ReactNode }) {
 }
 
 export default function Root() {
+  const location = useLocation();
+
   return (
     <Providers>
       <div className="app">
-        <Outlet />
+        <QueryErrorBoundary size="l" resetKeys={[location.key]}>
+          <Outlet />
+        </QueryErrorBoundary>
       </div>
       <NotificationContainer />
     </Providers>

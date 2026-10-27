@@ -17,6 +17,7 @@ import type {
 
 const searchSort: Record<MediaSearchParameters["sort"], MediaSort> = {
   title: "TITLE_ROMAJI",
+  trending: "TRENDING_DESC",
   averageScore: "SCORE_DESC",
   popularity: "POPULARITY_DESC",
   releaseDate: "START_DATE_DESC",

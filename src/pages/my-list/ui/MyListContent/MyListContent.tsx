@@ -1,0 +1,102 @@
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+
+import { MyListFilters } from "@/features/filters";
+
+import type { FilterOptions } from "@/entities/filters";
+import { type MyListEntry, type MyListStatus } from "@/entities/media";
+
+import { Row, Heading } from "@/shared/ui";
+import { DeleteIcon } from "@/shared/icons";
+
+import { MyListResults } from "../MyListResults";
+import { StatusNavigation } from "../StatusNavigation";
+
+import * as styles from "./MyListContent.css";
+
+const statusSections = [
+  { key: "PLANNING", label: "planned", variant: "warning" },
+  { key: "CURRENT", variant: "info", label: "watching" },
+  { key: "COMPLETED", label: "completed", variant: "positive" },
+  { key: "PAUSED", label: "paused", variant: "neutral" },
+  { key: "DROPPED", label: "dropped", variant: "negative" },
+] as const;
+
+type MyListContentProps = {
+  entries: MyListEntry[];
+  isListPending: boolean;
+  optionsLoading: boolean;
+  userId: string | undefined;
+  options: undefined | FilterOptions;
+};
+
+export function MyListContent({
+  userId,
+  entries,
+  options,
+  isListPending,
+  optionsLoading,
+}: MyListContentProps) {
+  const { t } = useTranslation(["common"]);
+  const [selectedStatus, setSelectedStatus] =
+    useState<MyListStatus>("PLANNING");
+  const selectedSection = statusSections.find(
+    (section) => section.key === selectedStatus,
+  )!;
+  return (
+    <>
+      <Heading variant="neutral">{t("common:list.list")}</Heading>
+      <StatusNavigation
+        loading={isListPending}
+        onSelect={setSelectedStatus}
+        selectedStatus={selectedStatus}
+        items={statusSections.map(({ key }) => ({
+          status: key,
+          count: entries.filter((entry) => entry.status === key).length,
+        }))}
+      />
+      <MyListFilters
+        userId={userId}
+        entries={entries}
+        options={options}
+        status={selectedStatus}
+        optionsLoading={optionsLoading}
+      >
+        {(filteredEntries, resetFilters, hasUnsavedChanges) => (
+          <>
+            <Heading
+              id={selectedSection.key}
+              variant={selectedSection.variant}
+              action={
+                hasUnsavedChanges ? (
+                  <Row gap="xxs" alignItem="center">
+                    <span className={styles.foundResult}>
+                      {isListPending
+                        ? "—"
+                        : t("common:list.filteredResults", {
+                            count: filteredEntries.length,
+                          })}
+                    </span>
+                    <button
+                      onClick={resetFilters}
+                      className={styles.resetFilters}
+                    >
+                      <DeleteIcon />
+                    </button>
+                  </Row>
+                ) : undefined
+              }
+            >
+              {t(`common:ui.watchStatus.${selectedSection.label}`)}
+            </Heading>
+            <MyListResults
+              userId={userId}
+              entries={filteredEntries}
+              isPending={isListPending}
+            />
+          </>
+        )}
+      </MyListFilters>
+    </>
+  );
+}

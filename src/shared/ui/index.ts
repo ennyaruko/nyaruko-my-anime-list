@@ -26,5 +26,6 @@ export * from "./Breadcrumbs";
 export * from "./Notification";
 export * from "./PullToRefresh";
 export * from "./ErrorBoundary";
+export * from "./ScrollToTopButton";
 export * from "./Form/ControlledInput";
 export * from "./Form/ControlledComponent";

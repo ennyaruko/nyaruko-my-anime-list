@@ -1,6 +1,6 @@
 import { style, styleVariants } from "@vanilla-extract/css";
 
-import { colors, primitives, typography } from "../../styles";
+import { colors, darkTheme, primitives, typography } from "../../styles";
 
 export const content = style({
   display: "flex",
@@ -14,6 +14,11 @@ export const content = style({
   borderRadius: primitives.radii.sm,
   backgroundColor: colors.background.base,
   padding: `${primitives.spacing.xxs} ${primitives.spacing.s}`,
+  selectors: {
+    [`${darkTheme} &`]: {
+      backgroundColor: colors.background.elevation1,
+    },
+  },
 });
 
 export const item = style({
@@ -41,6 +46,9 @@ export const item = style({
     "&[data-disabled]": {
       cursor: "not-allowed",
       color: colors.text.tertiary,
+    },
+    [`${darkTheme} &[data-highlighted]`]: {
+      backgroundColor: colors.background.elevation2,
     },
   },
 });

@@ -39,6 +39,7 @@ import {
 import * as styles from "./MediaFiltersPanel.css";
 
 export type MediaFiltersPanelProps = {
+  open?: boolean;
   onSave: VoidFunction;
   onReset: VoidFunction;
   options?: FilterOptions;
@@ -47,6 +48,7 @@ export type MediaFiltersPanelProps = {
   hasUnsavedChanges: boolean;
   savedFilters: MediaFiltersState;
   sortOptions: readonly MediaSortKey[];
+  onOpenChange?: (open: boolean) => void;
   onChange: (updates: Partial<MediaFiltersState>) => void;
 };
 
@@ -131,11 +133,18 @@ export function MediaFiltersPanel({
   onChange,
   sortOptions,
   savedFilters,
+  onOpenChange,
   hasUnsavedChanges,
+  open: controlledOpen,
   optionsLoading = false,
 }: MediaFiltersPanelProps) {
   const { t } = useTranslation(["common"]);
-  const [open, setOpen] = useState(false);
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
+  const open = controlledOpen ?? uncontrolledOpen;
+  const setOpen = (nextOpen: boolean) => {
+    if (controlledOpen === undefined) setUncontrolledOpen(nextOpen);
+    onOpenChange?.(nextOpen);
+  };
   const count = countSelectedValues(filters);
   const filterIcon = hasUnsavedChanges ? (
     <FilterCheckedIcon className={styles.checkedFilterIcon} />

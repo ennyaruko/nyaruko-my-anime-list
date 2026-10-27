@@ -9,7 +9,13 @@ import type { AccountProfile } from "@/entities/account";
 import { mediaDetailServiceToken } from "@/entities/media";
 
 import { useAppService, queryCacheConfig } from "@/shared/lib";
-import { Header, Column, Container, BlockStatusNotFound } from "@/shared/ui";
+import {
+  Header,
+  Column,
+  Container,
+  BlockStatusNotFound,
+  ComponentErrorBoundary,
+} from "@/shared/ui";
 
 import { MediaTags } from "./MediaTags";
 import { MediaReviews } from "./MediaReviews";
@@ -76,19 +82,27 @@ export function MediaDetailPage({ userId, mediaId }: MediaDetailPageProps) {
         <Header variant="plain" leading={<MediaDetailBackLink to={backTo} />} />
 
         {media ? (
-          <MediaDetailHero media={media} userId={userId} />
+          <ComponentErrorBoundary resetKeys={[mediaId]}>
+            <MediaDetailHero media={media} userId={userId} />
+          </ComponentErrorBoundary>
         ) : (
           <section className={styles.heroSection}>
             <MediaDetailHeroSkeleton />
           </section>
         )}
 
-        <MediaInformation media={media} language={i18n.language} />
-        <MediaDescription media={media} />
+        <ComponentErrorBoundary resetKeys={[mediaId]}>
+          <MediaInformation media={media} language={i18n.language} />
+        </ComponentErrorBoundary>
+        <ComponentErrorBoundary resetKeys={[mediaId]}>
+          <MediaDescription media={media} />
+        </ComponentErrorBoundary>
         <MediaRelations userId={userId} mediaId={mediaId} />
         <MediaReviews userId={userId} mediaId={mediaId} />
         <MediaRecommendations userId={userId} mediaId={mediaId} />
-        <MediaTags tags={tags} />
+        <ComponentErrorBoundary resetKeys={[mediaId]}>
+          <MediaTags tags={tags} />
+        </ComponentErrorBoundary>
       </Column>
     </Container>
   );

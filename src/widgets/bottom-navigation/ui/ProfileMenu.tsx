@@ -7,6 +7,7 @@ import { useLogout } from "@/features/logout";
 import { useTheme } from "@/features/change-theme";
 import { useLanguage } from "@/features/change-language";
 import { useAdultContent } from "@/features/toggle-adult-content";
+import { useAutoTranslationPreferences } from "@/features/translate-content";
 
 import { useAuth } from "@/entities/auth";
 import type { AccountProfile } from "@/entities/account";
@@ -18,6 +19,7 @@ import {
   UserIcon,
   ThemeSunIcon,
   ThemeMoonIcon,
+  TranslationIcon,
   AdultContentIcon,
   ExternalLinkIcon,
 } from "@/shared/icons";
@@ -41,6 +43,8 @@ export function ProfileMenu({ account, onClose }: ProfileMenuProps) {
   const { language, setLanguage } = useLanguage();
   const { enabled: adultContentEnabled, setEnabled: setAdultContentEnabled } =
     useAdultContent();
+  const { enabled: autoTranslation, setEnabled: setAutoTranslation } =
+    useAutoTranslationPreferences();
   const logout = useLogout();
   const isLightTheme = theme === "light";
   const profileUrl = account?.profileUrl;
@@ -113,6 +117,38 @@ export function ProfileMenu({ account, onClose }: ProfileMenuProps) {
             </button>
           ))}
         </div>
+        <ProfileSetting label={t("common:translation.description")}>
+          <Switch
+            checked={autoTranslation.description}
+            onCheckedChange={(checked) =>
+              setAutoTranslation("description", checked)
+            }
+          >
+            <TranslationIcon
+              className={
+                autoTranslation.description
+                  ? styles.translationIcon.enabled
+                  : styles.translationIcon.disabled
+              }
+            />
+          </Switch>
+        </ProfileSetting>
+        <ProfileSetting label={t("common:translation.reviews")}>
+          <Switch
+            checked={autoTranslation.reviews}
+            onCheckedChange={(checked) =>
+              setAutoTranslation("reviews", checked)
+            }
+          >
+            <TranslationIcon
+              className={
+                autoTranslation.reviews
+                  ? styles.translationIcon.enabled
+                  : styles.translationIcon.disabled
+              }
+            />
+          </Switch>
+        </ProfileSetting>
       </ProfileMenuSection>
 
       <ProfileMenuSection title={t("common:profileMenu.settings")}>

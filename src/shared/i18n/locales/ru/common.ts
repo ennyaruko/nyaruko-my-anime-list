@@ -22,7 +22,7 @@ export default {
   multiSelect: {
     placeholder: "Выберите варианты",
   },
-  description: "UI Kit для Anime List на React и TypeScript",
+  description: "Каталог аниме с поиском, личными списками и отзывами.",
   table: {
     showLess: "Свернуть",
     showAll: "Показать ещё...",
@@ -71,6 +71,13 @@ export default {
     title: "Ошибка загрузки",
     notFoundTitle: "Страница не найдена",
     description: "Что-то пошло не так. Попробуйте перезагрузить страницу.",
+  },
+  translation: {
+    reviews: "Перевод отзывов",
+    retry: "Повторить перевод",
+    description: "Перевод описания",
+    loading: "Переводим… Пока показан оригинал.",
+    failed: "Не удалось перевести. Показан оригинал.",
   },
   list: {
     tags: "Теги",
@@ -127,6 +134,7 @@ export default {
     releaseDate: "Дата выхода:",
     noReviews: "Отзывов пока нет",
     noImagelabel: "Нет изображения",
+    allRecommendations: "Все похожие",
     releaseRange: "с {{start}} по {{end}}",
     emptyDescription: "Описание отсутствует",
     relationType: {

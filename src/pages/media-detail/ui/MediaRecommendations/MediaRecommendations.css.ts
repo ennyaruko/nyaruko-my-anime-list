@@ -87,3 +87,12 @@ export const recommendationMetaSkeleton = style({
   width: "100%",
   height: "13px",
 });
+
+export const allRecommendationsLink = style({
+  ...typography.caption["2xs"],
+  textDecoration: "none",
+  color: colors.text.action,
+  selectors: {
+    "&:hover": { textDecoration: "underline" },
+  },
+});

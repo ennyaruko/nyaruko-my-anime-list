@@ -1,0 +1,6 @@
+{
+  "version": 1,
+  "endpoints": {
+    "translation": "https://translate.googleapis.com/translate_a/single"
+  }
+}

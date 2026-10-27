@@ -1,4 +1,4 @@
-import { style, globalStyle, styleVariants } from "@vanilla-extract/css";
+import { style, globalStyle } from "@vanilla-extract/css";
 
 import { colors, primitives, typography } from "@/shared/styles";
 
@@ -31,40 +31,6 @@ export const appliedCount = style({
 
 export const drawerContent = style({
   padding: `${primitives.spacing.xs} 0`,
-});
-
-export const modeControls = style({
-  display: "flex",
-  gap: primitives.spacing.xxxs,
-});
-
-const modeButtonBase = {
-  ...typography.caption["2xs"],
-  border: 0,
-  cursor: "pointer",
-  background: "transparent",
-  selectors: { "&:hover": { textDecoration: "underline" } },
-};
-
-export const modeButton = styleVariants({
-  include: {
-    ...modeButtonBase,
-    color: colors.text.action,
-  },
-  exclude: {
-    ...modeButtonBase,
-    color: colors.text.action,
-  },
-});
-
-export const modeButtonActive = style({
-  color: colors.text.negative,
-  textDecoration: "underline",
-});
-
-export const modeSeparator = style({
-  ...typography.caption["2xs"],
-  color: colors.text.tertiary,
 });
 
 export const selectedValues = style({

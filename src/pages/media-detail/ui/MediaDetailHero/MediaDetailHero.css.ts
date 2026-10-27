@@ -2,22 +2,6 @@ import { style } from "@vanilla-extract/css";
 
 import { colors, primitives, typography } from "@/shared/styles";
 
-export const backButton = style({
-  ...typography.caption["2xs"],
-  minHeight: "28px",
-  width: "fit-content",
-  alignItems: "center",
-  display: "inline-flex",
-  textDecoration: "none",
-  color: colors.text.primary,
-  gap: primitives.spacing.xxxs,
-});
-
-export const backIcon = style({
-  width: "20px",
-  height: "20px",
-});
-
 export const title = style({
   ...typography.heading["2xl"],
   color: colors.text.primary,

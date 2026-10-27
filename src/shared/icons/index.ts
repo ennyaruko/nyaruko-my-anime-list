@@ -25,7 +25,9 @@ export { ReactComponent as ThemeMoonIcon } from "./theme-moon.svg";
 export { ReactComponent as NoContentIcon } from "./no-content.svg";
 export { ReactComponent as ArrowDownIcon } from "./arrow-down.svg";
 export { ReactComponent as MinusWideIcon } from "./minus-wide.svg";
+export { ReactComponent as TranslationIcon } from "./translation.svg";
 export { ReactComponent as StarDuotoneIcon } from "./star-duotone.svg";
 export { ReactComponent as ExternalLinkIcon } from "./external-link.svg";
 export { ReactComponent as FilterCheckedIcon } from "./filter-checked.svg";
+
 export { ReactComponent as AdultContentIcon } from "./adult-content-hot.svg";

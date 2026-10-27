@@ -198,3 +198,8 @@ export const logoutIcon = style({
 export const logoutLabel = style({
   ...typography.caption["2xs"],
 });
+
+export const translationIcon = styleVariants({
+  enabled: { width: "15px", height: "15px", color: colors.text.action },
+  disabled: { width: "15px", height: "15px", color: colors.text.tertiary },
+});

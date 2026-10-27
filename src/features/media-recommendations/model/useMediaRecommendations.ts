@@ -9,19 +9,22 @@ import { useAppService, queryCacheConfig } from "@/shared/lib";
 
 type UseMediaRecommendationsParameters = {
   mediaId: number;
+  perPage?: number;
   userId: string | undefined;
 };
 
-/** Loads similar media in non-persisted AniList pages. */
+/** Loads paginated similar media without persisting provider results. */
 export function useMediaRecommendations({
   userId,
   mediaId,
+  perPage = 5,
 }: UseMediaRecommendationsParameters) {
   const { accessToken } = useAuth();
   const service = useAppService(mediaRecommendationsServiceToken);
   const queryKey = queryCacheConfig.families.mediaRecommendations.key(
     userId ?? "unknown",
     mediaId,
+    perPage,
   );
 
   return useInfiniteQuery<
@@ -46,6 +49,7 @@ export function useMediaRecommendations({
         mediaId,
         pageParam,
         signal,
+        perPage,
       );
     },
   });

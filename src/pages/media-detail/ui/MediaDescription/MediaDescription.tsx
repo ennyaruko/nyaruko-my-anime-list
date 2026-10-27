@@ -2,6 +2,12 @@ import { useTranslation } from "react-i18next";
 
 import clsx from "clsx";
 
+import {
+  TranslatedContent,
+  useContentLanguage,
+  ContentLanguageControls,
+} from "@/features/translate-content";
+
 import type { Media } from "@/entities/media";
 
 import { Heading } from "@/shared/ui";
@@ -14,17 +20,49 @@ import * as pageStyles from "../MediaDetailPage.css";
 
 export function MediaDescription({ media }: { media: Media | undefined }) {
   const { t } = useTranslation(["common"]);
+  const { language, setLanguage } = useContentLanguage(
+    media?.id ?? "description",
+    "description",
+  );
 
   return (
     <section className={pageStyles.section}>
-      <Heading size="m" variant="neutral">
+      <Heading
+        size="m"
+        variant="neutral"
+        action={
+          media?.description ? (
+            <ContentLanguageControls
+              language={language}
+              onChange={setLanguage}
+            />
+          ) : undefined
+        }
+      >
         {t("common:mediaDetail.description")}
       </Heading>
       {media ? (
         media.description ? (
-          <MarkdownContent variant="description">
-            {media.description}
-          </MarkdownContent>
+          language === "ru" ? (
+            <TranslatedContent
+              key={media.id}
+              variant="description"
+              content={media.description}
+            >
+              {(translations) => (
+                <MarkdownContent
+                  variant="description"
+                  translations={translations}
+                >
+                  {media.description!}
+                </MarkdownContent>
+              )}
+            </TranslatedContent>
+          ) : (
+            <MarkdownContent variant="description">
+              {media.description}
+            </MarkdownContent>
+          )
         ) : (
           <p className={styles.descriptionEmpty}>
             {t("common:mediaDetail.emptyDescription")}

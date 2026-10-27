@@ -22,7 +22,6 @@ export default {
   multiSelect: {
     placeholder: "Select options",
   },
-  description: "Anime List UI built with React and TypeScript",
   table: {
     showLess: "Show less",
     showAll: "Show more...",
@@ -31,6 +30,7 @@ export default {
     add: "Add to list",
     remove: "Remove from list",
   },
+  description: "An anime catalog with search, personal lists, and reviews.",
   actions: {
     scrollToTop: "Scroll to top",
     clearSelection: "Clear selection",
@@ -77,6 +77,13 @@ export default {
     lightTheme: "Light theme",
     adultContent: "18+ Content",
     provider: "{{provider}} API",
+  },
+  translation: {
+    retry: "Retry translation",
+    reviews: "Translate reviews",
+    description: "Translate description",
+    loading: "Translating… Showing the original for now.",
+    failed: "Translation unavailable. Showing the original.",
   },
   login: {
     title: "Sign in",
@@ -125,6 +132,7 @@ export default {
     recommendations: "Similar",
     noReviews: "No reviews yet",
     releaseDate: "Release date:",
+    allRecommendations: "See all",
     releaseRange: "from {{start}} to {{end}}",
     emptyDescription: "No description available",
     relationType: {

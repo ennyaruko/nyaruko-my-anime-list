@@ -10,6 +10,7 @@ export type MediaRecommendationsService = {
     mediaId: number,
     page: number,
     signal?: AbortSignal,
+    perPage?: number,
   ): Promise<MediaRecommendationsPage>;
 };
 

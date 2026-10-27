@@ -2,8 +2,6 @@ import type { ReactNode } from "react";
 import { Fragment, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import clsx from "clsx";
-
 import type {
   MediaSortKey,
   FilterOptions,
@@ -25,6 +23,7 @@ import {
   Container,
   ScrollArea,
   MultiSelect,
+  ModeControls,
   LabeledCheckbox,
   LabeledCombobox,
   showNotification,
@@ -327,25 +326,14 @@ export function MediaFiltersPanel({
               <FilterSection
                 title={t("common:ui.filters.source")}
                 actions={
-                  <div className={styles.modeControls}>
-                    {(["include", "exclude"] as const).map((mode, index) => (
-                      <Fragment key={mode}>
-                        {index > 0 && (
-                          <span className={styles.modeSeparator}>/</span>
-                        )}
-                        <button
-                          type="button"
-                          onClick={() => handleSourceModeChange(mode)}
-                          className={clsx(styles.modeButton[mode], {
-                            [styles.modeButtonActive]:
-                              filters.sourceMode === mode,
-                          })}
-                        >
-                          {t(`common:ui.filters.${mode}`)}
-                        </button>
-                      </Fragment>
-                    ))}
-                  </div>
+                  <ModeControls
+                    value={filters.sourceMode}
+                    onChange={handleSourceModeChange}
+                    options={(["include", "exclude"] as const).map((mode) => ({
+                      value: mode,
+                      label: t(`common:ui.filters.${mode}`),
+                    }))}
+                  />
                 }
               >
                 {sourceFilterOptions.map(({ value, label }) => (

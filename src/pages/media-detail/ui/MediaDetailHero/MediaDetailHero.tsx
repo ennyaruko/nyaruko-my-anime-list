@@ -1,4 +1,3 @@
-import { Link } from "react-router";
 import type { CSSProperties } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -11,9 +10,17 @@ import {
 
 import type { Media } from "@/entities/media";
 
+import { NoImageIcon } from "@/shared/icons";
 import { skeletonAnimation } from "@/shared/styles";
-import { NoImageIcon, ArrowDownIcon } from "@/shared/icons";
-import { Row, Chip, Image, Column, Rating, Progress } from "@/shared/ui";
+import {
+  Row,
+  Chip,
+  Image,
+  Column,
+  Rating,
+  BackLink,
+  Progress,
+} from "@/shared/ui";
 
 import * as styles from "./MediaDetailHero.css";
 
@@ -148,10 +155,5 @@ export type MediaDetailBackLinkProps = {
 export function MediaDetailBackLink({ to }: MediaDetailBackLinkProps) {
   const { t } = useTranslation(["common"]);
 
-  return (
-    <Link to={to} className={styles.backButton}>
-      <ArrowDownIcon className={styles.backIcon} />
-      {t("common:mediaDetail.back")}
-    </Link>
-  );
+  return <BackLink to={to}>{t("common:mediaDetail.back")}</BackLink>;
 }

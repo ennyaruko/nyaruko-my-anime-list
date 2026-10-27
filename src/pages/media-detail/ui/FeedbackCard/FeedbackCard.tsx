@@ -3,11 +3,18 @@ import { useTranslation } from "react-i18next";
 
 import clsx from "clsx";
 
+import {
+  TranslatedContent,
+  useContentLanguage,
+  ContentLanguageControls,
+} from "@/features/translate-content";
+
 import type { MediaReview } from "@/entities/media";
 import { AccountIdentity, AccountIdentitySkeleton } from "@/entities/account";
 
 import { skeletonAnimation } from "@/shared/styles";
 import { Row, Button, RatingCompact } from "@/shared/ui";
+import type { TextTranslations } from "@/shared/lib/content-markup";
 
 import { MarkdownContent } from "../MarkdownContent";
 
@@ -25,12 +32,34 @@ export type FeedbackCardSkeletonProps = {
 export function FeedbackCard({ review }: FeedbackCardProps) {
   const { t, i18n } = useTranslation(["common"]);
   const [expanded, setExpanded] = useState(false);
+  const { language, setLanguage } = useContentLanguage(review.id, "reviews");
   const voteCounts = getReviewVoteCounts(review.rating, review.ratingAmount);
   const score = review.score === null ? null : review.score / 10;
   const createdAt = new Date(review.createdAt * 1_000);
   const formattedDate = formatRelativeDate(createdAt, i18n.language);
   const body = review.body ?? "";
   const hasBody = body.trim().length > 0;
+
+  const renderContent = (translations: TextTranslations) => (
+    <>
+      {review.summary && (
+        <p className={styles.summary}>
+          {Object.hasOwn(translations, review.summary)
+            ? translations[review.summary]
+            : review.summary}
+        </p>
+      )}
+      {hasBody && (
+        <div
+          className={clsx(styles.body, { [styles.bodyCollapsed]: !expanded })}
+        >
+          <MarkdownContent variant="review" translations={translations}>
+            {body}
+          </MarkdownContent>
+        </div>
+      )}
+    </>
+  );
 
   return (
     <article className={styles.root}>
@@ -43,29 +72,39 @@ export function FeedbackCard({ review }: FeedbackCardProps) {
           </time>
         }
         content={
-          <Row gap="xs" alignItem="center">
-            {score !== null && <RatingCompact value={score} />}
-            <Row gap="tiny" alignItem="center">
-              <span className={styles.positiveVotes}>
-                {voteCounts.positive}+
-              </span>
-              <span className={styles.voteSeparator}>/</span>
-              <span className={styles.negativeVotes}>
-                {voteCounts.negative}-
-              </span>
+          <Row wide gap="xs" alignItem="center" justifyContent="space-between">
+            <Row gap="xs" alignItem="center">
+              {score !== null && <RatingCompact value={score} />}
+              <Row gap="tiny" alignItem="center">
+                <span className={styles.positiveVotes}>
+                  {voteCounts.positive}+
+                </span>
+                <span className={styles.voteSeparator}>/</span>
+                <span className={styles.negativeVotes}>
+                  {voteCounts.negative}-
+                </span>
+              </Row>
             </Row>
+            {(hasBody || Boolean(review.summary)) && (
+              <ContentLanguageControls
+                language={language}
+                onChange={setLanguage}
+              />
+            )}
           </Row>
         }
       />
-      {review.summary && <p className={styles.summary}>{review.summary}</p>}
-      {hasBody && (
-        <div
-          className={clsx(styles.body, {
-            [styles.bodyCollapsed]: !expanded,
-          })}
+      {language === "ru" ? (
+        <TranslatedContent
+          content={body}
+          key={review.id}
+          variant="review"
+          extraTexts={review.summary ? [review.summary] : []}
         >
-          <MarkdownContent variant="review">{body}</MarkdownContent>
-        </div>
+          {renderContent}
+        </TranslatedContent>
+      ) : (
+        renderContent({})
       )}
       {hasBody && (
         <Button

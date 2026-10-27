@@ -1,3 +1,5 @@
+import { remoteEndpoints } from "@/app/config/remote-endpoints";
+import { createGoogleTranslationService } from "@/app/integrations/google-translate/translation-service";
 import {
   aniListAccountProvider,
   aniListMediaListService,
@@ -10,6 +12,8 @@ import {
   aniListMediaListActionsService,
   aniListMediaRecommendationsService,
 } from "@/app/integrations/anilist";
+
+import { translationServiceToken } from "@/features/translate-content";
 
 import { myListServiceToken } from "@/entities/media";
 import { identityProviderToken } from "@/entities/auth";
@@ -39,4 +43,8 @@ export const appServices = createServiceRegistry()
   )
   .register(filterOptionsProviderToken, aniListFilterOptionsProvider)
   .register(mediaSearchServiceToken, aniListMediaSearchService)
+  .register(
+    translationServiceToken,
+    createGoogleTranslationService(remoteEndpoints),
+  )
   .build();

@@ -190,6 +190,12 @@ export const queryCacheConfig = {
       ["media-search"],
       (parameters: object) => [parameters] as const,
     ),
+    /** Translated prose is cached in memory only. */
+    contentTranslation: defineQueryFamily(
+      ["content-translation"],
+      (content: string, variant: string, extraTexts: readonly string[]) =>
+        ["ru", variant, content, extraTexts] as const,
+    ),
     /** Фильтры считаются свежими 90 дней. */
     filters: defineQueryFamily(
       ["filters"],
@@ -216,18 +222,6 @@ export const queryCacheConfig = {
     /** Related media are fetched on demand and are not persisted. */
     mediaRelations: defineQueryFamily(
       ["media-relations"],
-      (userId: string, mediaId: number) => [userId, mediaId] as const,
-      {
-        userIdIndex: 1,
-        keyConstraints: [
-          { index: 1, type: "non-empty-string" },
-          { index: 2, type: "finite-number" },
-        ],
-      },
-    ),
-    /** Recommendations load by page and are not persisted. */
-    mediaRecommendations: defineQueryFamily(
-      ["media-recommendations"],
       (userId: string, mediaId: number) => [userId, mediaId] as const,
       {
         userIdIndex: 1,
@@ -274,6 +268,20 @@ export const queryCacheConfig = {
         keyConstraints: [
           { index: 2, type: "non-empty-string" },
           { index: 3, type: "non-empty-string" },
+        ],
+      },
+    ),
+    /** Recommendations load by page and are not persisted. */
+    mediaRecommendations: defineQueryFamily(
+      ["media-recommendations"],
+      (userId: string, mediaId: number, perPage: number) =>
+        [userId, mediaId, perPage] as const,
+      {
+        userIdIndex: 1,
+        keyConstraints: [
+          { index: 1, type: "non-empty-string" },
+          { index: 2, type: "finite-number" },
+          { index: 3, type: "finite-number" },
         ],
       },
     ),

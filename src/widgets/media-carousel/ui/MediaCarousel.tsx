@@ -11,6 +11,7 @@ export type MediaCarouselProps<T> = {
   title: ReactNode;
   isPending: boolean;
   hasNextPage: boolean;
+  titleAction?: ReactNode;
   isFetchingNextPage: boolean;
   renderSkeleton: () => ReactNode;
   renderItem: (item: T) => ReactNode;
@@ -24,6 +25,7 @@ export function MediaCarousel<T>({
   getKey,
   isPending,
   renderItem,
+  titleAction,
   hasNextPage,
   renderSkeleton,
   onFetchNextPage,
@@ -66,7 +68,7 @@ export function MediaCarousel<T>({
 
   return (
     <section className={styles.section}>
-      <Heading size="m" variant="neutral">
+      <Heading size="m" variant="neutral" action={titleAction}>
         {title}
       </Heading>
       <div ref={viewportRef} className={styles.viewport}>

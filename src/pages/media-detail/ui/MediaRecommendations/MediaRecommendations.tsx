@@ -6,6 +6,7 @@ import clsx from "clsx";
 
 import { MediaCarousel } from "@/widgets/media-carousel";
 
+import { useMediaRecommendations } from "@/features/media-recommendations";
 import {
   useMediaListActions,
   MediaListContextMenu,
@@ -19,7 +20,6 @@ import { skeletonAnimation } from "@/shared/styles";
 import { Image, Score, Title, Progress, type TitleState } from "@/shared/ui";
 
 import { formatLabelKey } from "../media-detail-labels";
-import { useMediaRecommendations } from "../../model/useMediaRecommendations";
 
 import * as styles from "./MediaRecommendations.css";
 
@@ -90,6 +90,14 @@ export function MediaRecommendations({
           <LinkedMediaCard media={item} userId={userId} />
         </MediaListContextMenu>
       )}
+      titleAction={
+        <Link
+          to={`/media/${mediaId}/recommendations`}
+          className={styles.allRecommendationsLink}
+        >
+          {t("common:mediaDetail.allRecommendations")}
+        </Link>
+      }
     />
   );
 }

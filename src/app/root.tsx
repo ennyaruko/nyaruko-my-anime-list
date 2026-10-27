@@ -24,6 +24,8 @@ import { Providers } from "./providers";
 
 import "./styles/global.css";
 
+const SITE_URL = "https://nyar1othotep.github.io/my-anime-list/";
+
 const themeInitializerScript = `
   (function() {
     let storedTheme = null;
@@ -68,9 +70,66 @@ export function Layout({ children }: { children: ReactNode }) {
           name="viewport"
           content="width=device-width, initial-scale=1, viewport-fit=cover"
         />
+        <link
+          rel="manifest"
+          href={`${import.meta.env.BASE_URL}manifest.webmanifest`}
+        />
+        <link
+          rel="icon"
+          sizes="any"
+          href={`${import.meta.env.BASE_URL}favicon.ico`}
+        />
+        <link
+          rel="icon"
+          sizes="32x32"
+          type="image/png"
+          href={`${import.meta.env.BASE_URL}favicon-32x32.png`}
+        />
+        <link
+          rel="icon"
+          sizes="48x48"
+          type="image/png"
+          href={`${import.meta.env.BASE_URL}favicon-48x48.png`}
+        />
+        <link
+          rel="icon"
+          sizes="16x16"
+          type="image/png"
+          href={`${import.meta.env.BASE_URL}favicon-16x16.png`}
+        />
+        <link
+          sizes="180x180"
+          rel="apple-touch-icon"
+          href={`${import.meta.env.BASE_URL}apple-touch-icon.png`}
+        />
+        <link rel="canonical" href={SITE_URL} />
         <base href={import.meta.env.BASE_URL} />
+        <meta content="MyAnimeList" name="application-name" />
+        <meta content="MyAnimeList" name="apple-mobile-web-app-title" />
         <meta content="#10131a" name="theme-color" />
         <meta name="description" content={t("common:description")} />
+        <meta
+          property="og:locale"
+          content={language === "ru" ? "ru_RU" : "en_US"}
+        />
+        <meta content="website" property="og:type" />
+        <meta property="og:title" content={t("common:title")} />
+        <meta property="og:description" content={t("common:description")} />
+        <meta
+          property="og:image"
+          content={`${SITE_URL}android-chrome-512x512.png`}
+        />
+        <meta content="512" property="og:image:width" />
+        <meta content="512" property="og:image:height" />
+        <meta property="og:url" content={SITE_URL} />
+        <meta property="og:site_name" content={t("common:title")} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={t("common:title")} />
+        <meta name="twitter:description" content={t("common:description")} />
+        <meta
+          name="twitter:image"
+          content={`${SITE_URL}android-chrome-512x512.png`}
+        />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"

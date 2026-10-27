@@ -4,7 +4,7 @@ import { mapAniListMedia } from "./media-mapper";
 import { createAniListGraphQLClient } from "./client";
 import { MediaRecommendationsDocument } from "./queries";
 
-const RECOMMENDATIONS_PER_PAGE = 5;
+const DEFAULT_RECOMMENDATIONS_PER_PAGE = 5;
 
 /** Loads and maps one page of AniList recommendations. */
 export async function getAniListMediaRecommendations(
@@ -12,12 +12,13 @@ export async function getAniListMediaRecommendations(
   mediaId: number,
   page: number,
   signal?: AbortSignal,
+  perPage = DEFAULT_RECOMMENDATIONS_PER_PAGE,
 ): Promise<MediaRecommendationsPage> {
   const client = createAniListGraphQLClient(accessToken);
   const response = await client.request({
     signal,
     document: MediaRecommendationsDocument,
-    variables: { page, id: mediaId, perPage: RECOMMENDATIONS_PER_PAGE },
+    variables: { page, perPage, id: mediaId },
   });
   const recommendations = response.Media?.recommendations;
 

@@ -14,6 +14,7 @@ export * from "./Switch";
 export * from "./Header";
 export * from "./Heading";
 export * from "./Spinner";
+export * from "./BackLink";
 export * from "./GridList";
 export * from "./Checkbox";
 export * from "./Combobox";
@@ -24,8 +25,10 @@ export * from "./BlockStatus";
 export * from "./MultiSelect";
 export * from "./Breadcrumbs";
 export * from "./Notification";
+export * from "./ModeControls";
 export * from "./PullToRefresh";
 export * from "./ErrorBoundary";
 export * from "./ScrollToTopButton";
 export * from "./Form/ControlledInput";
+
 export * from "./Form/ControlledComponent";

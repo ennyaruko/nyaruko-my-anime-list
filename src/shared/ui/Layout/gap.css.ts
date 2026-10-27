@@ -3,6 +3,7 @@ import { styleVariants } from "@vanilla-extract/css";
 import { primitives } from "@/shared/styles";
 
 export const gap = styleVariants({
+  normal: { gap: "normal" },
   l: { gap: primitives.spacing.l },
   m: { gap: primitives.spacing.m },
   s: { gap: primitives.spacing.s },

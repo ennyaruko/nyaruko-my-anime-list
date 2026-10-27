@@ -6,6 +6,12 @@ import type { MyListStatus } from "./my-list";
 export type MediaListActionsService = {
   /** Removes a media-list entry by its provider-specific entry ID. */
   removeEntry(accessToken: string, listEntryId: number): Promise<void>;
+  /** Updates the current user's score for a media item. */
+  updateScore(
+    accessToken: string,
+    mediaId: number,
+    score: number,
+  ): Promise<void>;
   /** Sets a media item's status, creating an entry when it does not exist. */
   setStatus(
     accessToken: string,

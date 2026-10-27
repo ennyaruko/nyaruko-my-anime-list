@@ -1,6 +1,6 @@
 import { style } from "@vanilla-extract/css";
 
-import { colors } from "@/shared/styles";
+import { colors, skeletonAnimation } from "@/shared/styles";
 
 export const root = style({
   width: "100%",
@@ -23,7 +23,10 @@ export const previewImage = style({
   transform: "scale(1.02)",
 });
 
-export const loading = style({
-  inset: 0,
-  position: "absolute",
-});
+export const loading = style([
+  ...skeletonAnimation,
+  {
+    inset: 0,
+    position: "absolute",
+  },
+]);

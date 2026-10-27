@@ -3,8 +3,6 @@ import type { CSSProperties, HTMLAttributes } from "react";
 
 import clsx from "clsx";
 
-import { skeletonAnimation } from "@/shared/styles";
-
 import * as styles from "./Image.css";
 
 export type ImageSource = {
@@ -24,6 +22,7 @@ export type ImageProps = Omit<
   onError?: VoidFunction;
   imageClassName?: string;
   loading?: "lazy" | "eager";
+  keepPreviousUntilLoaded?: boolean;
 };
 
 type ImageStatus = "error" | "loaded" | "preview" | "loading";
@@ -38,17 +37,23 @@ export function Image({
   className,
   imageClassName,
   loading = "lazy",
+  keepPreviousUntilLoaded = true,
   ...props
 }: ImageProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const onLoadRef = useRef(onLoad);
   const onErrorRef = useRef(onError);
+
   const imageUrl = image.url;
   const previewUrl = preview?.url ?? "";
+
   const [isNearViewport, setIsNearViewport] = useState(loading === "eager");
+
   const [status, setStatus] = useState<ImageStatus>(
     previewUrl ? "preview" : "loading",
   );
+
+  const [loadedUrl, setLoadedUrl] = useState<null | string>(null);
 
   useEffect(() => {
     onLoadRef.current = onLoad;
@@ -97,7 +102,9 @@ export function Image({
     }
 
     let cancelled = false;
+
     const preloadImage = new window.Image();
+
     setStatus("loading");
 
     const handleLoad = () => {
@@ -105,9 +112,11 @@ export function Image({
         return;
       }
 
+      setLoadedUrl(imageUrl);
       setStatus("loaded");
       onLoadRef.current?.();
     };
+
     const handleError = () => {
       if (cancelled) {
         return;
@@ -136,12 +145,18 @@ export function Image({
     };
   }, [imageUrl, isNearViewport]);
 
-  const displayedUrl =
+  const defaultDisplayedUrl =
     status === "loaded"
       ? imageUrl
       : previewUrl || (status === "error" || !isNearViewport ? "" : imageUrl);
+
+  const displayedUrl = keepPreviousUntilLoaded
+    ? (loadedUrl ?? previewUrl)
+    : defaultDisplayedUrl;
+
   const width = image.width ?? preview?.width;
   const height = image.height ?? preview?.height;
+
   const imageStyle: CSSProperties = {
     ...style,
     aspectRatio: width && height ? `${width} / ${height}` : style?.aspectRatio,
@@ -163,12 +178,17 @@ export function Image({
           loading={loading}
           src={displayedUrl}
           className={clsx(styles.image, imageClassName, {
-            [styles.previewImage]: status !== "loaded",
+            [styles.previewImage]: keepPreviousUntilLoaded
+              ? Boolean(previewUrl) &&
+                displayedUrl === previewUrl &&
+                status !== "loaded"
+              : status !== "loaded",
           })}
         />
       )}
-      {status === "loading" && !previewUrl && (
-        <div className={clsx(styles.loading, skeletonAnimation)} />
+
+      {status === "loading" && !displayedUrl && !previewUrl && (
+        <div className={styles.loading} />
       )}
     </div>
   );

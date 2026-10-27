@@ -10,8 +10,9 @@ import { showNotification } from "@/shared/ui";
 import { useAppService, queryCacheConfig } from "@/shared/lib";
 
 type MediaListAction =
-  | { type: "remove"; listEntryId: number }
+  | { type: "score"; score: number; mediaId: number }
   | { mediaId: number; type: "progress"; progress: number }
+  | { type: "remove"; mediaId: number; listEntryId: number }
   | { type: "status"; mediaId: number; status: MediaListStatus };
 
 type StatusTranslationKey =
@@ -58,14 +59,35 @@ export function useMediaListActions(userId: string | undefined) {
             action.mediaId,
             action.progress,
           );
+        case "score":
+          return service.updateScore(accessToken, action.mediaId, action.score);
       }
     },
     onSuccess: async (_, action) => {
       if (userId) {
-        await queryClient.invalidateQueries({
-          exact: true,
-          queryKey: queryCacheConfig.families.userList.key(userId),
-        });
+        await Promise.all([
+          queryClient.invalidateQueries({
+            queryKey: [...queryCacheConfig.families.userList.keyPrefix, userId],
+          }),
+          queryClient.invalidateQueries({
+            queryKey: queryCacheConfig.families.mediaDetail.key(
+              userId,
+              action.mediaId,
+            ),
+          }),
+          queryClient.invalidateQueries({
+            queryKey: [
+              ...queryCacheConfig.families.mediaRecommendations.keyPrefix,
+              userId,
+            ],
+          }),
+          queryClient.invalidateQueries({
+            queryKey: [
+              ...queryCacheConfig.families.mediaRelations.keyPrefix,
+              userId,
+            ],
+          }),
+        ]);
       }
 
       if (action.type === "status") {
@@ -80,6 +102,10 @@ export function useMediaListActions(userId: string | undefined) {
       if (action.type === "remove") {
         showNotification(t("common:notify.mediaRemovedFromList"), "success");
       }
+
+      if (action.type === "score") {
+        showNotification(t("common:notify.mediaScoreChanged"), "success");
+      }
     },
   });
 
@@ -89,9 +115,9 @@ export function useMediaListActions(userId: string | undefined) {
     }
   };
 
-  const removeFromList = (listEntryId: number) => {
+  const removeFromList = (listEntryId: number, mediaId: number) => {
     if (canManageList) {
-      mutation.mutate({ listEntryId, type: "remove" });
+      mutation.mutate({ mediaId, listEntryId, type: "remove" });
     }
   };
 
@@ -101,7 +127,14 @@ export function useMediaListActions(userId: string | undefined) {
     }
   };
 
+  const updateScore = (mediaId: number, score: number) => {
+    if (canManageList) {
+      mutation.mutate({ score, mediaId, type: "score" });
+    }
+  };
+
   return {
+    updateScore,
     changeStatus,
     canManageList,
     removeFromList,

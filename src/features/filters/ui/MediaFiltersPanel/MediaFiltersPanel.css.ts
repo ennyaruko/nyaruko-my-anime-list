@@ -22,27 +22,12 @@ export const drawer = style({
   overflow: "hidden",
 });
 
-export const drawerHeader = style({
-  display: "grid",
-  flex: "0 0 auto",
-  alignItems: "center",
-  gap: primitives.spacing.xs,
-  zIndex: primitives.zIndex.sticky,
-  boxShadow: primitives.shadow.small,
-  background: colors.background.base,
-  gridTemplateColumns: "1fr auto 1fr",
-  padding: `calc(${primitives.spacing.s} + env(safe-area-inset-top)) ${primitives.spacing.xs} ${primitives.spacing.xxs}`,
-});
-
-export const backButton = style({ justifySelf: "start" });
-
 export const appliedCount = style({
   ...typography.caption["2xs"],
   textAlign: "center",
   whiteSpace: "nowrap",
   color: colors.text.primary,
 });
-export const resetButton = style({ justifySelf: "end" });
 
 export const drawerContent = style({
   padding: `${primitives.spacing.xs} 0`,

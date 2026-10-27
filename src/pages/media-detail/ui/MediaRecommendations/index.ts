@@ -1,0 +1,1 @@
+export { MediaRecommendations } from "./MediaRecommendations";

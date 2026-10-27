@@ -20,6 +20,7 @@ import {
   Button,
   Column,
   Drawer,
+  Header,
   Heading,
   Container,
   ScrollArea,
@@ -204,22 +205,27 @@ export function MediaFiltersPanel({
         className={styles.drawer}
         onClose={handleCloseDrawer}
       >
-        <div className={styles.drawerHeader}>
-          <Button
-            variant="flat"
-            onClick={handleCloseDrawer}
-            leftIcon={<ArrowDownIcon />}
-            className={styles.backButton}
-          >
-            {t("common:ui.filters.close")}
-          </Button>
-          <span className={styles.appliedCount}>
-            {t("common:ui.filters.applied", { count })}
-          </span>
-          <Button size="s" onClick={onReset} className={styles.resetButton}>
-            {t("common:ui.filters.resetAll")}
-          </Button>
-        </div>
+        <Header
+          trailing={
+            <Button size="s" onClick={onReset}>
+              {t("common:ui.filters.resetAll")}
+            </Button>
+          }
+          center={
+            <span className={styles.appliedCount}>
+              {t("common:ui.filters.applied", { count })}
+            </span>
+          }
+          leading={
+            <Button
+              variant="flat"
+              onClick={handleCloseDrawer}
+              leftIcon={<ArrowDownIcon />}
+            >
+              {t("common:ui.filters.close")}
+            </Button>
+          }
+        />
 
         <ScrollArea>
           <Container>

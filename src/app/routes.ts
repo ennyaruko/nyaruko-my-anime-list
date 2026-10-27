@@ -9,6 +9,7 @@ export default [
   layout("routes/layouts/authenticated-layout.tsx", [
     layout("routes/layouts/app-layout.tsx", [
       index("routes/home.tsx"),
+      route("media/:id", "routes/media-detail.tsx"),
       route("search", "routes/search.tsx"),
     ]),
   ]),

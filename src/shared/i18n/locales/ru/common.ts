@@ -10,9 +10,6 @@ export default {
   progress: {
     label: "Прогресс",
   },
-  mediaList: {
-    remove: "Удалить из списка",
-  },
   search: {
     placeholder: "Введите название",
   },
@@ -34,6 +31,10 @@ export default {
   table: {
     showLess: "Свернуть",
     showAll: "Показать ещё...",
+  },
+  mediaList: {
+    add: "Добавить в список",
+    remove: "Удалить из списка",
   },
   navigation: {
     search: "Поиск",
@@ -72,18 +73,19 @@ export default {
     notFoundTitle: "Страница не найдена",
     description: "Что-то пошло не так. Попробуйте перезагрузить страницу.",
   },
-  notify: {
-    saveFilters: "Фильтры сохранены",
-    mediaRemovedFromList: "Запись удалена из списка",
-    mediaStatusChanged: "Статус изменён: {{status}}",
-    mediaListActionFailed: "Не удалось обновить список. Попробуйте ещё раз.",
-  },
   login: {
     retry: "Повторить",
     title: "Авторизация",
     continueWithProvider: "Продолжить с {{provider}}",
     authFailed: "Не удалось завершить авторизацию AniList. Попробуйте ещё раз.",
     description: "На данной странице вы сможете авторизоваться на нашем сайте.",
+  },
+  notify: {
+    saveFilters: "Фильтры сохранены",
+    mediaScoreChanged: "Оценка сохранена",
+    mediaRemovedFromList: "Запись удалена из списка",
+    mediaStatusChanged: "Статус изменён: {{status}}",
+    mediaListActionFailed: "Не удалось обновить список. Попробуйте ещё раз.",
   },
   sort: {
     score: "По рейтингу",
@@ -96,6 +98,45 @@ export default {
     averageScore: "По среднему рейтингу",
     lastAdded: "По последнему добавленному",
     lastUpdated: "По последнему обновлению",
+  },
+  mediaDetail: {
+    tags: "Теги",
+    back: "Назад",
+    genres: "Жанры:",
+    reviews: "Отзывы",
+    status: "Статус:",
+    score: "Рейтинг:",
+    format: "Формат:",
+    info: "Информация",
+    episodes: "Эпизоды:",
+    year: "{{year}} год",
+    relations: "Связанное",
+    description: "Описание",
+    source: "Первоисточник:",
+    recommendations: "Похожее",
+    expandReview: "Развернуть",
+    collapseReview: "Свернуть",
+    releaseDate: "Дата выхода:",
+    noReviews: "Отзывов пока нет",
+    noImagelabel: "Нет изображения",
+    releaseRange: "с {{start}} по {{end}}",
+    emptyDescription: "Описание отсутствует",
+    relationType: {
+      spinOff: "Спин-офф",
+      contains: "Содержит",
+      character: "Персонаж",
+      sequel: "Продолжение",
+      prequel: "Предыстория",
+      adaptation: "Адаптация",
+      source: "Первоисточник",
+      fullStory: "Полная история",
+      sideStory: "Побочная история",
+      summary: "Краткое содержание",
+      parent: "Родительская история",
+      alternative: "Альтернативная история",
+      alternativeVersion: "Альтернативная версия",
+      alternativeSetting: "Альтернативный сеттинг",
+    },
   },
   ui: {
     watchStatus: {
@@ -123,7 +164,7 @@ export default {
       applied_many: "Применено ({{count}})",
       applied_other: "Применено ({{count}})",
       mediaStatus: {
-        finished: "Вышедшее",
+        finished: "Вышло",
         cancelled: "Отменено",
         announced: "Анонсировано",
         releasing: "Сейчас выходит",

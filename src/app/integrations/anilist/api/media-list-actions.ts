@@ -10,7 +10,7 @@ import {
 export async function saveAniListMediaListEntry(
   accessToken: string,
   mediaId: number,
-  changes: { progress?: number; status?: MyListStatus },
+  changes: { score?: number; progress?: number; status?: MyListStatus },
 ): Promise<void> {
   const client = createAniListGraphQLClient(accessToken);
   const response = await client.request({

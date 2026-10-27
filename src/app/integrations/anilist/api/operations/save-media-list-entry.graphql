@@ -2,8 +2,14 @@ mutation SaveMediaListEntry(
   $mediaId: Int!
   $status: MediaListStatus
   $progress: Int
+  $score: Float
 ) {
-  SaveMediaListEntry(mediaId: $mediaId, status: $status, progress: $progress) {
+  SaveMediaListEntry(
+    mediaId: $mediaId
+    status: $status
+    progress: $progress
+    score: $score
+  ) {
     id
     mediaId
     status

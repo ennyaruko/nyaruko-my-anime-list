@@ -1,0 +1,21 @@
+query MediaReviews($id: Int!) {
+  Media(id: $id, type: ANIME) {
+    reviews(page: 1, perPage: 5, sort: RATING_DESC) {
+      nodes {
+        id
+        summary
+        body(asHtml: true)
+        rating
+        ratingAmount
+        score
+        createdAt
+        user {
+          name
+          avatar {
+            large
+          }
+        }
+      }
+    }
+  }
+}

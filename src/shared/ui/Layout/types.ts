@@ -1,6 +1,6 @@
 import { primitives } from "@/shared/styles";
 
-export type SpacingToken = keyof typeof primitives.spacing;
+export type SpacingToken = "normal" | keyof typeof primitives.spacing;
 
 export type FlexDirection = "row" | "column" | "row-reverse" | "column-reverse";
 

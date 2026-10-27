@@ -11,6 +11,7 @@ export * from "./Rating";
 export * from "./Button";
 export * from "./Drawer";
 export * from "./Switch";
+export * from "./Header";
 export * from "./Heading";
 export * from "./Spinner";
 export * from "./GridList";

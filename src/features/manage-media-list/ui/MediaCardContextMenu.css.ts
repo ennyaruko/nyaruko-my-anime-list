@@ -3,6 +3,11 @@ import { style } from "@vanilla-extract/css";
 export const trigger = style({
   minWidth: 0,
   width: "100%",
+});
+
+export const cardSurface = style({
+  minWidth: 0,
+  width: "100%",
   position: "relative",
 });
 

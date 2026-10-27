@@ -13,9 +13,6 @@ export default {
   search: {
     placeholder: "Enter the name",
   },
-  mediaList: {
-    remove: "Remove from list",
-  },
   combobox: {
     placeholder: "Select an option",
   },
@@ -34,6 +31,10 @@ export default {
     list: "List",
     tags: "Tags",
     genres: "Genres",
+  },
+  mediaList: {
+    add: "Add to list",
+    remove: "Remove from list",
   },
   navigation: {
     search: "Search",
@@ -71,12 +72,6 @@ export default {
     adultContent: "18+ Content",
     provider: "{{provider}} API",
   },
-  notify: {
-    saveFilters: "The filters are saved",
-    mediaStatusChanged: "Status changed to {{status}}",
-    mediaRemovedFromList: "Entry removed from your list",
-    mediaListActionFailed: "Could not update your list. Please try again.",
-  },
   login: {
     title: "Sign in",
     retry: "Try again",
@@ -84,6 +79,13 @@ export default {
     description: "On this page, you will be able to log in to our website.",
     authFailed:
       "AniList authorization could not be completed. Please try again.",
+  },
+  notify: {
+    mediaScoreChanged: "Score saved",
+    saveFilters: "The filters are saved",
+    mediaStatusChanged: "Status changed to {{status}}",
+    mediaRemovedFromList: "Entry removed from your list",
+    mediaListActionFailed: "Could not update your list. Please try again.",
   },
   sort: {
     score: "By Score",
@@ -96,6 +98,45 @@ export default {
     progress: "By Viewing Progress",
     averageScore: "By Average Score",
     completedDate: "By Completion Date",
+  },
+  mediaDetail: {
+    back: "Back",
+    tags: "Tags",
+    score: "Score:",
+    year: "{{year}}",
+    status: "Status:",
+    genres: "Genres:",
+    format: "Format:",
+    source: "Source:",
+    reviews: "Reviews",
+    info: "Information",
+    relations: "Related",
+    episodes: "Episodes:",
+    expandReview: "Expand",
+    noImagelabel: "No image",
+    description: "Description",
+    recommendations: "Similar",
+    collapseReview: "Collapse",
+    noReviews: "No reviews yet",
+    releaseDate: "Release date:",
+    releaseRange: "from {{start}} to {{end}}",
+    emptyDescription: "No description available",
+    relationType: {
+      source: "Source",
+      sequel: "Sequel",
+      prequel: "Prequel",
+      summary: "Summary",
+      spinOff: "Spin-off",
+      contains: "Contains",
+      character: "Character",
+      parent: "Parent story",
+      sideStory: "Side story",
+      fullStory: "Full story",
+      adaptation: "Adaptation",
+      alternative: "Alternative story",
+      alternativeSetting: "Alternative setting",
+      alternativeVersion: "Alternative version",
+    },
   },
   ui: {
     watchStatus: {

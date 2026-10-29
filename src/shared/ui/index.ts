@@ -20,6 +20,7 @@ export * from "./Checkbox";
 export * from "./Combobox";
 export * from "./Progress";
 export * from "./ScrollArea";
+export * from "./EmbedFrame";
 export * from "./ContextMenu";
 export * from "./BlockStatus";
 export * from "./MultiSelect";
@@ -28,7 +29,9 @@ export * from "./Notification";
 export * from "./ModeControls";
 export * from "./PullToRefresh";
 export * from "./ErrorBoundary";
+export * from "./MarkdownContent";
 export * from "./ScrollToTopButton";
 export * from "./Form/ControlledInput";
 
 export * from "./Form/ControlledComponent";
+export { CollapsibleContent } from "./CollapsibleContent";

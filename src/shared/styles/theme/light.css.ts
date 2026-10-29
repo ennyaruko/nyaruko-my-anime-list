@@ -22,9 +22,9 @@ export const lightTheme = createTheme(themeVars, {
     },
 
     brand: {
-      darkBlue: "#445566",
-      darkBlueHover: "#536475",
-      darkBluePressed: "#374859",
+      primary: "#445566",
+      primaryHover: "#536475",
+      primaryPressed: "#374859",
     },
 
     status: {

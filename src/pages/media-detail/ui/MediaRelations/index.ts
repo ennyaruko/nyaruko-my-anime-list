@@ -1,1 +1,0 @@
-export { MediaRelations } from "./MediaRelations";

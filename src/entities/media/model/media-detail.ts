@@ -74,6 +74,8 @@ export type MediaDetail = {
   media: Media;
   /** Community-ranked tags. */
   tags: MediaTag[];
+  /** Original title variants for cross-catalog matching. */
+  titles?: string[];
   /** AniList's MyAnimeList identifier, used before external ID lookups. */
   malId: null | number;
 };

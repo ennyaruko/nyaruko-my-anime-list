@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import clsx from "clsx";
@@ -12,11 +11,10 @@ import {
 import type { MediaReview } from "@/entities/media";
 import { AccountIdentity, AccountIdentitySkeleton } from "@/entities/account";
 
+import { Row, RatingCompact } from "@/shared/ui";
 import { skeletonAnimation } from "@/shared/styles";
-import { Row, Button, RatingCompact } from "@/shared/ui";
+import { MarkdownContent, CollapsibleContent } from "@/shared/ui";
 import type { TextTranslations } from "@/shared/lib/content-markup";
-
-import { MarkdownContent } from "../MarkdownContent";
 
 import * as styles from "./FeedbackCard.css";
 
@@ -31,7 +29,6 @@ export type FeedbackCardSkeletonProps = {
 /** Displays one AniList review with safe Markdown rendering and collapse state. */
 export function FeedbackCard({ review }: FeedbackCardProps) {
   const { t, i18n } = useTranslation(["common"]);
-  const [expanded, setExpanded] = useState(false);
   const { language, setLanguage } = useContentLanguage(review.id, "reviews");
   const voteCounts = getReviewVoteCounts(review.rating, review.ratingAmount);
   const score = review.score === null ? null : review.score / 10;
@@ -50,13 +47,17 @@ export function FeedbackCard({ review }: FeedbackCardProps) {
         </p>
       )}
       {hasBody && (
-        <div
-          className={clsx(styles.body, { [styles.bodyCollapsed]: !expanded })}
+        <CollapsibleContent
+          collapsedHeight={100}
+          expandLabel={t("common:mediaDetail.expandReview")}
+          collapseLabel={t("common:mediaDetail.collapseReview")}
         >
-          <MarkdownContent variant="review" translations={translations}>
-            {body}
-          </MarkdownContent>
-        </div>
+          <div className={styles.body}>
+            <MarkdownContent variant="review" translations={translations}>
+              {body}
+            </MarkdownContent>
+          </div>
+        </CollapsibleContent>
       )}
     </>
   );
@@ -105,24 +106,6 @@ export function FeedbackCard({ review }: FeedbackCardProps) {
         </TranslatedContent>
       ) : (
         renderContent({})
-      )}
-      {hasBody && (
-        <Button
-          type="button"
-          aria-expanded={expanded}
-          variant={expanded ? "primary" : "flat"}
-          onClick={() => setExpanded((value) => !value)}
-          className={clsx(styles.toggle, {
-            [styles.toggleSticky]: expanded,
-          })}
-        >
-          <span>
-            {expanded
-              ? t("common:mediaDetail.collapseReview")
-              : t("common:mediaDetail.expandReview")}
-          </span>
-          <span className={styles.toggleArrow}>{expanded ? "↑" : "↓"}</span>
-        </Button>
       )}
     </article>
   );

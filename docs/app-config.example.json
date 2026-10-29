@@ -2,8 +2,52 @@
   "version": 2,
   "encoding": "base64",
   "endpoints": {
-    "translation": "aHR0cHM6Ly90cmFuc2xhdGUuZ29vZ2xlYXBpcy5jb20vdHJhbnNsYXRlX2Evc2luZ2xl",
-    "animeApiAniList": "aHR0cHM6Ly9hbmltZWFwaS5teS5pZC9hbmlsaXN0LzphbmlsaXN0SWQ=",
-    "shikimoriScreenshots": "aHR0cHM6Ly9zaGlraW1vcmkuaW8vYXBpL2FuaW1lcy86c2hpa2ltb3JpSWQvc2NyZWVuc2hvdHM="
+    "yummyApi": {
+      "fallbacks": [],
+      "default": "aHR0cHM6Ly9hcGkueWFuaS50di8="
+    },
+    "getMalId": {
+      "default": null,
+      "fallbacks": [
+        "aHR0cHM6Ly9hbmltZWFwaS5teS5pZC9hbmlsaXN0LzphbmlsaXN0SWQ="
+      ]
+    },
+    "playerAniembedSub": {
+      "fallbacks": [],
+      "default": "aHR0cHM6Ly9hbmllbWJlZC5zZS9lLzphbmlsaXN0SWQvOmVwaXNvZGU="
+    },
+    "playerVidnestSub": {
+      "fallbacks": [],
+      "default": "aHR0cHM6Ly92aWRuZXN0LmZ1bi9hbmltZS86YW5pbGlzdElkLzplcGlzb2RlL3N1Yg=="
+    },
+    "playerAniembedDub": {
+      "fallbacks": [],
+      "default": "aHR0cHM6Ly9hbmllbWJlZC5zZS9lLzphbmlsaXN0SWQvOmVwaXNvZGU/bGFuZz1kdWI="
+    },
+    "playerAnixoSub": {
+      "fallbacks": [],
+      "default": "aHR0cHM6Ly9hbml4by5idXp6L2VtYmVkL2FuaS86YW5pbGlzdElkLzplcGlzb2RlL3N1Yg=="
+    },
+    "playerAnixoDub": {
+      "fallbacks": [],
+      "default": "aHR0cHM6Ly9hbml4by5idXp6L2VtYmVkL2FuaS86YW5pbGlzdElkLzplcGlzb2RlP3RyYWNrPWR1Yg=="
+    },
+    "screenshots": {
+      "fallbacks": [],
+      "default": "aHR0cHM6Ly9zaGlraW1vcmkuaW8vYXBpL2FuaW1lcy86c2hpa2ltb3JpSWQvc2NyZWVuc2hvdHM="
+    },
+    "playerKodikRu": {
+      "fallbacks": [],
+      "default": "aHR0cHM6Ly9rb2Rpay55ZG5zLmV1Lz9zaGlraW1vcmlJRD06c2hpa2ltb3JpSWQmd2lkdGg9MTAwJSZoZWlnaHQ9MTAwJSZub0VtYmVk"
+    },
+    "translation": {
+      "fallbacks": [
+        "aHR0cHM6Ly9hcGkubXltZW1vcnkudHJhbnNsYXRlZC5uZXQvZ2V0"
+      ],
+      "default": "aHR0cHM6Ly90cmFuc2xhdGUuZ29vZ2xlYXBpcy5jb20vdHJhbnNsYXRlX2Evc2luZ2xl"
+    }
+  },
+  "values": {
+    "yummyApplication": "dWgydzgtbnN4dmkzeDgyNQ=="
   }
 }

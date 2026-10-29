@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 
 import clsx from "clsx";
 
@@ -27,7 +27,8 @@ export function AccountIdentity({
   avatarUrl,
   className,
 }: AccountIdentityProps) {
-  const isPlaceholder = !avatarUrl;
+  const [failedUrl, setFailedUrl] = useState<string>();
+  const isPlaceholder = !avatarUrl || failedUrl === avatarUrl;
 
   return (
     <div className={clsx(styles.root, className)}>
@@ -38,6 +39,7 @@ export function AccountIdentity({
             loading="lazy"
             src={avatarUrl}
             className={styles.avatarImage}
+            onError={() => setFailedUrl(avatarUrl)}
           />
         ) : (
           <NoImageIcon className={styles.noImageIcon} />

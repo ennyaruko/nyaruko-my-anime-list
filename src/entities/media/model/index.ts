@@ -2,6 +2,7 @@ export * from "./media";
 export * from "./my-list";
 export * from "./media-search";
 export * from "./media-detail";
+export * from "./media-playback";
 export * from "./my-list-service";
 export * from "./media-screenshots";
 export * from "./media-external-ids";

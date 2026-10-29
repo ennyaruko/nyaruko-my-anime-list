@@ -23,9 +23,9 @@ export const themeVars = createThemeContract({
     },
 
     brand: {
-      darkBlue: null,
-      darkBlueHover: null,
-      darkBluePressed: null,
+      primary: null,
+      primaryHover: null,
+      primaryPressed: null,
     },
 
     status: {

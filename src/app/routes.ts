@@ -10,6 +10,7 @@ export default [
     layout("routes/layouts/app-layout.tsx", [
       index("routes/home.tsx"),
       route("media/:id/recommendations", "routes/media-recommendations.tsx"),
+      route("media/:id/watch", "routes/media-watch.tsx"),
       route("media/:id", "routes/media-detail.tsx"),
       route("search", "routes/search.tsx"),
       route("*", "routes/not-found.tsx"),

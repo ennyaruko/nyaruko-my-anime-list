@@ -7,10 +7,9 @@ import type { MediaRelation, MediaRelationType } from "@/entities/media";
 
 import { Column, Heading } from "@/shared/ui";
 
-import { useMediaRelations } from "../../model/useMediaRelations";
+import { useMediaRelations } from "../model/useMediaRelations";
 
 import * as styles from "./MediaRelations.css";
-import * as pageStyles from "../MediaDetailPage.css";
 
 const relationLabelKey = {
   OTHER: "common:mediaDetail.relationType.other",
@@ -42,7 +41,7 @@ export function MediaRelations({ userId, mediaId }: MediaRelationsProps) {
   if (relationsQuery.isError || relations?.length === 0) return null;
 
   return (
-    <section className={pageStyles.section}>
+    <section className={styles.section}>
       <Heading size="m" variant="neutral">
         {t("common:mediaDetail.relations")}
       </Heading>

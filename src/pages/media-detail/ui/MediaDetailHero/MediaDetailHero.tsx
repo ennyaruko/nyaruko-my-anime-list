@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import type { CSSProperties } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -50,6 +51,7 @@ export function MediaDetailHero({ media, userId }: MediaDetailHeroProps) {
   const handleProgressChange = (value: number) => {
     actions.updateProgress(media.id, value);
   };
+  const canContinue = media.status === "CURRENT" && (media.progress ?? 0) > 0;
 
   return (
     <Column gap="xs">
@@ -112,6 +114,32 @@ export function MediaDetailHero({ media, userId }: MediaDetailHeroProps) {
         </div>
       </Column>
       <MediaListMenu media={media} userId={userId} />
+      <Link
+        className={styles.watchLink}
+        to={`/media/${media.id}/watch`}
+        aria-label={t(
+          canContinue ? "common:watch.continue" : "common:watch.open",
+        )}
+      >
+        <span aria-hidden="true" className={styles.watchPlayIcon}>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M7 4.8v14.4L19 12 7 4.8Z" />
+          </svg>
+        </span>
+        <span className={styles.watchText}>
+          <span className={styles.watchTitle}>
+            {t(canContinue ? "common:watch.continue" : "common:watch.open")}
+          </span>
+          {media.episodes !== null && (
+            <span className={styles.watchEpisodes}>
+              {t("common:watch.episodeCount", { count: media.episodes })}
+            </span>
+          )}
+        </span>
+        <span aria-hidden="true" className={styles.watchArrow}>
+          →
+        </span>
+      </Link>
     </Column>
   );
 }

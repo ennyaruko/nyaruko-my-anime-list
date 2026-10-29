@@ -28,14 +28,14 @@ const variants = styleVariants({
     color: colors.text.primary,
   },
   secondary: {
-    background: colors.brand.darkBlue,
+    background: colors.brand.primary,
     color: colors.text.primaryOnLight,
     selectors: {
       "&:not(:disabled):hover": {
-        background: colors.brand.darkBlueHover,
+        background: colors.brand.primaryHover,
       },
       "&:not(:disabled):active": {
-        background: colors.brand.darkBluePressed,
+        background: colors.brand.primaryPressed,
       },
     },
   },

@@ -1,4 +1,5 @@
 import { remoteEndpoints } from "@/app/config/remote-endpoints";
+import { createMediaPlaybackService } from "@/app/integrations/playback/service";
 import { createMyMemoryTranslationService } from "@/app/integrations/mymemory/translation-service";
 import { createGoogleTranslationService } from "@/app/integrations/google-translate/translation-service";
 import { createFallbackTranslationService } from "@/app/integrations/translation/fallback-translation-service";
@@ -25,6 +26,7 @@ import { accountProviderToken } from "@/entities/account";
 import { mediaSearchServiceToken } from "@/entities/media";
 import { mediaDetailServiceToken } from "@/entities/media";
 import { mediaReviewsServiceToken } from "@/entities/media";
+import { mediaPlaybackServiceToken } from "@/entities/media";
 import { mediaRelationsServiceToken } from "@/entities/media";
 import { mediaListActionsServiceToken } from "@/entities/media";
 import { filterOptionsProviderToken } from "@/entities/filters";
@@ -41,6 +43,10 @@ const mediaExternalIdResolver =
 
 /** Composition root: concrete adapters are registered here and nowhere else. */
 export const appServices = createServiceRegistry()
+  .register(
+    mediaPlaybackServiceToken,
+    createMediaPlaybackService(remoteEndpoints),
+  )
   .register(identityProviderToken, aniListIdentityProvider)
   .register(accountProviderToken, aniListAccountProvider)
   .register(myListServiceToken, aniListMediaListService)

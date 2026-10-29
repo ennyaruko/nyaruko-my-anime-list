@@ -11,9 +11,8 @@ import {
 import type { Media } from "@/entities/media";
 
 import { Heading } from "@/shared/ui";
+import { MarkdownContent } from "@/shared/ui";
 import { skeletonAnimation } from "@/shared/styles";
-
-import { MarkdownContent } from "../MarkdownContent";
 
 import * as styles from "./MediaDescription.css";
 import * as pageStyles from "../MediaDetailPage.css";

@@ -142,5 +142,7 @@ export function useMediaListActions(userId: string | undefined) {
     removeFromList,
     updateProgress,
     isPending: mutation.isPending,
+    updateProgressAsync: (mediaId: number, progress: number) =>
+      mutation.mutateAsync({ mediaId, progress, type: "progress" }),
   };
 }

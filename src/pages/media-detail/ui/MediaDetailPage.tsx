@@ -3,6 +3,8 @@ import { useTranslation } from "react-i18next";
 
 import { useQuery } from "@tanstack/react-query";
 
+import { MediaRelations } from "@/widgets/media-relations";
+
 import { useAuth } from "@/entities/auth";
 import type { Media } from "@/entities/media";
 import type { AccountProfile } from "@/entities/account";
@@ -19,7 +21,6 @@ import {
 
 import { MediaTags } from "./MediaTags";
 import { MediaReviews } from "./MediaReviews";
-import { MediaRelations } from "./MediaRelations";
 import { MediaDescription } from "./MediaDescription";
 import { MediaInformation } from "./MediaInformation";
 import { MediaScreenshots } from "./MediaScreenshots";

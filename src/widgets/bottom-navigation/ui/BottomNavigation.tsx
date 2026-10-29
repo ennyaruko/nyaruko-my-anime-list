@@ -8,7 +8,6 @@ import { resetMediaFilterDrafts } from "@/features/filters";
 
 import type { AccountProfile } from "@/entities/account";
 
-import { SEARCH_INPUT_FOCUS_EVENT } from "@/shared/lib";
 import { ListIcon, UserIcon, SearchIcon } from "@/shared/icons";
 
 import { ProfileMenu } from "./ProfileMenu";
@@ -45,7 +44,6 @@ export function BottomNavigation({ account }: BottomNavigationProps) {
             icon={<SearchIcon className={navigationItemStyles.icon} />}
             onClick={() => {
               resetMediaFilterDrafts("search");
-              window.dispatchEvent(new Event(SEARCH_INPUT_FOCUS_EVENT));
             }}
           />
           <Popover.Trigger

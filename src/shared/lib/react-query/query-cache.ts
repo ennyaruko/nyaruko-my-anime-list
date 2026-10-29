@@ -189,6 +189,23 @@ export const queryCacheConfig = {
     buster: "my-anime-list-v3",
   },
   families: {
+    playbackReplies: defineQueryFamily(
+      ["playback-replies"],
+      (id: string) => [id] as const,
+    ),
+    playbackComments: defineQueryFamily(
+      ["playback-comments"],
+      (id: string, sort: string) => [id, sort] as const,
+    ),
+    playbackEmbeds: defineQueryFamily(
+      ["playback-embeds"],
+      (mediaId: number, malId: null | number) => [mediaId, malId] as const,
+    ),
+    mediaPlayback: defineQueryFamily(
+      ["media-playback"],
+      (mediaId: number) => [mediaId] as const,
+      { staleTimeMs: 10 * MINUTE_MS },
+    ),
     /** Search results stay in memory briefly and are not persisted to IndexedDB. */
     mediaSearch: defineQueryFamily(
       ["media-search"],

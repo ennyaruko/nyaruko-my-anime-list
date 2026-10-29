@@ -23,3 +23,22 @@ export const icon = style({
   flexShrink: 0,
   height: "16px",
 });
+
+export const mobileInfoItem = style({
+  display: "none",
+  "@media": {
+    "(max-width: 640px)": { display: "flex" },
+  },
+});
+
+export const desktopInfoItem = style({
+  "@media": {
+    "(max-width: 640px)": { display: "none" },
+  },
+});
+
+export const submenuArrow = style({
+  lineHeight: 1,
+  fontSize: "18px",
+  marginLeft: "auto",
+});

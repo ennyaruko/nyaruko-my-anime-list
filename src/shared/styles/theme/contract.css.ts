@@ -51,6 +51,7 @@ export const themeVars = createThemeContract({
 
     background: {
       base: null,
+      overlay: null,
       neutral1: null,
       neutral2: null,
       elevation1: null,

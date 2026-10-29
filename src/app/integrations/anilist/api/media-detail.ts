@@ -23,6 +23,7 @@ export async function getAniListMediaDetail(
   }
 
   return {
+    malId: data.idMal ?? null,
     media: mapAniListMedia(data),
     tags: (data.tags ?? [])
       .filter((tag): tag is NonNullable<typeof tag> => tag !== null)

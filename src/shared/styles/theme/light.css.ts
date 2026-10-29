@@ -56,6 +56,7 @@ export const lightTheme = createTheme(themeVars, {
       neutral2: "#E8EBEF80",
       elevation1Info: "#E9F7FB",
       elevation1Hover: "#D2D2D2",
+      overlay: "rgb(0 0 0 / 78%)",
       elevation1Pressed: "#DCDCDC",
       elevation1Warning: "#FFE8D8",
       elevation1Positive: "#E7F6D6",

@@ -1,4 +1,5 @@
-import { useMemo, useState, useEffect, useCallback } from "react";
+import { useLocation } from "react-router";
+import { useRef, useMemo, useState, useEffect, useCallback } from "react";
 
 import type { MediaFiltersState } from "@/entities/filters";
 
@@ -32,6 +33,31 @@ const DEFAULT_FILTERS: MediaFiltersState = {
   sourceMode: "include",
 };
 const EMPTY_INITIAL_FILTERS: Partial<MediaFiltersState> = {};
+const MAX_FILTER_DRAFTS = 40;
+const filterDraftsByRoute = new Map<string, MediaFiltersState>();
+
+function createDraftKey(storageKey: string, locationKey: string): string {
+  return JSON.stringify([storageKey, locationKey]);
+}
+
+function getFilterDraft(key: string): undefined | MediaFiltersState {
+  const draft = filterDraftsByRoute.get(key);
+  if (draft) {
+    filterDraftsByRoute.delete(key);
+    filterDraftsByRoute.set(key, draft);
+  }
+  return draft;
+}
+
+function saveFilterDraft(key: string, filters: MediaFiltersState) {
+  filterDraftsByRoute.delete(key);
+  filterDraftsByRoute.set(key, filters);
+
+  if (filterDraftsByRoute.size > MAX_FILTER_DRAFTS) {
+    const oldestKey = filterDraftsByRoute.keys().next().value;
+    if (oldestKey) filterDraftsByRoute.delete(oldestKey);
+  }
+}
 
 function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
@@ -131,28 +157,66 @@ export function useMediaFilters(
   userId?: string,
   initialFilters: Partial<MediaFiltersState> = EMPTY_INITIAL_FILTERS,
 ) {
+  const { key: locationKey } = useLocation();
   const storageKey = getStorageKey(scope, userId);
-  const [filters, setFilters] = useState(() => ({
-    ...readSavedFilters(storageKey),
-    ...initialFilters,
-  }));
+  const draftKey = createDraftKey(storageKey, locationKey);
+  const initialFiltersKey = JSON.stringify(initialFilters);
+  const previousRoute = useRef({
+    draftKey,
+    storageKey,
+    locationKey,
+    initialFiltersKey,
+  });
+  const [filters, setFilters] = useState(
+    () =>
+      getFilterDraft(draftKey) ?? {
+        ...readSavedFilters(storageKey),
+        ...initialFilters,
+      },
+  );
   const [savedFilters, setSavedFilters] = useState(() =>
     readSavedFilters(storageKey),
   );
 
   useEffect(() => {
     const saved = readSavedFilters(storageKey);
-    setFilters({ ...saved, ...initialFilters });
-    setSavedFilters(saved);
-  }, [initialFilters, storageKey]);
+    const previous = previousRoute.current;
+    const routeChanged = previous.locationKey !== locationKey;
+    const previousDraft =
+      routeChanged &&
+      previous.storageKey === storageKey &&
+      previous.initialFiltersKey === initialFiltersKey
+        ? getFilterDraft(previous.draftKey)
+        : undefined;
+    const draft = getFilterDraft(draftKey) ?? previousDraft;
+    const nextFilters = draft ?? { ...saved, ...initialFilters };
 
-  const updateFilters = useCallback((updates: Partial<MediaFiltersState>) => {
-    setFilters((current) => ({ ...current, ...updates }));
-  }, []);
+    if (!getFilterDraft(draftKey)) saveFilterDraft(draftKey, nextFilters);
+    setFilters(nextFilters);
+    setSavedFilters(saved);
+    previousRoute.current = {
+      draftKey,
+      storageKey,
+      locationKey,
+      initialFiltersKey,
+    };
+  }, [draftKey, initialFilters, initialFiltersKey, locationKey, storageKey]);
+
+  const updateFilters = useCallback(
+    (updates: Partial<MediaFiltersState>) => {
+      setFilters((current) => {
+        const next = { ...current, ...updates };
+        saveFilterDraft(draftKey, next);
+        return next;
+      });
+    },
+    [draftKey],
+  );
 
   const saveFilters = () => {
     const filterValues = omitSort(filters);
     setSavedFilters({ ...filterValues, sort: savedFilters.sort });
+    saveFilterDraft(draftKey, filters);
     try {
       localStorage.setItem(storageKey, JSON.stringify(filterValues));
     } catch {
@@ -161,7 +225,11 @@ export function useMediaFilters(
   };
 
   const resetFilters = () => {
-    setFilters((current) => ({ ...savedFilters, sort: current.sort }));
+    setFilters((current) => {
+      const next = { ...savedFilters, sort: current.sort };
+      saveFilterDraft(draftKey, next);
+      return next;
+    });
   };
 
   const appliedValues = useMemo(

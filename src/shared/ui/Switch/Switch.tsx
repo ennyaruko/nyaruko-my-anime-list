@@ -4,7 +4,7 @@ import clsx from "clsx";
 
 import * as styles from "./Switch.css";
 
-export type SwitchProps = Omit<
+type BinarySwitchProps = Omit<
   ComponentPropsWithoutRef<"input">,
   "type" | "checked" | "onChange" | "defaultChecked"
 > & {
@@ -15,7 +15,30 @@ export type SwitchProps = Omit<
   onCheckedChange: (checked: boolean) => void;
 };
 
-export function Switch({
+type ThreePositionSwitchProps = {
+  label: string;
+  checked?: never;
+  className?: string;
+  disabled?: boolean;
+  position: 0 | 1 | 2;
+  children?: ReactNode;
+  thumbClassName?: string;
+  trackClassName?: string;
+  onCheckedChange?: never;
+  onPositionChange: (position: 0 | 1 | 2) => void;
+};
+
+export type SwitchProps = BinarySwitchProps | ThreePositionSwitchProps;
+
+export function Switch(props: SwitchProps) {
+  if ("position" in props) {
+    return <ThreePositionSwitch {...props} />;
+  }
+
+  return <BinarySwitch {...props} />;
+}
+
+function BinarySwitch({
   checked,
   children,
   className,
@@ -23,7 +46,7 @@ export function Switch({
   trackClassName,
   onCheckedChange,
   ...inputProps
-}: SwitchProps) {
+}: BinarySwitchProps) {
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     onCheckedChange(event.currentTarget.checked);
   };
@@ -45,6 +68,46 @@ export function Switch({
             [styles.thumbState.checked]: checked,
             [styles.thumbState.unchecked]: !checked,
           },
+          thumbClassName,
+        )}
+      >
+        {children}
+      </span>
+    </span>
+  );
+}
+
+function ThreePositionSwitch({
+  label,
+  position,
+  children,
+  disabled,
+  className,
+  thumbClassName,
+  trackClassName,
+  onPositionChange,
+}: ThreePositionSwitchProps) {
+  const nextPosition = (position === 2 ? 0 : position + 1) as 0 | 1 | 2;
+
+  return (
+    <span
+      data-switch-position={position}
+      className={clsx(styles.root, className)}
+    >
+      <input
+        title={label}
+        type="checkbox"
+        aria-label={label}
+        disabled={disabled}
+        checked={position !== 0}
+        className={styles.input}
+        onChange={() => onPositionChange(nextPosition)}
+      />
+      <span className={clsx(styles.track, trackClassName)} />
+      <span
+        className={clsx(
+          styles.thumb,
+          styles.threePositionThumb,
           thumbClassName,
         )}
       >

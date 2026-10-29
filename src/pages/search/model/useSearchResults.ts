@@ -34,8 +34,8 @@ export function useSearchResults({
     ReturnType<typeof queryCacheConfig.families.mediaSearch.key>,
     number
   >({
-    gcTime: 0,
     initialPageParam: 1,
+    gcTime: queryCacheConfig.families.mediaSearch.gcTimeMs,
     queryKey: queryCacheConfig.families.mediaSearch.key(parameters),
     getNextPageParam: (lastPage, pages) =>
       lastPage.hasNextPage ? pages.length + 1 : undefined,

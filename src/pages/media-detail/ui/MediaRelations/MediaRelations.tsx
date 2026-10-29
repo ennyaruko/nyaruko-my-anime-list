@@ -2,8 +2,8 @@ import { useTranslation } from "react-i18next";
 
 import { MediaListContextMenu } from "@/features/manage-media-list";
 
-import type { MediaRelation } from "@/entities/media";
 import { CompactCard, CompactCardSkeleton } from "@/entities/media";
+import type { MediaRelation, MediaRelationType } from "@/entities/media";
 
 import { Column, Heading } from "@/shared/ui";
 
@@ -13,6 +13,7 @@ import * as styles from "./MediaRelations.css";
 import * as pageStyles from "../MediaDetailPage.css";
 
 const relationLabelKey = {
+  OTHER: "common:mediaDetail.relationType.other",
   PARENT: "common:mediaDetail.relationType.parent",
   SOURCE: "common:mediaDetail.relationType.source",
   SEQUEL: "common:mediaDetail.relationType.sequel",
@@ -22,12 +23,11 @@ const relationLabelKey = {
   CONTAINS: "common:mediaDetail.relationType.contains",
   CHARACTER: "common:mediaDetail.relationType.character",
   SIDE_STORY: "common:mediaDetail.relationType.sideStory",
-  FULL_STORY: "common:mediaDetail.relationType.fullStory",
   ADAPTATION: "common:mediaDetail.relationType.adaptation",
   ALTERNATIVE: "common:mediaDetail.relationType.alternative",
-  ALTERNATIVE_SETTING: "common:mediaDetail.relationType.alternativeSetting",
-  ALTERNATIVE_VERSION: "common:mediaDetail.relationType.alternativeVersion",
-} as const;
+  COMPILATION: "common:mediaDetail.relationType.compilation",
+  SAME_UNIVERSE: "common:mediaDetail.relationType.sameUniverse",
+} as const satisfies Record<MediaRelationType, string>;
 
 type MediaRelationsProps = {
   mediaId: number;
@@ -70,9 +70,7 @@ function RelatedMediaCard({
   userId,
 }: MediaRelation & { userId: string | undefined }) {
   const { t } = useTranslation(["common"]);
-  const relationKey = type
-    ? relationLabelKey[type as keyof typeof relationLabelKey]
-    : undefined;
+  const relationKey = type ? relationLabelKey[type] : undefined;
   const label = relationKey
     ? t(relationKey)
     : (type?.replaceAll("_", " ").toLowerCase() ?? "");

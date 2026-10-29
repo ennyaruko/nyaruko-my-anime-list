@@ -3,6 +3,8 @@ export * from "./my-list";
 export * from "./media-search";
 export * from "./media-detail";
 export * from "./my-list-service";
+export * from "./media-screenshots";
+export * from "./media-external-ids";
 export * from "./media-search-service";
 export * from "./media-detail-service";
 export * from "./media-reviews-service";

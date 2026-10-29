@@ -1,5 +1,5 @@
+import { Link } from "react-router";
 import { useTranslation } from "react-i18next";
-import { Link, useLocation } from "react-router";
 import { useRef, useEffect, useCallback } from "react";
 
 import clsx from "clsx";
@@ -12,6 +12,7 @@ import {
   MediaListContextMenu,
 } from "@/features/manage-media-list";
 
+import { MediaDetailLink } from "@/entities/media";
 import type { AccountProfile } from "@/entities/account";
 import type { Media, MediaListStatus } from "@/entities/media";
 
@@ -110,7 +111,6 @@ function LinkedMediaCard({
   userId: string | undefined;
 }) {
   const { t } = useTranslation(["common"]);
-  const location = useLocation();
   const actions = useMediaListActions(userId);
   const titleVariant = media.status
     ? titleVariantByStatus[media.status]
@@ -122,11 +122,7 @@ function LinkedMediaCard({
 
   return (
     <div className={styles.recommendationCard}>
-      <Link
-        to={`/media/${media.id}`}
-        className={styles.recommendationLink}
-        state={{ media, from: location.pathname }}
-      />
+      <MediaDetailLink media={media} className={styles.recommendationLink} />
       <div className={styles.recommendationCover}>
         <Image
           loading="lazy"

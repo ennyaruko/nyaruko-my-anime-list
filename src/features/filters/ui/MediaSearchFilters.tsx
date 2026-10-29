@@ -16,6 +16,7 @@ type MediaSearchFiltersProps = {
   perPage: number;
   options?: FilterOptions;
   optionsLoading?: boolean;
+  onResetInitialFilters?: VoidFunction;
   initialFilters?: Partial<MediaFiltersState>;
   children: (parameters: MediaSearchParameters) => ReactNode;
 };
@@ -29,6 +30,7 @@ export function MediaSearchFilters({
   children,
   optionsLoading,
   initialFilters = {},
+  onResetInitialFilters,
 }: MediaSearchFiltersProps) {
   const filterDrawer = useFilterDrawerState();
   const {
@@ -45,6 +47,10 @@ export function MediaSearchFilters({
     () => getMediaSearchParameters(search, filters, appliedValues, perPage),
     [appliedValues, filters, perPage, search],
   );
+  const resetAllFilters = () => {
+    resetFilters();
+    onResetInitialFilters?.();
+  };
 
   return (
     <>
@@ -52,9 +58,9 @@ export function MediaSearchFilters({
         filters={filters}
         options={options}
         onSave={saveFilters}
-        onReset={resetFilters}
         open={filterDrawer.open}
         onChange={updateFilters}
+        onReset={resetAllFilters}
         savedFilters={savedFilters}
         sortOptions={searchSortOptions}
         optionsLoading={optionsLoading}

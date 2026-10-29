@@ -22,6 +22,7 @@ import {
 export function queryOnErrorHandler({
   error,
   queryKey,
+  hasData = false,
   meta = DEFAULT_QUERY_META,
 }: ErrorHandlerParams) {
   const { required, errorNotifier } = meta as QueryClientMeta;
@@ -36,6 +37,9 @@ export function queryOnErrorHandler({
   if (errorNotifier) {
     return handleErrorNotifier({ error, queryKey, errorNotifier });
   }
+
+  // Keep cached results visible without stacking a refresh error over the action result.
+  if (hasData) return;
 
   return defaultErrorHandler({ error, queryKey });
 }

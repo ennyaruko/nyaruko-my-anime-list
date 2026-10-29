@@ -25,12 +25,29 @@ export type MediaReview = {
   };
 };
 
+/** Relation kinds exposed by AniList for connected media. */
+export type MediaRelationType =
+  | "OTHER"
+  | "PARENT"
+  | "SEQUEL"
+  | "SOURCE"
+  | "PREQUEL"
+  | "SUMMARY"
+  | "CONTAINS"
+  | "SPIN_OFF"
+  | "CHARACTER"
+  | "ADAPTATION"
+  | "SIDE_STORY"
+  | "ALTERNATIVE"
+  | "COMPILATION"
+  | "SAME_UNIVERSE";
+
 /** A media relation and its provider-neutral summary. */
 export type MediaRelation = {
   /** Related anime shown in the detail page. */
   media: Media;
   /** AniList relation label, such as PREQUEL or SEQUEL. */
-  type: null | string;
+  type: null | MediaRelationType;
 };
 
 /** Tag name and its AniList community rank, represented as a percentage. */
@@ -57,4 +74,6 @@ export type MediaDetail = {
   media: Media;
   /** Community-ranked tags. */
   tags: MediaTag[];
+  /** AniList's MyAnimeList identifier, used if the external ID service is offline. */
+  malId: null | number;
 };

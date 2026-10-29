@@ -1,12 +1,17 @@
+import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Link, useLocation } from "react-router";
 import type { SVGProps, ReactNode, ComponentType } from "react";
 
-import { MediaCard } from "@/entities/media";
 import type { Media, MediaListStatus } from "@/entities/media";
+import {
+  MediaCard,
+  MediaDetailLink,
+  MediaContextInformation,
+} from "@/entities/media";
 
 import {
   ViewIcon,
+  InfoIcon,
   DeleteIcon,
   PausedIcon,
   DroppedIcon,
@@ -15,10 +20,13 @@ import {
 } from "@/shared/icons";
 import {
   ContextMenu,
+  ContextMenuSub,
   ContextMenuItem,
   ContextMenuContent,
   ContextMenuTrigger,
   ContextMenuSeparator,
+  ContextMenuSubContent,
+  ContextMenuSubTrigger,
 } from "@/shared/ui";
 
 import { useMediaListActions } from "../model/useMediaListActions";
@@ -26,6 +34,9 @@ import { useMediaListActions } from "../model/useMediaListActions";
 import * as styles from "./MediaCardContextMenu.css";
 
 type StatusIcon = ComponentType<SVGProps<SVGSVGElement>>;
+
+// Tune the anime information panel width here; the same value applies on desktop and mobile.
+const mediaInfoExtraWidth = 40;
 
 type StatusTranslationKey =
   | "common:ui.watchStatus.paused"
@@ -91,6 +102,9 @@ export function MediaListContextMenu({
   children,
 }: MediaListContextMenuProps) {
   const { t } = useTranslation(["common"]);
+  const [showMobileInfo, setShowMobileInfo] = useState(false);
+  const [mobileInfoWidth, setMobileInfoWidth] = useState<number>();
+  const contentRef = useRef<HTMLDivElement>(null);
   const actions = useMediaListActions(userId);
   const statusActions: StatusAction[] = availableStatuses
     .filter(({ status }) => media.status !== status)
@@ -113,32 +127,86 @@ export function MediaListContextMenu({
   };
 
   return (
-    <ContextMenu>
+    <ContextMenu
+      onOpenChange={(open) => {
+        if (!open) setShowMobileInfo(false);
+      }}
+    >
       <ContextMenuTrigger asChild>
         <div className={styles.trigger}>{children}</div>
       </ContextMenuTrigger>
-      <ContextMenuContent collisionPadding={8}>
-        {statusActions.map(({ Icon, label, status }) => (
-          <ContextMenuItem
-            key={status}
-            onSelect={() => changeStatus(status)}
-            disabled={!actions.canManageList || actions.isPending}
-          >
-            <Icon className={styles.icon} />
-            <span>{label}</span>
-          </ContextMenuItem>
-        ))}
-        {canRemove && (
+      <ContextMenuContent
+        ref={contentRef}
+        collisionPadding={8}
+        style={
+          showMobileInfo && mobileInfoWidth
+            ? { width: mobileInfoWidth + mediaInfoExtraWidth }
+            : undefined
+        }
+      >
+        {showMobileInfo ? (
+          <MediaContextInformation
+            showBack
+            media={media}
+            onBack={() => setShowMobileInfo(false)}
+          />
+        ) : (
           <>
+            {statusActions.map(({ Icon, label, status }) => (
+              <ContextMenuItem
+                key={status}
+                onSelect={() => changeStatus(status)}
+                disabled={!actions.canManageList || actions.isPending}
+              >
+                <Icon className={styles.icon} />
+                <span>{label}</span>
+              </ContextMenuItem>
+            ))}
             <ContextMenuSeparator />
             <ContextMenuItem
-              tone="destructive"
-              onSelect={removeFromList}
-              disabled={!actions.canManageList || actions.isPending}
+              className={styles.mobileInfoItem}
+              onSelect={(event) => {
+                event.preventDefault();
+                const menuWidth =
+                  contentRef.current?.getBoundingClientRect().width;
+                if (menuWidth) setMobileInfoWidth(menuWidth);
+                setShowMobileInfo(true);
+              }}
             >
-              <DeleteIcon className={styles.icon} />
-              <span>{t("common:mediaList.remove")}</span>
+              <InfoIcon className={styles.icon} />
+              <span>{t("common:contextMenu.mediaInfo")}</span>
             </ContextMenuItem>
+            <ContextMenuSub>
+              <ContextMenuSubTrigger className={styles.desktopInfoItem}>
+                <InfoIcon className={styles.icon} />
+                <span>{t("common:contextMenu.mediaInfo")}</span>
+                <span aria-hidden="true" className={styles.submenuArrow}>
+                  ›
+                </span>
+              </ContextMenuSubTrigger>
+              <ContextMenuSubContent
+                align="start"
+                sideOffset={10}
+                style={{
+                  width: `calc(var(--radix-context-menu-trigger-width) + ${mediaInfoExtraWidth}px + 16px)`,
+                }}
+              >
+                <MediaContextInformation media={media} />
+              </ContextMenuSubContent>
+            </ContextMenuSub>
+            {canRemove && (
+              <>
+                <ContextMenuSeparator />
+                <ContextMenuItem
+                  tone="destructive"
+                  onSelect={removeFromList}
+                  disabled={!actions.canManageList || actions.isPending}
+                >
+                  <DeleteIcon className={styles.icon} />
+                  <span>{t("common:mediaList.remove")}</span>
+                </ContextMenuItem>
+              </>
+            )}
           </>
         )}
       </ContextMenuContent>
@@ -152,17 +220,15 @@ export function MediaCardContextMenu({
   userId,
   size = "l",
 }: MediaCardContextMenuProps) {
-  const location = useLocation();
   const actions = useMediaListActions(userId);
 
   return (
     <MediaListContextMenu media={media} userId={userId}>
       <div className={styles.cardSurface}>
-        <Link
+        <MediaDetailLink
+          media={media}
           aria-label={media.title}
-          to={`/media/${media.id}`}
           className={styles.mediaLink}
-          state={{ media, from: location.pathname }}
         />
         <MediaCard
           size={size}

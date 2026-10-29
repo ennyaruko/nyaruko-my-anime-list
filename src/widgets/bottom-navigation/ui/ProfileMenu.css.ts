@@ -149,6 +149,12 @@ export const moonIcon = style({
   color: colors.text.warning,
 });
 
+export const autoIcon = style({
+  width: "11px",
+  height: "11px",
+  color: colors.text.action,
+});
+
 export const adultContentThumb = styleVariants({
   disabled: { background: colors.background.elevation1Info },
   enabled: { background: colors.background.elevation1Warning },

@@ -1,16 +1,16 @@
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { MyListFilters } from "@/features/filters";
 
+import type { MyListEntry } from "@/entities/media";
 import type { FilterOptions } from "@/entities/filters";
-import { type MyListEntry, type MyListStatus } from "@/entities/media";
 
 import { Row, Heading } from "@/shared/ui";
 import { DeleteIcon } from "@/shared/icons";
 
 import { MyListResults } from "../MyListResults";
 import { StatusNavigation } from "../StatusNavigation";
+import { useMyListStatus } from "../../model/useMyListStatus";
 
 import * as styles from "./MyListContent.css";
 
@@ -38,8 +38,7 @@ export function MyListContent({
   optionsLoading,
 }: MyListContentProps) {
   const { t } = useTranslation(["common"]);
-  const [selectedStatus, setSelectedStatus] =
-    useState<MyListStatus>("PLANNING");
+  const { selectStatus, selectedStatus } = useMyListStatus();
   const selectedSection = statusSections.find(
     (section) => section.key === selectedStatus,
   )!;
@@ -48,7 +47,7 @@ export function MyListContent({
       <Heading variant="neutral">{t("common:list.list")}</Heading>
       <StatusNavigation
         loading={isListPending}
-        onSelect={setSelectedStatus}
+        onSelect={selectStatus}
         selectedStatus={selectedStatus}
         items={statusSections.map(({ key }) => ({
           status: key,

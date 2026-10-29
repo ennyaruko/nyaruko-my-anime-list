@@ -5,8 +5,10 @@ import { colors, darkTheme, primitives, typography } from "../../styles";
 export const content = style({
   display: "flex",
   outline: "none",
+  overflowY: "auto",
   minWidth: "170px",
   userSelect: "none",
+  boxSizing: "border-box",
   flexDirection: "column",
   gap: primitives.spacing.xxxs,
   boxShadow: primitives.shadow.xs,
@@ -14,6 +16,7 @@ export const content = style({
   borderRadius: primitives.radii.sm,
   backgroundColor: colors.background.base,
   padding: `${primitives.spacing.xxs} ${primitives.spacing.s}`,
+  maxHeight: "var(--radix-context-menu-content-available-height)",
   selectors: {
     [`${darkTheme} &`]: {
       backgroundColor: colors.background.elevation1,
@@ -64,4 +67,14 @@ export const separator = style({
   flexShrink: 0,
   margin: `${primitives.spacing.tiny} 0`,
   backgroundColor: colors.background.elevation1,
+});
+
+export const subTrigger = style({
+  justifyContent: "space-between",
+});
+
+export const subContent = style({
+  overflowY: "auto",
+  boxSizing: "border-box",
+  maxHeight: "min(360px, var(--radix-context-menu-content-available-height))",
 });

@@ -1,0 +1,1 @@
+export { MediaScreenshots } from "./MediaScreenshots";

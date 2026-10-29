@@ -19,6 +19,7 @@ export function getQueryClient({ defaultOptions }: GetQueryClientParams = {}) {
           error,
           meta: query.meta,
           queryKey: query.queryKey,
+          hasData: query.state.data !== undefined,
         });
       },
     }),

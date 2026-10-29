@@ -22,6 +22,7 @@ import { MediaReviews } from "./MediaReviews";
 import { MediaRelations } from "./MediaRelations";
 import { MediaDescription } from "./MediaDescription";
 import { MediaInformation } from "./MediaInformation";
+import { MediaScreenshots } from "./MediaScreenshots";
 import { MediaRecommendations } from "./MediaRecommendations";
 import {
   MediaDetailHero,
@@ -78,7 +79,7 @@ export function MediaDetailPage({ userId, mediaId }: MediaDetailPageProps) {
 
   return (
     <Container as="main" className={styles.page}>
-      <Column gap="m">
+      <Column gap="xl">
         <Header variant="plain" leading={<MediaDetailBackLink to={backTo} />} />
 
         {media ? (
@@ -96,6 +97,9 @@ export function MediaDetailPage({ userId, mediaId }: MediaDetailPageProps) {
         </ComponentErrorBoundary>
         <ComponentErrorBoundary resetKeys={[mediaId]}>
           <MediaDescription media={media} />
+        </ComponentErrorBoundary>
+        <ComponentErrorBoundary resetKeys={[mediaId]}>
+          <MediaScreenshots media={media} malId={detail?.malId} />
         </ComponentErrorBoundary>
         <MediaRelations userId={userId} mediaId={mediaId} />
         <MediaReviews userId={userId} mediaId={mediaId} />

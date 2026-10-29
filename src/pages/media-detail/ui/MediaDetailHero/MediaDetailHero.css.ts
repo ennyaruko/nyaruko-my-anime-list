@@ -117,8 +117,8 @@ export const noImageIcon = style({
 export const ratingBar = style({
   zIndex: 1,
   minHeight: "34px",
+  background: colors.background.neutral1,
   padding: `0 ${primitives.spacing.xxxs}`,
-  background: "rgba(255, 255, 255, 0.85)",
 });
 
 export const ratingSkeleton = style({

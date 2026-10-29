@@ -1,6 +1,11 @@
+import { useLocation } from "react-router";
 import { VirtuosoGrid } from "react-virtuoso";
 import type { Key, ReactNode, HTMLAttributes } from "react";
-import type { ContextProp, GridComponents } from "react-virtuoso";
+import type {
+  ContextProp,
+  GridComponents,
+  GridStateSnapshot,
+} from "react-virtuoso";
 
 import clsx from "clsx";
 
@@ -13,6 +18,17 @@ function GridFooter({ context }: ContextProp<ReactNode>) {
 }
 
 const gridComponents: GridComponents<ReactNode> = { Footer: GridFooter };
+const MAX_SAVED_GRID_STATES = 40;
+const gridStates = new Map<string, GridStateSnapshot>();
+
+function saveGridState(key: string, state: GridStateSnapshot) {
+  gridStates.delete(key);
+  gridStates.set(key, state);
+  if (gridStates.size > MAX_SAVED_GRID_STATES) {
+    const oldestKey = gridStates.keys().next().value;
+    if (oldestKey) gridStates.delete(oldestKey);
+  }
+}
 
 export type GridListProps<T> = Omit<
   HTMLAttributes<HTMLDivElement>,
@@ -38,18 +54,14 @@ export function GridList<T>({
 }: GridListProps<T>) {
   if (virtualize) {
     return (
-      <VirtuosoGrid
-        {...props}
+      <VirtualizedGridList
         data={data}
-        useWindowScroll
-        context={footer}
+        footer={footer}
+        getKey={getKey}
         className={className}
+        renderItem={renderItem}
         endReached={endReached}
-        components={gridComponents}
-        itemClassName={styles.virtualizedItem}
-        listClassName={styles.virtualizedList}
-        itemContent={(index, item) => renderItem(item, index)}
-        computeItemKey={(index, item) => getKey?.(item, index) ?? index}
+        {...props}
       />
     );
   }
@@ -62,5 +74,54 @@ export function GridList<T>({
         </div>
       ))}
     </div>
+  );
+}
+
+type VirtualizedGridListProps<T> = Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "children"
+> & {
+  data: readonly T[];
+  footer?: ReactNode;
+  className?: string;
+  endReached?: VoidFunction;
+  getKey?: (item: T, index: number) => Key;
+  renderItem: (item: T, index: number) => ReactNode;
+};
+
+function VirtualizedGridList<T>({
+  data,
+  footer,
+  getKey,
+  className,
+  renderItem,
+  endReached,
+  ...props
+}: VirtualizedGridListProps<T>) {
+  const location = useLocation();
+  const dataKey = JSON.stringify(
+    data.map((item, index) => {
+      const key = getKey?.(item, index) ?? index;
+      return [typeof key, key];
+    }),
+  );
+  const snapshotKey = `${location.key}:${dataKey}`;
+
+  return (
+    <VirtuosoGrid
+      {...props}
+      data={data}
+      useWindowScroll
+      context={footer}
+      className={className}
+      endReached={endReached}
+      components={gridComponents}
+      itemClassName={styles.virtualizedItem}
+      listClassName={styles.virtualizedList}
+      restoreStateFrom={gridStates.get(snapshotKey)}
+      itemContent={(index, item) => renderItem(item, index)}
+      stateChanged={(state) => saveGridState(snapshotKey, state)}
+      computeItemKey={(index, item) => getKey?.(item, index) ?? index}
+    />
   );
 }

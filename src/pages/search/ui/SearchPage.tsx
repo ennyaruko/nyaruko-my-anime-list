@@ -1,16 +1,12 @@
 import { useTranslation } from "react-i18next";
-import { useMemo, useState, useEffect } from "react";
-import { useSearchParams, useOutletContext } from "react-router";
+import { useOutletContext } from "react-router";
 
 import { useQuery } from "@tanstack/react-query";
 
 import { MediaSearchFilters } from "@/features/filters";
 
 import type { AccountState } from "@/entities/account";
-import {
-  type MediaFiltersState,
-  filterOptionsProviderToken,
-} from "@/entities/filters";
+import { filterOptionsProviderToken } from "@/entities/filters";
 
 import { useAppService, queryCacheConfig } from "@/shared/lib";
 import {
@@ -22,6 +18,8 @@ import {
   ComponentErrorBoundary,
 } from "@/shared/ui";
 
+import { useSearchPageParams } from "../model/useSearchPageParams";
+
 import { SearchInput } from "./SearchInput";
 import { SearchResults } from "./SearchResults";
 
@@ -32,29 +30,14 @@ const RESULTS_PER_PAGE = 50;
 export function SearchPage() {
   const { t } = useTranslation(["common"]);
   const { account } = useOutletContext<AccountState>();
-  const [searchParams] = useSearchParams();
-  const filterGenresKey = JSON.stringify(searchParams.getAll("genre"));
-  const filterTagsKey = JSON.stringify(searchParams.getAll("tag"));
-  const initialFilters = useMemo<Partial<MediaFiltersState>>(() => {
-    const genres = JSON.parse(filterGenresKey) as string[];
-    const tags = JSON.parse(filterTagsKey) as string[];
-
-    return {
-      ...(genres.length > 0 ? { genres } : {}),
-      ...(tags.length > 0 ? { tags } : {}),
-    };
-  }, [filterGenresKey, filterTagsKey]);
+  const {
+    searchTerm,
+    initialFilters,
+    updateSearchTerm,
+    debouncedSearchTerm,
+    clearInitialFilters,
+  } = useSearchPageParams();
   const filterOptionsProvider = useAppService(filterOptionsProviderToken);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
-
-  useEffect(() => {
-    const timeoutId = window.setTimeout(
-      () => setDebouncedSearchTerm(searchTerm.trim()),
-      250,
-    );
-    return () => window.clearTimeout(timeoutId);
-  }, [searchTerm]);
 
   const filterOptionsQuery = useQuery({
     enabled: Boolean(account?.id),
@@ -73,7 +56,7 @@ export function SearchPage() {
           ]}
         />
         <ComponentErrorBoundary>
-          <SearchInput value={searchTerm} onChange={setSearchTerm} />
+          <SearchInput value={searchTerm} onChange={updateSearchTerm} />
         </ComponentErrorBoundary>
         <QueryErrorBoundary>
           <MediaSearchFilters
@@ -82,6 +65,7 @@ export function SearchPage() {
             search={debouncedSearchTerm}
             initialFilters={initialFilters}
             options={filterOptionsQuery.data}
+            onResetInitialFilters={clearInitialFilters}
             optionsLoading={filterOptionsQuery.isPending}
           >
             {(parameters) => (

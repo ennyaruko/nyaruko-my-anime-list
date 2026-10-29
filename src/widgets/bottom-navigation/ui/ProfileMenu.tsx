@@ -5,6 +5,7 @@ import clsx from "clsx";
 
 import { useLogout } from "@/features/logout";
 import { useTheme } from "@/features/change-theme";
+import type { ThemeMode } from "@/features/change-theme";
 import { useLanguage } from "@/features/change-language";
 import { useAdultContent } from "@/features/toggle-adult-content";
 import { useAutoTranslationPreferences } from "@/features/translate-content";
@@ -18,6 +19,7 @@ import {
   ExitIcon,
   UserIcon,
   ThemeSunIcon,
+  ThemeAutoIcon,
   ThemeMoonIcon,
   TranslationIcon,
   AdultContentIcon,
@@ -46,12 +48,15 @@ export function ProfileMenu({ account, onClose }: ProfileMenuProps) {
   const { enabled: autoTranslation, setEnabled: setAutoTranslation } =
     useAutoTranslationPreferences();
   const logout = useLogout();
-  const isLightTheme = theme === "light";
-  const profileUrl = account?.profileUrl;
-
-  const handleThemeChange = (checked: boolean) => {
-    setTheme(checked ? "light" : "dark");
+  const themeLabels: Record<ThemeMode, string> = {
+    dark: t("common:profileMenu.darkTheme"),
+    light: t("common:profileMenu.lightTheme"),
+    adaptive: t("common:profileMenu.adaptiveTheme"),
   };
+  const themeLabel = themeLabels[theme];
+  const themePositions = ["dark", "light", "adaptive"] as const;
+  const themePosition = themePositions.indexOf(theme) as 0 | 1 | 2;
+  const profileUrl = account?.profileUrl;
 
   const handleLogout = () => {
     onClose();
@@ -152,22 +157,19 @@ export function ProfileMenu({ account, onClose }: ProfileMenuProps) {
       </ProfileMenuSection>
 
       <ProfileMenuSection title={t("common:profileMenu.settings")}>
-        <ProfileSetting
-          label={
-            isLightTheme
-              ? t("common:profileMenu.lightTheme")
-              : t("common:profileMenu.darkTheme")
-          }
-        >
+        <ProfileSetting label={themeLabel}>
           <Switch
-            checked={isLightTheme}
+            label={themeLabel}
+            position={themePosition}
             thumbClassName={styles.themeThumb}
-            onCheckedChange={handleThemeChange}
+            onPositionChange={(position) => setTheme(themePositions[position])}
           >
-            {isLightTheme ? (
+            {theme === "dark" ? (
+              <ThemeMoonIcon className={styles.moonIcon} />
+            ) : theme === "light" ? (
               <ThemeSunIcon className={styles.sunIcon} />
             ) : (
-              <ThemeMoonIcon className={styles.moonIcon} />
+              <ThemeAutoIcon className={styles.autoIcon} />
             )}
           </Switch>
         </ProfileSetting>

@@ -46,6 +46,8 @@ export type QueryKeyConstraint =
 
 /** Настройки кеша, которые задаются рядом с фабрикой семейства запросов. */
 type QueryFamilySettings = {
+  /** Срок хранения неактивного запроса в памяти. */
+  readonly gcTimeMs?: number;
   /**
    * Сколько миллисекунд успешный результат считается свежим.
    * Если не задано, используется общее значение `defaultStaleTimeMs`.
@@ -82,6 +84,7 @@ function defineQueryFamily<
   return {
     /** Префикс добавляется в начало каждого ключа этого семейства. */
     keyPrefix,
+    gcTimeMs: settings.gcTimeMs,
     /** Свежесть результата; `undefined` означает общее значение по умолчанию. */
     staleTimeMs: settings.staleTimeMs,
     /** ID пользователя для очистки пользовательских запросов при logout. */
@@ -120,6 +123,7 @@ type QueryCacheConfiguration = {
     Record<
       string,
       {
+        readonly gcTimeMs: number | undefined;
         readonly keyPrefix: readonly unknown[];
         readonly staleTimeMs: number | undefined;
         readonly userIdIndex: number | undefined;
@@ -185,16 +189,27 @@ export const queryCacheConfig = {
     buster: "my-anime-list-v3",
   },
   families: {
-    /** Search results are deliberately excluded from IndexedDB persistence. */
+    /** Search results stay in memory briefly and are not persisted to IndexedDB. */
     mediaSearch: defineQueryFamily(
       ["media-search"],
       (parameters: object) => [parameters] as const,
+      {
+        gcTimeMs: 30 * MINUTE_MS,
+        staleTimeMs: 10 * MINUTE_MS,
+      },
     ),
     /** Translated prose is cached in memory only. */
     contentTranslation: defineQueryFamily(
       ["content-translation"],
       (content: string, variant: string, extraTexts: readonly string[]) =>
         ["ru", variant, content, extraTexts] as const,
+    ),
+    /** Screenshot lists and their external ID mappings are stable for weeks. */
+    mediaScreenshots: defineQueryFamily(
+      ["media-screenshots"],
+      (mediaId: number, fallbackMalId: null | number) =>
+        [mediaId, fallbackMalId] as const,
+      { staleTimeMs: 30 * DAY_MS },
     ),
     /** Фильтры считаются свежими 90 дней. */
     filters: defineQueryFamily(

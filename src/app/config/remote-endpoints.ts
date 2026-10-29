@@ -7,6 +7,9 @@ const GIST_CONFIG_URL =
 export const remoteEndpoints = createGistEndpointResolver({
   gistUrl: GIST_CONFIG_URL,
   defaults: {
+    animeApiAniList: "https://animeapi.my.id/anilist/:anilistId",
     translation: "https://translate.googleapis.com/translate_a/single",
+    shikimoriScreenshots:
+      "https://shikimori.io/api/animes/:shikimoriId/screenshots",
   },
 });

@@ -46,6 +46,7 @@ export type QueryClientMeta = {
 
 export type ErrorHandlerParams = {
   error: Error;
+  hasData?: boolean;
   queryKey?: Query["queryKey"];
   meta?: QueryMeta | MutationMeta;
 };

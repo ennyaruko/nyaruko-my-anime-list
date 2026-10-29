@@ -17,7 +17,13 @@ function isRecent(key: string) {
 }
 
 function markAsSeen(key: string) {
-  errorTimestamps.set(key, Date.now());
+  const now = Date.now();
+
+  for (const [seenKey, timestamp] of errorTimestamps) {
+    if (now - timestamp >= ERROR_TTL) errorTimestamps.delete(seenKey);
+  }
+
+  errorTimestamps.set(key, now);
 }
 
 function shouldDeduplicate(key: string) {
@@ -29,7 +35,8 @@ function shouldDeduplicate(key: string) {
 }
 
 /**
- * Deduplicates repeated GraphQL errors by HTTP status, message, and query key.
+ * Deduplicates identical network errors across queries and GraphQL errors by
+ * HTTP status, message, and query key.
  *
  * Предотвращает повторную обработку однотипных ошибок в течение заданного времени (`ERROR_TTL`),
  * чтобы избежать множественных уведомлений или обработок одинаковых ошибок.
@@ -46,7 +53,7 @@ export function deduplicateError(
   queryKey?: Query["queryKey"],
 ): boolean {
   if (isNetworkError(error)) {
-    return shouldDeduplicate(`network_${JSON.stringify(queryKey)}`);
+    return shouldDeduplicate(`network_${error.message}`);
   }
 
   if (!isGraphQLClientError(error)) return false;

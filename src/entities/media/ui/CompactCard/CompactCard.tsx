@@ -1,14 +1,18 @@
 import { useTranslation } from "react-i18next";
-import { Link, useLocation } from "react-router";
 
 import clsx from "clsx";
 
 import { NoImageIcon } from "@/shared/icons";
 import type { TitleState } from "@/shared/ui";
+import { Image, Score, Title } from "@/shared/ui";
 import { skeletonAnimation } from "@/shared/styles";
-import { Image, Score, Title, Status } from "@/shared/ui";
 
 import type { Media, MediaListStatus } from "../../model/media";
+import { MediaDetailLink } from "../MediaDetailLink/MediaDetailLink";
+import {
+  MediaReleaseStatus,
+  getMediaReleaseStatusInfo,
+} from "../MediaReleaseStatus";
 
 import * as styles from "./CompactCard.css";
 
@@ -30,27 +34,15 @@ const titleVariantByStatus: Record<MediaListStatus, TitleState> = {
   COMPLETED: "completed",
 };
 
-const releaseStatusVariant = {
-  RELEASING: "info",
-  FINISHED: "positive",
-  CANCELLED: "negative",
-  NOT_YET_RELEASED: "negative",
-} as const;
-
 export function CompactCard({
   media,
   className,
   relationLabel,
 }: CompactCardProps) {
   const { t } = useTranslation(["common"]);
-  const location = useLocation();
   const imageUrl = media.coverImage?.large ?? media.coverImage?.preview;
   const isPlaceholder = !imageUrl;
-  const statusVariant = media.releaseStatus
-    ? releaseStatusVariant[
-        media.releaseStatus as keyof typeof releaseStatusVariant
-      ]
-    : undefined;
+  const statusInfo = getMediaReleaseStatusInfo(media.releaseStatus);
   const format = media.format
     ? formatTranslationKey[media.format as keyof typeof formatTranslationKey]
       ? t(
@@ -60,27 +52,12 @@ export function CompactCard({
         )
       : media.format
     : "";
-  const releaseStatus = media.releaseStatus
-    ? releaseStatusTranslationKey[
-        media.releaseStatus as keyof typeof releaseStatusTranslationKey
-      ]
-      ? t(
-          releaseStatusTranslationKey[
-            media.releaseStatus as keyof typeof releaseStatusTranslationKey
-          ],
-        )
-      : media.releaseStatus
-    : "";
   const hasFormat = Boolean(format);
   const hasYear = media.seasonYear !== null;
-  const hasReleaseStatus = Boolean(statusVariant && releaseStatus);
+  const hasReleaseStatus = statusInfo !== null;
 
   return (
-    <Link
-      to={`/media/${media.id}`}
-      className={clsx(styles.root, className)}
-      state={{ media, from: location.pathname }}
-    >
+    <MediaDetailLink media={media} className={clsx(styles.root, className)}>
       <div className={styles.cover}>
         <Image
           loading="lazy"
@@ -118,19 +95,17 @@ export function CompactCard({
             {hasReleaseStatus && (hasFormat || hasYear) && (
               <span className={styles.separator} />
             )}
-            {hasReleaseStatus && statusVariant && (
-              <Status
+            {hasReleaseStatus && (
+              <MediaReleaseStatus
                 size="s"
-                variant={statusVariant}
                 className={styles.status}
-              >
-                {releaseStatus}
-              </Status>
+                releaseStatus={media.releaseStatus}
+              />
             )}
           </div>
         </div>
       </div>
-    </Link>
+    </MediaDetailLink>
   );
 }
 
@@ -157,11 +132,4 @@ const formatTranslationKey = {
   MUSIC: "common:ui.filters.mediaFormat.music",
   SPECIAL: "common:ui.filters.mediaFormat.special",
   TV_SHORT: "common:ui.filters.mediaFormat.tvShort",
-} as const;
-
-const releaseStatusTranslationKey = {
-  FINISHED: "common:ui.filters.mediaStatus.finished",
-  CANCELLED: "common:ui.filters.mediaStatus.cancelled",
-  RELEASING: "common:ui.filters.mediaStatus.releasing",
-  NOT_YET_RELEASED: "common:ui.filters.mediaStatus.announced",
 } as const;

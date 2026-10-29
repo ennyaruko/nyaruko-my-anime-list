@@ -5,28 +5,18 @@ import { Fragment, type ReactNode } from "react";
 import clsx from "clsx";
 
 import type { Media } from "@/entities/media";
+import {
+  MediaReleaseStatus,
+  getMediaReleaseStatusInfo,
+} from "@/entities/media";
 
 import { skeletonAnimation } from "@/shared/styles";
-import { Row, Score, Status, Column, Heading } from "@/shared/ui";
+import { Row, Score, Column, Heading } from "@/shared/ui";
 
 import { formatLabelKey } from "../media-detail-labels";
 
 import * as styles from "./MediaInformation.css";
 import * as pageStyles from "../MediaDetailPage.css";
-
-const releaseStatusVariant = {
-  RELEASING: "info",
-  FINISHED: "positive",
-  CANCELLED: "negative",
-  NOT_YET_RELEASED: "negative",
-} as const;
-
-const releaseStatusLabelKey = {
-  FINISHED: "common:ui.filters.mediaStatus.finished",
-  CANCELLED: "common:ui.filters.mediaStatus.cancelled",
-  RELEASING: "common:ui.filters.mediaStatus.releasing",
-  NOT_YET_RELEASED: "common:ui.filters.mediaStatus.announced",
-} as const;
 
 const sourceLabelKey = {
   GAME: "common:ui.filters.mediaSource.game",
@@ -76,13 +66,7 @@ function MediaInformationContent({
   language: string;
 }) {
   const { t } = useTranslation(["common"]);
-  const releaseStatus = media.releaseStatus;
-  const releaseVariant = releaseStatus
-    ? releaseStatusVariant[releaseStatus as keyof typeof releaseStatusVariant]
-    : undefined;
-  const releaseLabel = releaseStatus
-    ? releaseStatusLabelKey[releaseStatus as keyof typeof releaseStatusLabelKey]
-    : undefined;
+  const releaseStatus = getMediaReleaseStatusInfo(media.releaseStatus);
   const startDate = formatDate(media.startDate, language);
   const endDate = formatDate(media.endDate, language);
   const dateRange =
@@ -110,10 +94,8 @@ function MediaInformationContent({
   return (
     <Column gap="xxs">
       <InfoRow label={t("common:mediaDetail.status")}>
-        {releaseVariant && releaseLabel ? (
-          <Status size="m" variant={releaseVariant}>
-            {t(releaseLabel)}
-          </Status>
+        {releaseStatus ? (
+          <MediaReleaseStatus releaseStatus={media.releaseStatus} />
         ) : (
           <span>—</span>
         )}

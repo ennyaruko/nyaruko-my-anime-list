@@ -10,7 +10,10 @@ import {
   ScrollRestoration,
 } from "react-router";
 
-import { THEME_STORAGE_KEY } from "@/features/change-theme";
+import {
+  THEME_STORAGE_KEY,
+  DEFAULT_THEME_SCHEDULE,
+} from "@/features/change-theme";
 
 import { darkTheme, lightTheme } from "@/shared/styles";
 import i18n, { LOCALE_STORAGE_KEY, supportedLanguages } from "@/shared/i18n";
@@ -25,6 +28,7 @@ import { Providers } from "./providers";
 import "./styles/global.css";
 
 const SITE_URL = "https://nyar1othotep.github.io/my-anime-list/";
+const { darkFromMinuteOfDay, darkUntilMinuteOfDay } = DEFAULT_THEME_SCHEDULE;
 
 const themeInitializerScript = `
   (function() {
@@ -33,8 +37,16 @@ const themeInitializerScript = `
       storedTheme = window.localStorage.getItem("${THEME_STORAGE_KEY}");
     } catch {}
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const now = new Date();
+    const currentMinuteOfDay = now.getHours() * 60 + now.getMinutes();
+    const darkFromMinuteOfDay = ${darkFromMinuteOfDay};
+    const darkUntilMinuteOfDay = ${darkUntilMinuteOfDay};
+    const isAdaptiveDark = darkFromMinuteOfDay > darkUntilMinuteOfDay
+      ? currentMinuteOfDay >= darkFromMinuteOfDay || currentMinuteOfDay < darkUntilMinuteOfDay
+      : currentMinuteOfDay >= darkFromMinuteOfDay && currentMinuteOfDay < darkUntilMinuteOfDay;
 
-    const isDark = storedTheme === "dark" || (storedTheme !== "light" && prefersDark);
+    const isDark = storedTheme === "dark"
+      || (storedTheme === "adaptive" ? isAdaptiveDark : storedTheme !== "light" && prefersDark);
 
     document.documentElement.classList.add(isDark ? "${darkTheme}" : "${lightTheme}");
 

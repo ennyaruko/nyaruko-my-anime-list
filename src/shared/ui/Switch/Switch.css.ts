@@ -66,3 +66,10 @@ export const thumbState = styleVariants({
   unchecked: { transform: "translate(0, -50%)" },
   checked: { transform: "translate(11px, -50%)" },
 });
+
+export const threePositionThumb = style({
+  selectors: {
+    '[data-switch-position="2"] &': { transform: "translate(11px, -50%)" },
+    '[data-switch-position="1"] &': { transform: "translate(5.5px, -50%)" },
+  },
+});

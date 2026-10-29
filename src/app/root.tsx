@@ -53,7 +53,7 @@ const themeInitializerScript = `
     document.documentElement.style.colorScheme = isDark ? "dark" : "light";
     document
       .querySelector('meta[name="theme-color"]')
-      ?.setAttribute("content", isDark ? "#151719" : "#FFFFFF");
+      ?.setAttribute("content", isDark ? "#202020" : "#FFFFFF");
   })();
 `;
 
@@ -118,7 +118,7 @@ export function Layout({ children }: { children: ReactNode }) {
         <base href={import.meta.env.BASE_URL} />
         <meta content="MyAnimeList" name="application-name" />
         <meta content="MyAnimeList" name="apple-mobile-web-app-title" />
-        <meta content="#10131a" name="theme-color" />
+        <meta content="#202020" name="theme-color" />
         <meta name="description" content={t("common:description")} />
         <meta
           property="og:locale"

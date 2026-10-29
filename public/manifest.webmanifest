@@ -5,6 +5,8 @@
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
+  "theme_color": "#202020",
+  "background_color": "#202020",
   "icons": [
     {
       "src": "./android-chrome-192x192.png",

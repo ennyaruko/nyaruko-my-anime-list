@@ -41,7 +41,7 @@ function parseTranslation(data: unknown): string {
 
 /** Provider-specific request format stays outside the translation feature. */
 export function createGoogleTranslationService(
-  endpoints: EndpointResolver,
+  endpoints: Pick<EndpointResolver, "resolve">,
   fetcher: typeof fetch = fetch,
 ): TranslationService {
   let active = 0;

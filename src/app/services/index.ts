@@ -1,5 +1,7 @@
 import { remoteEndpoints } from "@/app/config/remote-endpoints";
+import { createMyMemoryTranslationService } from "@/app/integrations/mymemory/translation-service";
 import { createGoogleTranslationService } from "@/app/integrations/google-translate/translation-service";
+import { createFallbackTranslationService } from "@/app/integrations/translation/fallback-translation-service";
 import { createAnimeApiMediaExternalIdResolver } from "@/app/integrations/anime-api/media-external-id-resolver";
 import { createShikimoriMediaScreenshotsService } from "@/app/integrations/shikimori/media-screenshots-service";
 import {
@@ -54,7 +56,10 @@ export const appServices = createServiceRegistry()
   .register(mediaSearchServiceToken, aniListMediaSearchService)
   .register(
     translationServiceToken,
-    createGoogleTranslationService(remoteEndpoints),
+    createFallbackTranslationService([
+      createGoogleTranslationService(remoteEndpoints),
+      createMyMemoryTranslationService(remoteEndpoints),
+    ]),
   )
   .register(mediaExternalIdResolverToken, mediaExternalIdResolver)
   .register(

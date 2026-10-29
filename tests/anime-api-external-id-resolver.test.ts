@@ -7,16 +7,11 @@ describe("createAnimeApiMediaExternalIdResolver", () => {
     "aHR0cHM6Ly9hbmltZWFwaS5teS5pZC9hbmlsaXN0LzphbmlsaXN0SWQ=",
   );
 
-  it("resolves AniList, MAL, and Shikimori IDs", async () => {
+  it("uses AniList's MAL ID without requesting AnimeAPI", async () => {
     const endpoints = {
-      resolve: vi.fn().mockResolvedValue(endpoint),
+      resolveFallback: vi.fn().mockResolvedValue(endpoint),
     };
-    const fetcher = vi.fn().mockResolvedValue(
-      new Response(
-        JSON.stringify({ shikimori: 51122, myanimelist: 51122 }),
-        { status: 200 },
-      ),
-    );
+    const fetcher = vi.fn();
     const resolver = createAnimeApiMediaExternalIdResolver(
       endpoints,
       fetcher,
@@ -26,15 +21,36 @@ describe("createAnimeApiMediaExternalIdResolver", () => {
       malId: 51122,
       shikimoriId: 51122,
     });
+    expect(fetcher).not.toHaveBeenCalled();
+    expect(endpoints.resolveFallback).not.toHaveBeenCalled();
+  });
+
+  it("uses AnimeAPI only when AniList has no MAL ID", async () => {
+    const endpoints = {
+      resolveFallback: vi.fn().mockResolvedValue(endpoint),
+    };
+    const fetcher = vi.fn().mockResolvedValue(
+      Response.json({ shikimori: 51122, myanimelist: 51122 }),
+    );
+    const resolver = createAnimeApiMediaExternalIdResolver(
+      endpoints,
+      fetcher,
+    );
+
+    await expect(resolver.resolve(145728, null)).resolves.toEqual({
+      malId: 51122,
+      shikimoriId: 51122,
+    });
+    expect(endpoints.resolveFallback).toHaveBeenCalledWith("getMalId");
     expect(fetcher).toHaveBeenCalledWith(
       endpoint.replace(":anilistId", "145728"),
       expect.objectContaining({ credentials: "omit" }),
     );
   });
 
-  it("falls back to AniList's MAL ID when AnimeAPI is unavailable", async () => {
+  it("returns missing IDs when AnimeAPI fallback fails", async () => {
     const endpoints = {
-      resolve: vi.fn().mockResolvedValue(endpoint),
+      resolveFallback: vi.fn().mockResolvedValue(endpoint),
     };
     const fetcher = vi.fn().mockRejectedValue(new TypeError("Failed to fetch"));
     const resolver = createAnimeApiMediaExternalIdResolver(
@@ -42,9 +58,9 @@ describe("createAnimeApiMediaExternalIdResolver", () => {
       fetcher,
     );
 
-    await expect(resolver.resolve(145728, 51122)).resolves.toEqual({
-      malId: 51122,
-      shikimoriId: 51122,
+    await expect(resolver.resolve(145728)).resolves.toEqual({
+      malId: null,
+      shikimoriId: null,
     });
   });
 });

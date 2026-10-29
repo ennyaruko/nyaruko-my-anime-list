@@ -1,5 +1,5 @@
 import { useLocation } from "react-router";
-import { useRef, useMemo, useState, useEffect, useCallback } from "react";
+import { useMemo, useState, useEffect, useCallback } from "react";
 
 import type { MediaFiltersState } from "@/entities/filters";
 
@@ -36,8 +36,21 @@ const EMPTY_INITIAL_FILTERS: Partial<MediaFiltersState> = {};
 const MAX_FILTER_DRAFTS = 40;
 const filterDraftsByRoute = new Map<string, MediaFiltersState>();
 
-function createDraftKey(storageKey: string, locationKey: string): string {
-  return JSON.stringify([storageKey, locationKey]);
+export function createMediaFilterDraftKey(
+  storageKey: string,
+  pathname: string,
+  initialFiltersKey: string,
+): string {
+  return JSON.stringify([storageKey, pathname, initialFiltersKey]);
+}
+
+export function resetMediaFilterDrafts(scope: MediaFilterScope) {
+  const scopeMarker = `:v2:${scope}:`;
+
+  for (const key of filterDraftsByRoute.keys()) {
+    const [storageKey] = JSON.parse(key) as [string];
+    if (storageKey.includes(scopeMarker)) filterDraftsByRoute.delete(key);
+  }
 }
 
 function getFilterDraft(key: string): undefined | MediaFiltersState {
@@ -157,16 +170,14 @@ export function useMediaFilters(
   userId?: string,
   initialFilters: Partial<MediaFiltersState> = EMPTY_INITIAL_FILTERS,
 ) {
-  const { key: locationKey } = useLocation();
+  const { pathname, key: locationKey } = useLocation();
   const storageKey = getStorageKey(scope, userId);
-  const draftKey = createDraftKey(storageKey, locationKey);
   const initialFiltersKey = JSON.stringify(initialFilters);
-  const previousRoute = useRef({
-    draftKey,
+  const draftKey = createMediaFilterDraftKey(
     storageKey,
-    locationKey,
+    pathname,
     initialFiltersKey,
-  });
+  );
   const [filters, setFilters] = useState(
     () =>
       getFilterDraft(draftKey) ?? {
@@ -180,27 +191,13 @@ export function useMediaFilters(
 
   useEffect(() => {
     const saved = readSavedFilters(storageKey);
-    const previous = previousRoute.current;
-    const routeChanged = previous.locationKey !== locationKey;
-    const previousDraft =
-      routeChanged &&
-      previous.storageKey === storageKey &&
-      previous.initialFiltersKey === initialFiltersKey
-        ? getFilterDraft(previous.draftKey)
-        : undefined;
-    const draft = getFilterDraft(draftKey) ?? previousDraft;
+    const draft = getFilterDraft(draftKey);
     const nextFilters = draft ?? { ...saved, ...initialFilters };
 
-    if (!getFilterDraft(draftKey)) saveFilterDraft(draftKey, nextFilters);
+    if (!draft) saveFilterDraft(draftKey, nextFilters);
     setFilters(nextFilters);
     setSavedFilters(saved);
-    previousRoute.current = {
-      draftKey,
-      storageKey,
-      locationKey,
-      initialFiltersKey,
-    };
-  }, [draftKey, initialFilters, initialFiltersKey, locationKey, storageKey]);
+  }, [draftKey, initialFilters, locationKey, storageKey]);
 
   const updateFilters = useCallback(
     (updates: Partial<MediaFiltersState>) => {

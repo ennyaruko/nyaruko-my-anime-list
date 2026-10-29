@@ -16,13 +16,30 @@ query MediaRelations($id: Int!) {
             medium
           }
           averageScore
+          popularity
           isAdult
+          episodes
+          duration
+          genres
+          tags {
+            name
+          }
           format
           seasonYear
+          source
           status
           startDate {
             year
+            month
+            day
           }
+          endDate {
+            year
+            month
+            day
+          }
+          description
+          bannerImage
           mediaListEntry {
             id
             status

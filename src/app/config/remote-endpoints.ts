@@ -7,10 +7,19 @@ const GIST_CONFIG_URL =
 export const remoteEndpoints = createGistEndpointResolver({
   gistUrl: GIST_CONFIG_URL,
   defaults: {
-    animeApiAniList: "aHR0cHM6Ly9hbmltZWFwaS5teS5pZC9hbmlsaXN0LzphbmlsaXN0SWQ=",
-    translation:
-      "aHR0cHM6Ly90cmFuc2xhdGUuZ29vZ2xlYXBpcy5jb20vdHJhbnNsYXRlX2Evc2luZ2xl",
-    shikimoriScreenshots:
-      "aHR0cHM6Ly9zaGlraW1vcmkuaW8vYXBpL2FuaW1lcy86c2hpa2ltb3JpSWQvc2NyZWVuc2hvdHM=",
+    getMalId: {
+      default: null,
+      fallbacks: ["aHR0cHM6Ly9hbmltZWFwaS5teS5pZC9hbmlsaXN0LzphbmlsaXN0SWQ="],
+    },
+    screenshots: {
+      fallbacks: [],
+      default:
+        "aHR0cHM6Ly9zaGlraW1vcmkuaW8vYXBpL2FuaW1lcy86c2hpa2ltb3JpSWQvc2NyZWVuc2hvdHM=",
+    },
+    translation: {
+      fallbacks: ["aHR0cHM6Ly9hcGkubXltZW1vcnkudHJhbnNsYXRlZC5uZXQvZ2V0"],
+      default:
+        "aHR0cHM6Ly90cmFuc2xhdGUuZ29vZ2xlYXBpcy5jb20vdHJhbnNsYXRlX2Evc2luZ2xl",
+    },
   },
 });

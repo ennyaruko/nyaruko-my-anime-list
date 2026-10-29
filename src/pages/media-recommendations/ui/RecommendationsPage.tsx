@@ -40,11 +40,7 @@ export function RecommendationsPage({
       <Column gap="m">
         <Header
           variant="plain"
-          leading={
-            <BackLink to={`/media/${mediaId}`}>
-              {t("common:mediaDetail.back")}
-            </BackLink>
-          }
+          leading={<BackLink>{t("common:mediaDetail.back")}</BackLink>}
         />
         <QueryErrorBoundary resetKeys={[mediaId]}>
           <RecommendationsResults userId={userId} mediaId={mediaId} />

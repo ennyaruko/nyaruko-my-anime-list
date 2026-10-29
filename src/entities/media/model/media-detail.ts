@@ -74,6 +74,6 @@ export type MediaDetail = {
   media: Media;
   /** Community-ranked tags. */
   tags: MediaTag[];
-  /** AniList's MyAnimeList identifier, used if the external ID service is offline. */
+  /** AniList's MyAnimeList identifier, used before external ID lookups. */
   malId: null | number;
 };

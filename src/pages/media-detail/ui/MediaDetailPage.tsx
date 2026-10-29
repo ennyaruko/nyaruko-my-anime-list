@@ -37,10 +37,7 @@ type MediaDetailPageProps = {
   userId: undefined | AccountProfile["id"];
 };
 
-type MediaRouteState = {
-  media?: Media;
-  from?: string;
-};
+type MediaRouteState = { media?: Media };
 
 export function MediaDetailPage({ userId, mediaId }: MediaDetailPageProps) {
   const { i18n } = useTranslation(["common"]);
@@ -49,7 +46,6 @@ export function MediaDetailPage({ userId, mediaId }: MediaDetailPageProps) {
   const service = useAppService(mediaDetailServiceToken);
   const state = location.state as null | MediaRouteState;
   const initialMedia = state?.media?.id === mediaId ? state.media : undefined;
-  const backTo = state?.from?.startsWith("/") ? state.from : "/";
   const queryKey = queryCacheConfig.families.mediaDetail.key(
     userId ?? "unknown",
     mediaId,
@@ -80,7 +76,7 @@ export function MediaDetailPage({ userId, mediaId }: MediaDetailPageProps) {
   return (
     <Container as="main" className={styles.page}>
       <Column gap="xl">
-        <Header variant="plain" leading={<MediaDetailBackLink to={backTo} />} />
+        <Header variant="plain" leading={<MediaDetailBackLink />} />
 
         {media ? (
           <ComponentErrorBoundary resetKeys={[mediaId]}>

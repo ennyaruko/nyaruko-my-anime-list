@@ -6,19 +6,21 @@ import useEmblaCarousel from "embla-carousel-react";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import Counter from "yet-another-react-lightbox/plugins/counter";
 
-import type { Media, MediaScreenshot } from "@/entities/media";
+import type { Media } from "@/entities/media";
 
 import { Heading } from "@/shared/ui";
 
 import { useMediaScreenshots } from "../../model/useMediaScreenshots";
+import {
+  getMediaScreenshotImages,
+  type MediaScreenshotImage,
+} from "../../model/get-media-screenshot-images";
 
 import "yet-another-react-lightbox/styles.css";
 import "yet-another-react-lightbox/plugins/counter.css";
 
 import * as styles from "./MediaScreenshots.css";
 import * as pageStyles from "../MediaDetailPage.css";
-
-type ScreenshotImage = MediaScreenshot & { title: string };
 
 type MediaScreenshotsProps = {
   media: Media | undefined;
@@ -32,28 +34,10 @@ export function MediaScreenshots({ media, malId }: MediaScreenshotsProps) {
     mediaId: media?.id ?? 0,
   });
   const [selectedIndex, setSelectedIndex] = useState<null | number>(null);
-  const images = useMemo(() => {
-    if (!media) return [];
-
-    const values: ScreenshotImage[] = [];
-    const seen = new Set<string>();
-    const addImage = (url: null | string | undefined, preview?: string) => {
-      if (!url || seen.has(url)) return;
-      seen.add(url);
-      values.push({
-        original: url,
-        title: media.title,
-        preview: preview ?? url,
-      });
-    };
-
-    addImage(media.bannerImage ?? undefined);
-    screenshotsQuery.data?.forEach(({ preview, original }) =>
-      addImage(original, preview),
-    );
-
-    return values;
-  }, [media, screenshotsQuery.data]);
+  const images = useMemo(
+    () => getMediaScreenshotImages(media, screenshotsQuery.data),
+    [media, screenshotsQuery.data],
+  );
   const isPending = screenshotsQuery.isPending;
 
   if (!media || (images.length === 0 && !isPending)) return null;
@@ -85,7 +69,7 @@ function ScreenshotStrip({
   images,
   onSelect,
 }: {
-  images: ScreenshotImage[];
+  images: MediaScreenshotImage[];
   onSelect: (index: number) => void;
 }) {
   const [viewportRef] = useEmblaCarousel({
@@ -124,8 +108,8 @@ function ScreenshotLightbox({
   selectedIndex,
   onSelectedIndexChange,
 }: {
-  images: ScreenshotImage[];
   selectedIndex: null | number;
+  images: MediaScreenshotImage[];
   onSelectedIndexChange: (index: null | number) => void;
 }) {
   const { t } = useTranslation(["common"]);

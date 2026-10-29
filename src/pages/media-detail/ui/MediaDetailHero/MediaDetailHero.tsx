@@ -149,12 +149,8 @@ export function MediaDetailHeroSkeleton({
   );
 }
 
-export type MediaDetailBackLinkProps = {
-  to: string;
-};
-
-export function MediaDetailBackLink({ to }: MediaDetailBackLinkProps) {
+export function MediaDetailBackLink() {
   const { t } = useTranslation(["common"]);
 
-  return <BackLink to={to}>{t("common:mediaDetail.back")}</BackLink>;
+  return <BackLink>{t("common:mediaDetail.back")}</BackLink>;
 }

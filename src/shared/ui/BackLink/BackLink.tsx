@@ -1,14 +1,20 @@
-import { Link } from "react-router";
+import { useNavigate } from "react-router";
 
 import { ArrowDownIcon } from "@/shared/icons";
 
-import * as styles from "./BackLink.css";
+import { Button } from "../Button";
 
-export function BackLink({ to, children }: { to: string; children: string }) {
+export function BackLink({ children }: { children: string }) {
+  const navigate = useNavigate();
+
   return (
-    <Link to={to} className={styles.root}>
-      <ArrowDownIcon className={styles.icon} />
+    <Button
+      type="button"
+      variant="flat"
+      onClick={() => navigate(-1)}
+      leftIcon={<ArrowDownIcon />}
+    >
       {children}
-    </Link>
+    </Button>
   );
 }

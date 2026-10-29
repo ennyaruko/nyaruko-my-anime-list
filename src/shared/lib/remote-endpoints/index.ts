@@ -11,17 +11,35 @@ const httpsUrl = z
 const manifestSchema = z.object({
   version: z.literal(2),
   encoding: z.literal("base64"),
-  endpoints: z.record(z.string().min(1)),
+  endpoints: z.record(
+    z.union([
+      z.string().min(1),
+      z.object({
+        default: z.string().min(1).nullable(),
+        fallbacks: z.array(z.string().min(1)).optional(),
+      }),
+    ]),
+  ),
 });
 
-export type EndpointResolver = { resolve: (name: string) => Promise<string> };
+export type EndpointConfig = {
+  fallbacks?: string[];
+  default: null | string;
+};
+
+type DefaultEndpointConfig = EndpointConfig & { fallbacks: string[] };
+
+export type EndpointResolver = {
+  resolve: (name: string) => Promise<string>;
+  resolveFallback: (name: string, index?: number) => Promise<string>;
+};
 
 type ResolverOptions = {
   ttlMs?: number;
   gistUrl?: string;
   now?: () => number;
   fetcher?: typeof fetch;
-  defaults: Record<string, string>;
+  defaults: Record<string, DefaultEndpointConfig>;
 };
 
 /** Resolves named endpoints from a versioned raw Gist, retaining the last valid manifest. */
@@ -42,7 +60,7 @@ export function createGistEndpointResolver({
       throw new Error("Configuration must use a raw GitHub Gist URL");
     }
   }
-  let remote: Record<string, string> = {};
+  let remote: Record<string, EndpointConfig> = {};
   let refreshAt = 0;
   let pending: undefined | Promise<void>;
 
@@ -81,23 +99,55 @@ export function createGistEndpointResolver({
         : Object.hasOwn(fallback, name)
           ? fallback[name]
           : undefined;
-      if (!value) throw new Error(`Endpoint is not configured: ${name}`);
-      return value;
+      if (!value?.default)
+        throw new Error(`Endpoint default is not configured: ${name}`);
+      return value.default;
+    },
+    async resolveFallback(name, index = 0) {
+      if (gistUrl && now() >= refreshAt) {
+        pending ??= refresh().finally(() => {
+          pending = undefined;
+        });
+        await pending;
+      }
+      const remoteEndpoints = remote[name]?.fallbacks;
+      const endpoints = remoteEndpoints ?? fallback[name]?.fallbacks ?? [];
+      const endpoint = endpoints[index];
+      if (!endpoint)
+        throw new Error(
+          `Fallback endpoint is not configured: ${name}[${index}]`,
+        );
+      return endpoint;
     },
   };
 }
 
-function decodeEndpoints(encodedEndpoints: Record<string, string>) {
+function decodeEndpoints(
+  encodedEndpoints: Record<string, string | EndpointConfig>,
+): Record<string, EndpointConfig> {
   return Object.fromEntries(
-    Object.entries(encodedEndpoints).map(([name, value]) => {
-      let decoded: string;
-      try {
-        decoded = atob(value);
-      } catch {
-        throw new Error(`Endpoint is not valid Base64: ${name}`);
-      }
+    Object.entries(encodedEndpoints).map(([name, entry]) => {
+      const config = typeof entry === "string" ? { default: entry } : entry;
+      const decodeUrl = (value: string) => {
+        let decoded: string;
+        try {
+          decoded = atob(value);
+        } catch {
+          throw new Error(`Endpoint is not valid Base64: ${name}`);
+        }
 
-      return [name, httpsUrl.parse(decoded)];
+        return httpsUrl.parse(decoded);
+      };
+
+      return [
+        name,
+        {
+          default: config.default === null ? null : decodeUrl(config.default),
+          ...(config.fallbacks
+            ? { fallbacks: config.fallbacks.map(decodeUrl) }
+            : {}),
+        },
+      ];
     }),
   );
 }

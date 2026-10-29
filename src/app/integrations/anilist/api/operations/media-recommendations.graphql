@@ -18,13 +18,30 @@ query MediaRecommendations($id: Int!, $page: Int!, $perPage: Int!) {
             medium
           }
           averageScore
+          popularity
           isAdult
+          episodes
+          duration
+          genres
+          tags {
+            name
+          }
           format
           seasonYear
+          source
           status
           startDate {
             year
+            month
+            day
           }
+          endDate {
+            year
+            month
+            day
+          }
+          description
+          bannerImage
           mediaListEntry {
             id
             status

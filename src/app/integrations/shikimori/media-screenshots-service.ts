@@ -52,7 +52,7 @@ export function createShikimoriMediaScreenshotsService(
       if (!ids.shikimoriId) return [];
 
       try {
-        const endpoint = await endpoints.resolve("shikimoriScreenshots");
+        const endpoint = await endpoints.resolve("screenshots");
         const url = endpoint.replace(":shikimoriId", String(ids.shikimoriId));
         const response = await fetcher(url, {
           signal,

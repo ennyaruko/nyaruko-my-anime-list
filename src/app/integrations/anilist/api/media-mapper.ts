@@ -37,7 +37,6 @@ export function mapAniListMedia(media: AniListMedia): Media {
   const coverImage = media.coverImage;
 
   return {
-    tags: [],
     id: media.id,
     format: media.format ?? null,
     score: listEntry?.score ?? null,
@@ -59,6 +58,10 @@ export function mapAniListMedia(media: AniListMedia): Media {
       "isAdult" in media && typeof media.isAdult === "boolean"
         ? media.isAdult
         : false,
+    tags:
+      "tags" in media && Array.isArray(media.tags)
+        ? media.tags.flatMap((tag) => (tag?.name ? [tag.name] : []))
+        : [],
     progress:
       listEntry?.progress ??
       (listEntry?.status === "CURRENT" || listEntry?.status === "REPEATING"

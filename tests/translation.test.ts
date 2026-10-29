@@ -6,6 +6,11 @@ import rehypeSanitize from "rehype-sanitize";
 import { it, vi, expect, describe } from "vitest";
 
 import { createGistEndpointResolver } from "../src/shared/lib/remote-endpoints";
+import { createFallbackTranslationService } from "../src/app/integrations/translation/fallback-translation-service";
+import {
+  splitMyMemoryText,
+  createMyMemoryTranslationService,
+} from "../src/app/integrations/mymemory/translation-service";
 import {
   sanitizeSchema,
   getContentTexts,
@@ -64,12 +69,31 @@ describe("Gist endpoint resolver", () => {
   const gistUrl =
     "https://gist.githubusercontent.com/user/123/raw/app-config.json";
   const defaultTranslation = "https://default.example/translate";
-  const defaults = { translation: btoa(defaultTranslation) };
-  const encodedManifest = (endpoints: Record<string, string>) => ({
+  const defaults = {
+    translation: { fallbacks: [], default: btoa(defaultTranslation) },
+  };
+  const encodeEndpoint = (
+    endpoint: string | { default: string; fallbacks: string[] },
+  ) =>
+    typeof endpoint === "string"
+      ? btoa(endpoint)
+      : {
+          default: btoa(endpoint.default),
+          fallbacks: endpoint.fallbacks.map((fallback) => btoa(fallback)),
+        };
+  const encodedManifest = (
+    endpoints: Record<
+      string,
+      string | { default: string; fallbacks: string[] }
+    >,
+  ) => ({
     version: 2,
     encoding: "base64",
     endpoints: Object.fromEntries(
-      Object.entries(endpoints).map(([name, value]) => [name, btoa(value)]),
+      Object.entries(endpoints).map(([name, value]) => [
+        name,
+        encodeEndpoint(value),
+      ]),
     ),
   });
   it("deduplicates config requests and resolves arbitrary named URLs", async () => {
@@ -93,6 +117,32 @@ describe("Gist endpoint resolver", () => {
     ]);
     await resolver.resolve("translation");
     expect(fetcher).toHaveBeenCalledTimes(1);
+  });
+  it("resolves configured endpoint defaults and ordered fallbacks", async () => {
+    const resolver = createGistEndpointResolver({
+      gistUrl,
+      defaults,
+      fetcher: vi.fn(async () =>
+        Response.json(
+          encodedManifest({
+            translation: {
+              default: "https://google.example/translate",
+              fallbacks: ["https://mymemory.example/get"],
+            },
+          }),
+        ),
+      ),
+    });
+
+    await expect(resolver.resolve("translation")).resolves.toBe(
+      "https://google.example/translate",
+    );
+    await expect(resolver.resolveFallback("translation")).resolves.toBe(
+      "https://mymemory.example/get",
+    );
+    await expect(resolver.resolveFallback("translation", 1)).rejects.toThrow(
+      "Fallback endpoint is not configured",
+    );
   });
   it("keeps the last valid configuration on errors and refreshes after TTL", async () => {
     let time = 1;
@@ -137,6 +187,23 @@ describe("Gist endpoint resolver", () => {
     expect(await remote.resolve("translation")).toBe(defaultTranslation);
     await expect(remote.resolve("missing")).rejects.toThrow("not configured");
   });
+  it("allows a null default when an endpoint is fallback-only", async () => {
+    const resolver = createGistEndpointResolver({
+      defaults: {
+        getMalId: {
+          default: null,
+          fallbacks: [btoa("https://animeapi.example/anilist/:anilistId")],
+        },
+      },
+    });
+
+    await expect(resolver.resolveFallback("getMalId")).resolves.toBe(
+      "https://animeapi.example/anilist/:anilistId",
+    );
+    await expect(resolver.resolve("getMalId")).rejects.toThrow(
+      "Endpoint default is not configured",
+    );
+  });
   it("rejects unsafe remote endpoints", async () => {
     const fetcher = vi.fn(async () =>
       Response.json(
@@ -166,6 +233,16 @@ describe("translation provider", () => {
       chunks.every((chunk) => encodeURIComponent(chunk).length <= 4_500),
     ).toBe(true);
   });
+  it("splits MyMemory queries at its 500-byte limit without losing Unicode text", () => {
+    const text = "Привет 🌍 Japanese 日本語\n".repeat(60);
+    const chunks = splitMyMemoryText(text);
+
+    expect(chunks.length).toBeGreaterThan(1);
+    expect(chunks.join("")).toBe(text);
+    expect(
+      chunks.every((chunk) => new TextEncoder().encode(chunk).length <= 500),
+    ).toBe(true);
+  });
   it("uses the resolved URL, autodetects source language and preserves surrounding spaces", async () => {
     const fetcher = vi.fn(async () => Response.json([[["Привет", "Hello"]]]));
     const service = createGoogleTranslationService(endpoints, fetcher);
@@ -193,6 +270,71 @@ describe("translation provider", () => {
       ),
     ).rejects.toThrow();
     expect(fetcher).not.toHaveBeenCalled();
+  });
+  it("keeps fallback orchestration provider-agnostic", async () => {
+    const primary = {
+      translate: vi.fn(async () => {
+        throw new Error("Primary provider is unavailable");
+      }),
+    };
+    const fallback = {
+      translate: vi.fn(async (texts: readonly string[]) => ({
+        [texts[0]]: "Привет",
+      })),
+    };
+    const service = createFallbackTranslationService([primary, fallback]);
+
+    await expect(
+      service.translate(["Hello"], new AbortController().signal),
+    ).resolves.toEqual({ Hello: "Привет" });
+    expect(primary.translate).toHaveBeenCalledOnce();
+    expect(fallback.translate).toHaveBeenCalledOnce();
+  });
+  it("MyMemory adapter uses its own request and response format", async () => {
+    const fetcher = vi.fn(async () =>
+      Response.json({
+        responseStatus: 200,
+        responseData: { match: 1, translatedText: "Привет" },
+      }),
+    );
+    const service = createMyMemoryTranslationService(
+      {
+        resolveFallback: async () => "https://api.mymemory.translated.net/get",
+      },
+      fetcher,
+    );
+
+    await expect(
+      service.translate([" Hello "], new AbortController().signal),
+    ).resolves.toEqual({ " Hello ": " Привет " });
+    const url = new URL(String(fetcher.mock.calls[0][0]));
+    expect(url.searchParams.get("q")).toBe("Hello");
+    expect(url.searchParams.get("langpair")).toBe("autodetect|ru");
+    expect(url.searchParams.get("mt")).toBe("1");
+  });
+  it("falls back from Google to MyMemory through the provider-agnostic service", async () => {
+    const google = createGoogleTranslationService(
+      { resolve: async () => "https://translate.example/single" },
+      vi.fn(async () => new Response("", { status: 503 })),
+    );
+    const myMemoryFetch = vi.fn(async () =>
+      Response.json({
+        responseStatus: 200,
+        responseData: { match: 1, translatedText: "Привет" },
+      }),
+    );
+    const myMemory = createMyMemoryTranslationService(
+      {
+        resolveFallback: async () => "https://api.mymemory.translated.net/get",
+      },
+      myMemoryFetch,
+    );
+    const service = createFallbackTranslationService([google, myMemory]);
+
+    await expect(
+      service.translate(["Hello"], new AbortController().signal),
+    ).resolves.toEqual({ Hello: "Привет" });
+    expect(myMemoryFetch).toHaveBeenCalledOnce();
   });
   it("rejects rate-limit errors and malformed responses so the UI can retain the original", async () => {
     const fetcher = vi

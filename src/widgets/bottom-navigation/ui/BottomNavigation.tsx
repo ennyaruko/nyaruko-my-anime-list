@@ -4,6 +4,8 @@ import { useTranslation } from "react-i18next";
 import clsx from "clsx";
 import { Popover } from "radix-ui";
 
+import { resetMediaFilterDrafts } from "@/features/filters";
+
 import type { AccountProfile } from "@/entities/account";
 
 import { SEARCH_INPUT_FOCUS_EVENT } from "@/shared/lib";
@@ -41,9 +43,10 @@ export function BottomNavigation({ account }: BottomNavigationProps) {
             to="/search"
             label={t("common:navigation.search")}
             icon={<SearchIcon className={navigationItemStyles.icon} />}
-            onClick={() =>
-              window.dispatchEvent(new Event(SEARCH_INPUT_FOCUS_EVENT))
-            }
+            onClick={() => {
+              resetMediaFilterDrafts("search");
+              window.dispatchEvent(new Event(SEARCH_INPUT_FOCUS_EVENT));
+            }}
           />
           <Popover.Trigger
             type="button"

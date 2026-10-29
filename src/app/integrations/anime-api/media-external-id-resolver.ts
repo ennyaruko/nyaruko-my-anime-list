@@ -12,17 +12,18 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
-/** Resolves external catalog IDs, falling back to AniList's own MAL ID. */
+/** Uses AniList's MAL ID first and queries AnimeAPI only when it is missing. */
 export function createAnimeApiMediaExternalIdResolver(
   endpoints: EndpointResolver,
   fetcher: typeof fetch = fetch,
 ): MediaExternalIdResolver {
   return {
     async resolve(aniListId, fallbackMalId = null, signal) {
-      const safeFallback = readId(fallbackMalId);
+      const malId = readId(fallbackMalId);
+      if (malId) return { malId, shikimoriId: malId };
 
       try {
-        const endpoint = await endpoints.resolve("animeApiAniList");
+        const endpoint = await endpoints.resolveFallback("getMalId");
         const url = endpoint.replace(":anilistId", String(aniListId));
         const response = await fetcher(url, {
           signal,
@@ -35,16 +36,18 @@ export function createAnimeApiMediaExternalIdResolver(
         if (!isRecord(payload))
           throw new Error("AnimeAPI returned invalid data.");
 
-        const malId =
-          readId(payload.myanimelist) ?? readId(payload.malId) ?? safeFallback;
+        const resolvedMalId =
+          readId(payload.myanimelist) ??
+          readId(payload.malId) ??
+          readId(payload.shikimori);
 
         return {
-          malId,
-          shikimoriId: readId(payload.shikimori) ?? malId ?? safeFallback,
+          malId: resolvedMalId,
+          shikimoriId: readId(payload.shikimori) ?? resolvedMalId,
         };
       } catch (error) {
         if (signal?.aborted) throw error;
-        return { malId: safeFallback, shikimoriId: safeFallback };
+        return { malId: null, shikimoriId: null };
       }
     },
   };

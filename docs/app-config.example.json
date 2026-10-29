@@ -1,6 +1,9 @@
 {
-  "version": 1,
+  "version": 2,
+  "encoding": "base64",
   "endpoints": {
-    "translation": "https://translate.googleapis.com/translate_a/single"
+    "translation": "aHR0cHM6Ly90cmFuc2xhdGUuZ29vZ2xlYXBpcy5jb20vdHJhbnNsYXRlX2Evc2luZ2xl",
+    "animeApiAniList": "aHR0cHM6Ly9hbmltZWFwaS5teS5pZC9hbmlsaXN0LzphbmlsaXN0SWQ=",
+    "shikimoriScreenshots": "aHR0cHM6Ly9zaGlraW1vcmkuaW8vYXBpL2FuaW1lcy86c2hpa2ltb3JpSWQvc2NyZWVuc2hvdHM="
   }
 }

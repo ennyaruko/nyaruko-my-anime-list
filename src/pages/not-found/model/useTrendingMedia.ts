@@ -76,7 +76,10 @@ export function useTrendingMedia({ account }: AccountState) {
               status: entry?.status ?? null,
               listEntryId: entry?.listEntryId ?? null,
               progress:
-                entry?.progress ?? (entry?.status === "CURRENT" ? 0 : null),
+                entry?.progress ??
+                (entry?.status === "CURRENT" || entry?.status === "REPEATING"
+                  ? 0
+                  : null),
             };
 
             return [media.id, media] as const;

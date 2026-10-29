@@ -29,6 +29,7 @@ const titleVariantByStatus: Record<MediaListStatus, TitleState> = {
   DROPPED: "dropped",
   CURRENT: "watching",
   PLANNING: "planning",
+  REPEATING: "repeating",
   COMPLETED: "completed",
 };
 
@@ -144,19 +145,20 @@ function LinkedMediaCard({
           />
         )}
         {!imageUrl && <NoImageIcon className={styles.noImageIcon} />}
-        {media.status === "CURRENT" && media.progress !== null && (
-          <Progress
-            size="s"
-            value={media.progress}
-            max={media.episodes ?? 12}
-            disabled={actions.isPending}
-            editable={actions.canManageList}
-            className={styles.recommendationProgress}
-            onValueChange={(progress) =>
-              actions.updateProgress(media.id, progress)
-            }
-          />
-        )}
+        {(media.status === "CURRENT" || media.status === "REPEATING") &&
+          media.progress !== null && (
+            <Progress
+              size="s"
+              value={media.progress}
+              max={media.episodes ?? 12}
+              disabled={actions.isPending}
+              editable={actions.canManageList}
+              className={styles.recommendationProgress}
+              onValueChange={(progress) =>
+                actions.updateProgress(media.id, progress)
+              }
+            />
+          )}
       </div>
       <Title
         title={media.title}

@@ -19,6 +19,7 @@ export type MediaListMenuProps = {
 const statusOptions: MediaListStatus[] = [
   "CURRENT",
   "COMPLETED",
+  "REPEATING",
   "DROPPED",
   "PAUSED",
   "PLANNING",
@@ -29,6 +30,7 @@ const statusTranslationKey = {
   DROPPED: "common:ui.watchStatus.dropped",
   CURRENT: "common:ui.watchStatus.watching",
   PLANNING: "common:ui.watchStatus.planned",
+  REPEATING: "common:ui.watchStatus.repeating",
   COMPLETED: "common:ui.watchStatus.completed",
 } as const satisfies Record<MediaListStatus, string>;
 

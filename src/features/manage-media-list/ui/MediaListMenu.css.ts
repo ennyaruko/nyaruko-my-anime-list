@@ -49,6 +49,12 @@ export const triggerTone = styleVariants({
     background: colors.background.elevation1Warning,
     boxShadow: `inset 0 -1px 0 ${colors.text.warning}`,
   },
+  REPEATING: {
+    color: colors.text.feature,
+    borderLeft: `4px solid ${colors.text.feature}`,
+    background: colors.background.elevation1Feature,
+    boxShadow: `inset 0 -1px 0 ${colors.text.feature}`,
+  },
   DROPPED: {
     color: colors.text.negative,
     borderLeft: `4px solid ${colors.text.negative}`,
@@ -113,6 +119,9 @@ export const optionsTone = styleVariants({
   PLANNING: {
     borderLeft: `4px solid ${colors.text.warning}`,
   },
+  REPEATING: {
+    borderLeft: `4px solid ${colors.text.feature}`,
+  },
   COMPLETED: {
     borderLeft: `4px solid ${colors.text.positive}`,
   },
@@ -157,6 +166,11 @@ export const optionTone = styleVariants({
     color: colors.text.warning,
     borderColor: colors.text.warning,
     background: colors.background.elevation1Warning,
+  },
+  REPEATING: {
+    color: colors.text.feature,
+    borderColor: colors.text.feature,
+    background: colors.background.elevation1Feature,
   },
   DROPPED: {
     color: colors.text.negative,
@@ -204,6 +218,9 @@ export const removeTone = styleVariants({
   },
   DROPPED: {
     background: colors.background.elevation1Negative,
+  },
+  REPEATING: {
+    background: colors.background.elevation1Feature,
   },
   COMPLETED: {
     background: colors.background.elevation1Positive,

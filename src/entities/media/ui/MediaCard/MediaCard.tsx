@@ -32,6 +32,7 @@ const titleVariantByStatus: Record<MediaListStatus, TitleState> = {
   DROPPED: "dropped",
   CURRENT: "watching",
   PLANNING: "planning",
+  REPEATING: "repeating",
   COMPLETED: "completed",
 };
 
@@ -98,17 +99,18 @@ export function MediaCard({
               />
             )}
             {isPlaceholder && <NoImageIcon className={styles.noImageIcon} />}
-            {media.status === "CURRENT" && media.progress !== null && (
-              <Progress
-                max={media.episodes ?? 12}
-                editable={editableProgress}
-                disabled={progressUpdating}
-                className={styles.progress}
-                value={media.progress ?? 0}
-                size={size === "l" ? "m" : "s"}
-                onValueChange={onProgressChange}
-              />
-            )}
+            {(media.status === "CURRENT" || media.status === "REPEATING") &&
+              media.progress !== null && (
+                <Progress
+                  max={media.episodes ?? 12}
+                  editable={editableProgress}
+                  disabled={progressUpdating}
+                  className={styles.progress}
+                  value={media.progress ?? 0}
+                  size={size === "l" ? "m" : "s"}
+                  onValueChange={onProgressChange}
+                />
+              )}
           </div>
         </div>
         <Title

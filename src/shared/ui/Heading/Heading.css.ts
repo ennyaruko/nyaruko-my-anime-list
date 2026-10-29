@@ -39,6 +39,11 @@ export const variant = styleVariants({
     background: colors.background.elevation1Warning,
     selectors: { "&::before": { background: colors.text.warning } },
   },
+  feature: {
+    color: colors.text.feature,
+    background: colors.background.elevation1Feature,
+    selectors: { "&::before": { background: colors.text.feature } },
+  },
   positive: {
     color: colors.text.positive,
     background: colors.background.elevation1Positive,

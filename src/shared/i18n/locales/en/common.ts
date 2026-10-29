@@ -122,6 +122,7 @@ export default {
       dropped: "Dropped",
       planned: "Planned",
       watching: "Watching",
+      repeating: "Repeating",
       completed: "Completed",
     },
     filters: {

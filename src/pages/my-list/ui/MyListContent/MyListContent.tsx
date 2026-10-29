@@ -18,6 +18,7 @@ const statusSections = [
   { key: "PLANNING", label: "planned", variant: "warning" },
   { key: "CURRENT", variant: "info", label: "watching" },
   { key: "COMPLETED", label: "completed", variant: "positive" },
+  { key: "REPEATING", label: "repeating", variant: "feature" },
   { key: "PAUSED", label: "paused", variant: "neutral" },
   { key: "DROPPED", label: "dropped", variant: "negative" },
 ] as const;
@@ -61,7 +62,7 @@ export function MyListContent({
         status={selectedStatus}
         optionsLoading={optionsLoading}
       >
-        {(filteredEntries, resetFilters, hasUnsavedChanges) => (
+        {(filteredEntries, resetFilters, hasUnsavedChanges, filtersPanel) => (
           <>
             <Heading
               id={selectedSection.key}
@@ -88,6 +89,7 @@ export function MyListContent({
             >
               {t(`common:ui.watchStatus.${selectedSection.label}`)}
             </Heading>
+            {filtersPanel}
             <MyListResults
               userId={userId}
               entries={filteredEntries}

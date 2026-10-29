@@ -31,6 +31,7 @@ const titleVariantByStatus: Record<MediaListStatus, TitleState> = {
   DROPPED: "dropped",
   CURRENT: "watching",
   PLANNING: "planning",
+  REPEATING: "repeating",
   COMPLETED: "completed",
 };
 

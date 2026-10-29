@@ -175,6 +175,7 @@ export default {
       watching: "Смотрю",
       completed: "Просмотрено",
       planned: "Запланировано",
+      repeating: "Пересматриваю",
     },
     filters: {
       close: "Назад",

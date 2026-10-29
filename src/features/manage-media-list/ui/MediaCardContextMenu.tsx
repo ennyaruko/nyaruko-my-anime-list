@@ -14,6 +14,7 @@ import {
   InfoIcon,
   DeleteIcon,
   PausedIcon,
+  RepeatIcon,
   DroppedIcon,
   WatchedIcon,
   PlanningIcon,
@@ -43,6 +44,7 @@ type StatusTranslationKey =
   | "common:ui.watchStatus.dropped"
   | "common:ui.watchStatus.planned"
   | "common:ui.watchStatus.watching"
+  | "common:ui.watchStatus.repeating"
   | "common:ui.watchStatus.completed";
 
 type StatusAction = {
@@ -65,6 +67,11 @@ const availableStatuses: Array<{
     Icon: WatchedIcon,
     status: "COMPLETED",
     translationKey: "common:ui.watchStatus.completed",
+  },
+  {
+    Icon: RepeatIcon,
+    status: "REPEATING",
+    translationKey: "common:ui.watchStatus.repeating",
   },
   {
     Icon: DroppedIcon,
@@ -234,9 +241,12 @@ export function MediaCardContextMenu({
           size={size}
           media={media}
           progressUpdating={actions.isPending}
-          editableProgress={media.status === "CURRENT" && actions.canManageList}
           onProgressChange={(progress) =>
             actions.updateProgress(media.id, progress)
+          }
+          editableProgress={
+            (media.status === "CURRENT" || media.status === "REPEATING") &&
+            actions.canManageList
           }
         />
       </div>

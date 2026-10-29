@@ -84,11 +84,11 @@ export function mapAniListMedia(media: AniListMedia): Media {
 }
 
 function mapListStatus(
-  status: null | undefined | "REPEATING" | MediaListStatus,
+  status: null | undefined | MediaListStatus,
 ): Media["status"] {
-  if (status === "REPEATING") return "CURRENT";
   if (
     status === "CURRENT" ||
+    status === "REPEATING" ||
     status === "COMPLETED" ||
     status === "PAUSED" ||
     status === "DROPPED" ||

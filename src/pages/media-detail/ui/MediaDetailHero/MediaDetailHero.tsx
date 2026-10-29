@@ -96,17 +96,18 @@ export function MediaDetailHero({ media, userId }: MediaDetailHeroProps) {
                 {(media.score ?? 0).toFixed(1)}
               </div>
             </Row>
-            {media.status === "CURRENT" && media.progress !== null && (
-              <Progress
-                size="l"
-                value={media.progress}
-                max={media.episodes ?? 12}
-                className={styles.progress}
-                disabled={actions.isPending}
-                editable={actions.canManageList}
-                onValueChange={handleProgressChange}
-              />
-            )}
+            {(media.status === "CURRENT" || media.status === "REPEATING") &&
+              media.progress !== null && (
+                <Progress
+                  size="l"
+                  value={media.progress}
+                  max={media.episodes ?? 12}
+                  className={styles.progress}
+                  disabled={actions.isPending}
+                  editable={actions.canManageList}
+                  onValueChange={handleProgressChange}
+                />
+              )}
           </Row>
         </div>
       </Column>

@@ -36,5 +36,6 @@ export const state = styleVariants({
   paused: { background: colors.text.tertiary },
   planning: { background: colors.text.warning },
   dropped: { background: colors.text.negative },
+  repeating: { background: colors.text.feature },
   completed: { background: colors.text.positive },
 });

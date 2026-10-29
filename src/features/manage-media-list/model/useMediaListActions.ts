@@ -20,6 +20,7 @@ type StatusTranslationKey =
   | "common:ui.watchStatus.dropped"
   | "common:ui.watchStatus.planned"
   | "common:ui.watchStatus.watching"
+  | "common:ui.watchStatus.repeating"
   | "common:ui.watchStatus.completed";
 
 const statusTranslationKey: Record<MediaListStatus, StatusTranslationKey> = {
@@ -27,6 +28,7 @@ const statusTranslationKey: Record<MediaListStatus, StatusTranslationKey> = {
   DROPPED: "common:ui.watchStatus.dropped",
   CURRENT: "common:ui.watchStatus.watching",
   PLANNING: "common:ui.watchStatus.planned",
+  REPEATING: "common:ui.watchStatus.repeating",
   COMPLETED: "common:ui.watchStatus.completed",
 };
 

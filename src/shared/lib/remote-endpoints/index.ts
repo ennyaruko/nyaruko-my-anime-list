@@ -9,8 +9,9 @@ const httpsUrl = z
   }, "Expected an HTTPS URL without credentials");
 
 const manifestSchema = z.object({
-  version: z.literal(1),
-  endpoints: z.record(httpsUrl),
+  version: z.literal(2),
+  encoding: z.literal("base64"),
+  endpoints: z.record(z.string().min(1)),
 });
 
 export type EndpointResolver = { resolve: (name: string) => Promise<string> };
@@ -31,7 +32,7 @@ export function createGistEndpointResolver({
   fetcher = fetch,
   ttlMs = 10 * 60_000,
 }: ResolverOptions): EndpointResolver {
-  const fallback = z.record(httpsUrl).parse(defaults);
+  const fallback = decodeEndpoints(defaults);
   if (gistUrl) {
     const url = new URL(httpsUrl.parse(gistUrl));
     if (
@@ -57,7 +58,9 @@ export function createGistEndpointResolver({
       const text = await response.text();
       if (text.length > 65_536)
         throw new Error("Gist configuration is too large");
-      remote = manifestSchema.parse(JSON.parse(text)).endpoints;
+      remote = decodeEndpoints(
+        manifestSchema.parse(JSON.parse(text)).endpoints,
+      );
       refreshAt = now() + ttlMs;
     } catch {
       // Offline, invalid JSON and unsupported versions retain the last valid URLs.
@@ -82,4 +85,19 @@ export function createGistEndpointResolver({
       return value;
     },
   };
+}
+
+function decodeEndpoints(encodedEndpoints: Record<string, string>) {
+  return Object.fromEntries(
+    Object.entries(encodedEndpoints).map(([name, value]) => {
+      let decoded: string;
+      try {
+        decoded = atob(value);
+      } catch {
+        throw new Error(`Endpoint is not valid Base64: ${name}`);
+      }
+
+      return [name, httpsUrl.parse(decoded)];
+    }),
+  );
 }

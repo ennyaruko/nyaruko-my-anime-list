@@ -6,6 +6,8 @@ import type {
 
 import type { EndpointResolver } from "@/shared/lib/remote-endpoints";
 
+const shikimoriHost = atob("aHR0cHM6Ly9zaGlraW1vcmkuaW8=");
+
 type ScreenshotResponse = {
   preview?: unknown;
   original?: unknown;
@@ -17,7 +19,7 @@ function isRecord(value: unknown): value is ScreenshotResponse {
 
 function normalizeImageUrl(value: unknown): null | string {
   if (typeof value !== "string" || value.length === 0) return null;
-  if (value.startsWith("/")) return `https://shikimori.io${value}`;
+  if (value.startsWith("/")) return `${shikimoriHost}${value}`;
 
   try {
     const url = new URL(value);

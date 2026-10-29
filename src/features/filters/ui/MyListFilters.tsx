@@ -20,6 +20,7 @@ type MyListFiltersProps = {
     filteredEntries: MyListEntry[],
     resetFilters: VoidFunction,
     hasUnsavedChanges: boolean,
+    filtersPanel: ReactNode,
   ) => ReactNode;
 };
 
@@ -47,22 +48,22 @@ export function MyListFilters({
     [entries, filters, status],
   );
 
-  return (
-    <>
-      <MediaFiltersPanel
-        filters={filters}
-        options={options}
-        onSave={saveFilters}
-        onReset={resetFilters}
-        onChange={updateFilters}
-        open={filterDrawer.open}
-        savedFilters={savedFilters}
-        sortOptions={listSortOptions}
-        optionsLoading={optionsLoading}
-        hasUnsavedChanges={hasUnsavedChanges}
-        onOpenChange={filterDrawer.onOpenChange}
-      />
-      {children(filteredEntries, resetFilters, hasUnsavedChanges)}
-    </>
+  return children(
+    filteredEntries,
+    resetFilters,
+    hasUnsavedChanges,
+    <MediaFiltersPanel
+      filters={filters}
+      options={options}
+      onSave={saveFilters}
+      onReset={resetFilters}
+      onChange={updateFilters}
+      open={filterDrawer.open}
+      savedFilters={savedFilters}
+      sortOptions={listSortOptions}
+      optionsLoading={optionsLoading}
+      hasUnsavedChanges={hasUnsavedChanges}
+      onOpenChange={filterDrawer.onOpenChange}
+    />,
   );
 }

@@ -10,7 +10,7 @@ export type PartialDate = {
 
 /** Status values for a media item in the current user's list. */
 export type MediaListStatus =
-  "PAUSED" | "CURRENT" | "DROPPED" | "PLANNING" | "COMPLETED";
+  "PAUSED" | "CURRENT" | "DROPPED" | "PLANNING" | "REPEATING" | "COMPLETED";
 
 /** Provider-neutral media data consumed by cards and search results. */
 export type Media = {

@@ -15,6 +15,7 @@ export { ReactComponent as PausedIcon } from "./paused.svg";
 export { ReactComponent as DeleteIcon } from "./delete.svg";
 export { ReactComponent as FilterIcon } from "./filter.svg";
 export { ReactComponent as SearchIcon } from "./search.svg";
+export { ReactComponent as RepeatIcon } from "./repeat.svg";
 export { ReactComponent as NoPageIcon } from "./no-page.svg";
 export { ReactComponent as WatchedIcon } from "./watched.svg";
 export { ReactComponent as DroppedIcon } from "./dropped.svg";

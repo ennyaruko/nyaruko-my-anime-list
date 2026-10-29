@@ -80,7 +80,10 @@ export function useSearchResults({
             listEntryId: listEntry?.listEntryId ?? null,
             progress:
               listEntry?.progress ??
-              (listEntry?.status === "CURRENT" ? 0 : null),
+              (listEntry?.status === "CURRENT" ||
+              listEntry?.status === "REPEATING"
+                ? 0
+                : null),
           };
         }) ?? [],
     [listEntriesByMediaId, searchQuery.data],

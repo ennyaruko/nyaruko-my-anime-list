@@ -22,6 +22,7 @@ const statusLabels = {
   DROPPED: "dropped",
   CURRENT: "watching",
   PLANNING: "planned",
+  REPEATING: "repeating",
   COMPLETED: "completed",
 } as const satisfies Record<MyListStatus, string>;
 

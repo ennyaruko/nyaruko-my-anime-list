@@ -61,8 +61,10 @@ export function mapAniListMyListEntry(entry: AniListEntry): MyListEntry {
     bannerImage: media.bannerImage ?? null,
     description: media.description ?? null,
     averageScore: media.averageScore ?? null,
-    progress: entry.progress ?? (status === "CURRENT" ? 0 : null),
     tags: media.tags?.flatMap((tag) => (tag?.name ? [tag.name] : [])) ?? [],
+    progress:
+      entry.progress ??
+      (status === "CURRENT" || status === "REPEATING" ? 0 : null),
     title:
       media.title?.english ||
       media.title?.romaji ||

@@ -63,16 +63,23 @@ describe("translation markup", () => {
 describe("Gist endpoint resolver", () => {
   const gistUrl =
     "https://gist.githubusercontent.com/user/123/raw/app-config.json";
-  const defaults = { translation: "https://default.example/translate" };
+  const defaultTranslation = "https://default.example/translate";
+  const defaults = { translation: btoa(defaultTranslation) };
+  const encodedManifest = (endpoints: Record<string, string>) => ({
+    version: 2,
+    encoding: "base64",
+    endpoints: Object.fromEntries(
+      Object.entries(endpoints).map(([name, value]) => [name, btoa(value)]),
+    ),
+  });
   it("deduplicates config requests and resolves arbitrary named URLs", async () => {
     const fetcher = vi.fn(async () =>
-      Response.json({
-        version: 1,
-        endpoints: {
+      Response.json(
+        encodedManifest({
           catalog: "https://remote.example/catalog",
           translation: "https://remote.example/translate",
-        },
-      }),
+        }),
+      ),
     );
     const resolver = createGistEndpointResolver({ gistUrl, fetcher, defaults });
     expect(
@@ -92,22 +99,19 @@ describe("Gist endpoint resolver", () => {
     const fetcher = vi
       .fn()
       .mockResolvedValueOnce(
-        Response.json({
-          version: 1,
-          endpoints: { translation: "https://first.example/translate" },
-        }),
+        Response.json(
+          encodedManifest({
+            translation: "https://first.example/translate",
+          }),
+        ),
       )
       .mockResolvedValueOnce(
-        Response.json({
-          version: 2,
-          endpoints: { translation: "javascript:alert(1)" },
-        }),
+        Response.json(encodedManifest({ translation: "javascript:alert(1)" })),
       )
       .mockResolvedValueOnce(
-        Response.json({
-          version: 1,
-          endpoints: { translation: "https://next.example/translate" },
-        }),
+        Response.json(
+          encodedManifest({ translation: "https://next.example/translate" }),
+        ),
       );
     const resolver = createGistEndpointResolver({
       gistUrl,
@@ -127,24 +131,25 @@ describe("Gist endpoint resolver", () => {
       throw new Error("Offline");
     });
     const local = createGistEndpointResolver({ fetcher, defaults });
-    expect(await local.resolve("translation")).toBe(defaults.translation);
+    expect(await local.resolve("translation")).toBe(defaultTranslation);
     expect(fetcher).not.toHaveBeenCalled();
     const remote = createGistEndpointResolver({ gistUrl, fetcher, defaults });
-    expect(await remote.resolve("translation")).toBe(defaults.translation);
+    expect(await remote.resolve("translation")).toBe(defaultTranslation);
     await expect(remote.resolve("missing")).rejects.toThrow("not configured");
   });
   it("rejects unsafe remote endpoints", async () => {
     const fetcher = vi.fn(async () =>
-      Response.json({
-        version: 1,
-        endpoints: { translation: "https://user:password@example.com" },
-      }),
+      Response.json(
+        encodedManifest({
+          translation: "https://user:password@example.com",
+        }),
+      ),
     );
     expect(
       await createGistEndpointResolver({ gistUrl, fetcher, defaults }).resolve(
         "translation",
       ),
-    ).toBe(defaults.translation);
+    ).toBe(defaultTranslation);
   });
 });
 

@@ -14,10 +14,6 @@ export const remoteEndpoints = createGistEndpointResolver({
       fallbacks: [],
       default: "aHR0cHM6Ly9hcGkueWFuaS50di8=",
     },
-    hentaiTvApi: {
-      fallbacks: [],
-      default: "aHR0cHM6Ly9oZW50YWkudHYvYXBpLw==",
-    },
     getMalId: {
       default: null,
       fallbacks: ["aHR0cHM6Ly9hbmltZWFwaS5teS5pZC9hbmlsaXN0LzphbmlsaXN0SWQ="],
@@ -55,6 +51,11 @@ export const remoteEndpoints = createGistEndpointResolver({
       fallbacks: [],
       default:
         "aHR0cHM6Ly9rb2Rpay55ZG5zLmV1Lz9zaGlraW1vcmlJRD06c2hpa2ltb3JpSWQmd2lkdGg9MTAwJSZoZWlnaHQ9MTAwJSZub0VtYmVk",
+    },
+    hentaiTvProxy: {
+      fallbacks: [],
+      default:
+        "aHR0cHM6Ly9teS1hbmltZS1saXN0LWhlbnRhaS10di1wcm94eS5ueWFyMW90aG90ZXAtYW5pbWUtcHJveHkud29ya2Vycy5kZXYvYXBpLw==",
     },
     translation: {
       fallbacks: ["aHR0cHM6Ly9hcGkubXltZW1vcnkudHJhbnNsYXRlZC5uZXQvZ2V0"],

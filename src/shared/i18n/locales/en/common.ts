@@ -251,6 +251,7 @@ export default {
     hideReplies: "Hide replies",
     nextEpisode: "Next episode",
     syncing: "Saving progress…",
+    adultEpisodeLabel: "Episode",
     schedule: "Release schedule",
     continue: "Continue watching",
     episode: "Episode {{number}}",

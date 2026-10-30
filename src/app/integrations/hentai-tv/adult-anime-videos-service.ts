@@ -8,8 +8,10 @@ import type { RemoteConfigResolver } from "@/shared/lib/remote-endpoints";
 import type { HentaiTvVideo } from "./schema";
 import { searchResponseSchema } from "./schema";
 
-function resolveAsset(path: string, origin: string): string {
-  const url = new URL(path, origin);
+const HENTAI_TV_ORIGIN = "https://hentai.tv";
+
+function resolveAsset(path: string): string {
+  const url = new URL(path, HENTAI_TV_ORIGIN);
   if (url.protocol !== "https:" || url.username || url.password) {
     throw new Error("Invalid hentai.tv image URL");
   }
@@ -25,7 +27,7 @@ function isValidEmbedUrl(value: string): boolean {
   }
 }
 
-function mapVideo(video: HentaiTvVideo, origin: string): null | AdultVideo {
+function mapVideo(video: HentaiTvVideo): null | AdultVideo {
   if (!isValidEmbedUrl(video.embedUrl)) return null;
 
   return {
@@ -40,8 +42,8 @@ function mapVideo(video: HentaiTvVideo, origin: string): null | AdultVideo {
     language: video.language,
     duration: video.duration,
     embedUrl: video.embedUrl,
-    cover: resolveAsset(video.cover, origin),
-    thumbnail: resolveAsset(video.thumb, origin),
+    cover: resolveAsset(video.cover),
+    thumbnail: resolveAsset(video.thumb),
   };
 }
 
@@ -51,7 +53,7 @@ export function createHentaiTvAdultAnimeVideosService(
 ): AdultAnimeVideosService {
   return {
     async searchByTitle(title, signal) {
-      const baseUrl = await config.resolve("hentaiTvApi");
+      const baseUrl = await config.resolve("hentaiTvProxy");
       const apiBaseUrl = new URL(`${baseUrl.replace(/\/$/, "")}/`);
       const url = new URL("search", apiBaseUrl);
       url.searchParams.set("q", title);
@@ -71,7 +73,7 @@ export function createHentaiTvAdultAnimeVideosService(
       const payload: unknown = await response.json();
       const result = searchResponseSchema.parse(payload);
       return result.videos.flatMap((video) => {
-        const mapped = mapVideo(video, apiBaseUrl.origin);
+        const mapped = mapVideo(video);
         return mapped ? [mapped] : [];
       });
     },

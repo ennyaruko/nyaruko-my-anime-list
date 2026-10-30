@@ -250,6 +250,7 @@ export default {
     adultEpisodes: "Эпизоды",
     adultQuality: "Качество",
     adultCensored: "Censored",
+    adultEpisodeLabel: "Эпизод",
     episode: "Серия {{number}}",
     fallback: "Резервные плееры",
     hideReplies: "Скрыть ответы",

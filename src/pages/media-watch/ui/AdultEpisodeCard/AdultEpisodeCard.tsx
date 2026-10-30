@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import clsx from "clsx";
 
 import type { AdultVideo } from "@/entities/adult-anime";
+import { MediaContextInformation } from "@/entities/media";
 
 import { Image, Score } from "@/shared/ui";
 import {
@@ -63,38 +64,33 @@ export function AdultEpisodeCard({
           </span>
         </button>
       </ContextMenuTrigger>
-      <ContextMenuContent className={styles.contextContent}>
-        <strong className={styles.contextTitle}>{video.title}</strong>
-        <InfoRow
-          value={String(video.episode)}
-          label={t("common:watch.adultEpisode")}
-        />
-        <InfoRow
-          label={t("common:watch.adultTags")}
-          value={video.tags.join(", ") || "—"}
-        />
-        <InfoRow
-          value={video.duration || "—"}
-          label={t("common:watch.adultDuration")}
-        />
-        <InfoRow
-          value={video.quality || "—"}
-          label={t("common:watch.adultQuality")}
-        />
-        <InfoRow
-          value={video.language || "—"}
-          label={t("common:watch.adultLanguage")}
+      <ContextMenuContent style={{ width: "min(260px, calc(100vw - 24px))" }}>
+        <MediaContextInformation
+          title={video.title}
+          rows={[
+            {
+              value: video.episode,
+              label: t("common:watch.adultEpisodeLabel"),
+            },
+            {
+              label: t("common:watch.adultTags"),
+              value: video.tags.join(", ") || "—",
+            },
+            {
+              value: video.duration || "—",
+              label: t("common:watch.adultDuration"),
+            },
+            {
+              value: video.quality || "—",
+              label: t("common:watch.adultQuality"),
+            },
+            {
+              value: video.language || "—",
+              label: t("common:watch.adultLanguage"),
+            },
+          ]}
         />
       </ContextMenuContent>
     </ContextMenu>
-  );
-}
-
-function InfoRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div className={styles.infoRow}>
-      <span className={styles.infoLabel}>{label}</span>
-      <span className={styles.infoValue}>{value}</span>
-    </div>
   );
 }

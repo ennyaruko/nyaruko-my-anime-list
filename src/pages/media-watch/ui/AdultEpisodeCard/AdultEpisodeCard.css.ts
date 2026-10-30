@@ -65,23 +65,3 @@ export const uncensored = style({
   color: colors.text.primaryOnLight,
   background: colors.status.positive,
 });
-
-export const contextContent = style({
-  whiteSpace: "normal",
-  gap: primitives.spacing.xs,
-  width: "min(320px, calc(100vw - 24px))",
-});
-
-export const contextTitle = style({
-  ...typography.body["s-medium"],
-  overflowWrap: "anywhere",
-});
-
-export const infoRow = style({
-  display: "grid",
-  gap: primitives.spacing.xs,
-  gridTemplateColumns: "auto minmax(0, 1fr)",
-});
-
-export const infoLabel = style({ color: colors.text.secondary });
-export const infoValue = style({ overflowWrap: "anywhere" });

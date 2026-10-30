@@ -32,6 +32,9 @@ export function AdultEpisodeList({
 }: AdultEpisodeListProps) {
   const { t } = useTranslation(["common"]);
   const title = t("common:watch.adultEpisodes");
+  const sortedVideos = [...videos].sort(
+    (first, second) => first.episode - second.episode,
+  );
 
   if (isError) {
     return (
@@ -68,8 +71,8 @@ export function AdultEpisodeList({
   return (
     <MediaCarousel
       title={title}
-      items={videos}
       hasNextPage={false}
+      items={sortedVideos}
       isPending={isLoading}
       isFetchingNextPage={false}
       getKey={(video) => video.id}

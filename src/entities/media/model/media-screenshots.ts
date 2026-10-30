@@ -1,6 +1,8 @@
 import { createServiceToken } from "@/shared/lib";
 
-/** A Shikimori screenshot with a small carousel preview and original image. */
+import type { MediaDetail } from "./media-detail";
+
+/** A provider-neutral screenshot with a carousel preview and original image. */
 export type MediaScreenshot = {
   preview: string;
   original: string;
@@ -8,8 +10,7 @@ export type MediaScreenshot = {
 
 export type MediaScreenshotsService = {
   getScreenshots(
-    aniListId: number,
-    fallbackMalId?: null | number,
+    detail: MediaDetail,
     signal?: AbortSignal,
   ): Promise<MediaScreenshot[]>;
 };

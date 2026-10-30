@@ -11,5 +11,6 @@ export const frame = style({
 export const container = style({
   width: "100%",
   background: "#000",
+  marginInline: "auto",
   aspectRatio: "16 / 9",
 });

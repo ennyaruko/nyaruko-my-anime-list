@@ -1,4 +1,5 @@
 import type {
+  MediaDetail,
   MediaScreenshot,
   MediaExternalIdResolver,
   MediaScreenshotsService,
@@ -47,8 +48,12 @@ export function createShikimoriMediaScreenshotsService(
   fetcher: typeof fetch = fetch,
 ): MediaScreenshotsService {
   return {
-    async getScreenshots(aniListId, fallbackMalId = null, signal) {
-      const ids = await externalIds.resolve(aniListId, fallbackMalId, signal);
+    async getScreenshots(detail: MediaDetail, signal) {
+      const ids = await externalIds.resolve(
+        detail.media.id,
+        detail.malId,
+        signal,
+      );
       if (!ids.shikimoriId) return [];
 
       try {

@@ -20,7 +20,7 @@ import {
   CollapsibleContent,
 } from "@/shared/ui";
 
-import * as styles from "./MediaWatch.css";
+import * as styles from "./WatchComments.css";
 
 export function WatchComments({ catalogId }: { catalogId: string }) {
   const { t } = useTranslation(["common"]);

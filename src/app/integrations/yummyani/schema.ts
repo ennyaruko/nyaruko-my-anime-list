@@ -34,8 +34,15 @@ export const videoSchema = z.object({
 });
 export type YummyVideo = z.infer<typeof videoSchema>;
 
+const screenshotSchema = z.object({
+  sizes: z
+    .object({ full: z.string().optional(), small: z.string().optional() })
+    .nullish(),
+});
+
 export const detailSchema = animeSchema.extend({
   videos: z.array(videoSchema).optional(),
+  random_screenshots: z.array(screenshotSchema).nullish(),
   viewing_order: z
     .array(
       animeSchema.extend({

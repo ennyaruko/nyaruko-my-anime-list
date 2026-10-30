@@ -16,8 +16,10 @@ function getGraphQLEndpoint(): string {
 /** Creates a request-scoped client; access tokens are never kept in a singleton. */
 export function createAniListGraphQLClient(
   accessToken?: string,
+  keepalive = false,
 ): GraphQLClient {
   return new GraphQLClient(getGraphQLEndpoint(), {
+    ...(keepalive ? { keepalive: true } : {}),
     ...(accessToken
       ? { headers: { Authorization: `Bearer ${accessToken}` } }
       : {}),

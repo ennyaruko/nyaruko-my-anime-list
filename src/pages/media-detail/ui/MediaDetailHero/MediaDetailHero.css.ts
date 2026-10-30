@@ -24,6 +24,7 @@ export const watchLink = style({
     "transform 160ms cubic-bezier(0.2, 0, 0, 1), box-shadow 160ms cubic-bezier(0.2, 0, 0, 1)",
   background: `linear-gradient(110deg, ${colors.table.state1} 0%, ${colors.table.state2} 52%, ${colors.table.state3} 100%)`,
   "@media": {
+    "(min-width: 768px)": { maxWidth: "560px" },
     "(prefers-reduced-motion: reduce)": {
       transition: "none",
       selectors: {
@@ -80,7 +81,9 @@ export const watchPlayIcon = style({
 
 export const watchText = style({
   zIndex: 1,
+  minWidth: 0,
   display: "flex",
+  flex: "1 1 auto",
   position: "relative",
   flexDirection: "column",
   gap: primitives.spacing.xxxs,
@@ -157,6 +160,9 @@ export const hero = style({
   position: "relative",
   alignItems: "center",
   justifyContent: "center",
+  "@media": {
+    "(min-width: 1024px)": { height: "380px" },
+  },
 });
 
 export const previewSkeleton = style({
@@ -183,6 +189,9 @@ export const posterSkeleton = style({
   aspectRatio: "225 / 320",
   width: "min(225px, 100%)",
   background: colors.background.elevation1,
+  "@media": {
+    "(min-width: 1024px)": { width: "min(267px, 100%)" },
+  },
 });
 
 export const posterFrame = style({
@@ -192,6 +201,9 @@ export const posterFrame = style({
   aspectRatio: "225 / 320",
   width: "min(225px, 100%)",
   background: colors.background.neutral2,
+  "@media": {
+    "(min-width: 1024px)": { width: "min(267px, 100%)" },
+  },
 });
 
 export const posterImage = style({
@@ -221,6 +233,13 @@ export const ratingBar = style({
   zIndex: 1,
   minHeight: "34px",
   background: colors.background.neutral1,
+  padding: `0 ${primitives.spacing.xxxs}`,
+});
+
+export const ratingBarContent = style({
+  zIndex: 1,
+  minHeight: "34px",
+  maxWidth: "420px",
   padding: `0 ${primitives.spacing.xxxs}`,
 });
 

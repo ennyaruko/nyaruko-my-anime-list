@@ -96,7 +96,7 @@ export function MediaDetailPage({ userId, mediaId }: MediaDetailPageProps) {
           <MediaDescription media={media} />
         </ComponentErrorBoundary>
         <ComponentErrorBoundary resetKeys={[mediaId]}>
-          <MediaScreenshots media={media} malId={detail?.malId} />
+          <MediaScreenshots detail={detail} />
         </ComponentErrorBoundary>
         <MediaRelations userId={userId} mediaId={mediaId} />
         <MediaReviews userId={userId} mediaId={mediaId} />

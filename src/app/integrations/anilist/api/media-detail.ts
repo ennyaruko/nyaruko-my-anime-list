@@ -30,6 +30,12 @@ export async function getAniListMediaDetail(
       data.title?.english,
       data.title?.native,
     ].filter((title): title is string => Boolean(title)),
+    airingSchedule: (data.airingSchedule?.nodes ?? [])
+      .filter((entry): entry is NonNullable<typeof entry> => entry !== null)
+      .map((entry) => ({
+        episode: entry.episode,
+        airingAt: entry.airingAt,
+      })),
     tags: (data.tags ?? [])
       .filter((tag): tag is NonNullable<typeof tag> => tag !== null)
       .map((tag): MediaTag => ({

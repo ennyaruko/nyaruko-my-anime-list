@@ -78,4 +78,12 @@ export type MediaDetail = {
   titles?: string[];
   /** AniList's MyAnimeList identifier, used before external ID lookups. */
   malId: null | number;
+  /** Upcoming episode release times, expressed as Unix seconds. */
+  airingSchedule: MediaAiringScheduleEntry[];
+};
+
+/** One upcoming episode and its scheduled release time. */
+export type MediaAiringScheduleEntry = {
+  episode: number;
+  airingAt: number;
 };

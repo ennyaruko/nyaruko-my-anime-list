@@ -23,6 +23,7 @@ export type MediaListActionsService = {
     accessToken: string,
     mediaId: number,
     progress: number,
+    options?: { keepalive?: boolean; status?: MyListStatus },
   ): Promise<void>;
 };
 

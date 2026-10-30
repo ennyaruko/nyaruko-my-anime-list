@@ -11,8 +11,9 @@ export async function saveAniListMediaListEntry(
   accessToken: string,
   mediaId: number,
   changes: { score?: number; progress?: number; status?: MyListStatus },
+  keepalive = false,
 ): Promise<void> {
-  const client = createAniListGraphQLClient(accessToken);
+  const client = createAniListGraphQLClient(accessToken, keepalive);
   const response = await client.request({
     variables: { mediaId, ...changes },
     document: SaveMediaListEntryDocument,

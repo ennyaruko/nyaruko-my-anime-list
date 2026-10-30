@@ -1,29 +1,23 @@
 import { useQuery } from "@tanstack/react-query";
 
+import type { MediaDetail } from "@/entities/media";
 import { mediaScreenshotsServiceToken } from "@/entities/media";
 
 import { useAppService, queryCacheConfig } from "@/shared/lib";
 
 type UseMediaScreenshotsParameters = {
-  mediaId: number;
-  fallbackMalId: null | number | undefined;
+  detail: undefined | MediaDetail;
 };
 
-/** Loads Shikimori frames through the media external-ID resolver. */
-export function useMediaScreenshots({
-  mediaId,
-  fallbackMalId,
-}: UseMediaScreenshotsParameters) {
+/** Loads Shikimori screenshots first and uses YummyAni when none are available. */
+export function useMediaScreenshots({ detail }: UseMediaScreenshotsParameters) {
   const service = useAppService(mediaScreenshotsServiceToken);
-  const safeFallbackMalId = fallbackMalId ?? null;
+  const mediaId = detail?.media.id ?? 0;
+  const malId = detail?.malId ?? null;
 
   return useQuery({
-    enabled: Number.isFinite(mediaId) && mediaId > 0,
-    queryFn: ({ signal }) =>
-      service.getScreenshots(mediaId, safeFallbackMalId, signal),
-    queryKey: queryCacheConfig.families.mediaScreenshots.key(
-      mediaId,
-      safeFallbackMalId,
-    ),
+    queryFn: ({ signal }) => service.getScreenshots(detail!, signal),
+    enabled: Boolean(detail && Number.isFinite(mediaId) && mediaId > 0),
+    queryKey: queryCacheConfig.families.mediaScreenshots.key(mediaId, malId),
   });
 }

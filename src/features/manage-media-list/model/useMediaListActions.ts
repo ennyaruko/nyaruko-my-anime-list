@@ -11,9 +11,14 @@ import { useAppService, queryCacheConfig } from "@/shared/lib";
 
 type MediaListAction =
   | { type: "score"; score: number; mediaId: number }
-  | { mediaId: number; type: "progress"; progress: number }
   | { type: "remove"; mediaId: number; listEntryId: number }
-  | { type: "status"; mediaId: number; status: MediaListStatus };
+  | { type: "status"; mediaId: number; status: MediaListStatus }
+  | {
+      mediaId: number;
+      type: "progress";
+      progress: number;
+      options?: { keepalive?: boolean; status?: MediaListStatus };
+    };
 
 type StatusTranslationKey =
   | "common:ui.watchStatus.paused"
@@ -60,6 +65,7 @@ export function useMediaListActions(userId: string | undefined) {
             accessToken,
             action.mediaId,
             action.progress,
+            action.options,
           );
         case "score":
           return service.updateScore(accessToken, action.mediaId, action.score);
@@ -142,7 +148,10 @@ export function useMediaListActions(userId: string | undefined) {
     removeFromList,
     updateProgress,
     isPending: mutation.isPending,
-    updateProgressAsync: (mediaId: number, progress: number) =>
-      mutation.mutateAsync({ mediaId, progress, type: "progress" }),
+    updateProgressAsync: (
+      mediaId: number,
+      progress: number,
+      options?: { keepalive?: boolean; status?: MediaListStatus },
+    ) => mutation.mutateAsync({ mediaId, options, progress, type: "progress" }),
   };
 }

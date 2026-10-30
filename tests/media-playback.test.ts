@@ -11,6 +11,8 @@ import {
 import {
   initialPlaybackEpisode,
   progressAfterEpisodeChange,
+  progressAfterWatchPageExit,
+  statusAfterPlaybackProgress,
 } from "../src/entities/media/model/media-playback";
 
 const detail = {
@@ -33,6 +35,46 @@ const video = (number: string, player = 1, dubbing = "First"): YummyVideo => ({
 });
 
 describe("watch progress", () => {
+  it("does not count any non-final episode on page exit", () => {
+    for (let episode = 1; episode < 12; episode++) {
+      expect(progressAfterWatchPageExit(episode - 1, episode, 12)).toBe(
+        episode - 1,
+      );
+    }
+    expect(progressAfterWatchPageExit(11, 1, 12)).toBe(11);
+    expect(progressAfterWatchPageExit(0, 12, 12)).toBe(0);
+    expect(progressAfterWatchPageExit(11, 12, null)).toBe(11);
+  });
+  it("counts 12 on exit only after progress 11, completing a watching entry", () => {
+    const progress = progressAfterWatchPageExit(11, 12, 12);
+    expect(progress).toBe(12);
+    expect(statusAfterPlaybackProgress("CURRENT", progress, 12)).toBe(
+      "COMPLETED",
+    );
+    expect(statusAfterPlaybackProgress("REPEATING", progress, 12)).toBe(
+      "REPEATING",
+    );
+    expect(progressAfterWatchPageExit(progress, 12, 12)).toBe(12);
+    expect(progressAfterWatchPageExit(0, 1, 1)).toBe(1);
+  });
+  it("still counts ordinary episodes on forward navigation and updates their status", () => {
+    const progress = progressAfterEpisodeChange(0, 1, 2);
+    expect(progress).toBe(1);
+    for (const status of [
+      null,
+      "PLANNING",
+      "PAUSED",
+      "DROPPED",
+      "COMPLETED",
+    ] as const)
+      expect(statusAfterPlaybackProgress(status, progress, 12)).toBe("CURRENT");
+    expect(statusAfterPlaybackProgress("CURRENT", progress, 12)).toBe(
+      "CURRENT",
+    );
+    expect(statusAfterPlaybackProgress("REPEATING", progress, 12)).toBe(
+      "REPEATING",
+    );
+  });
   it("starts after saved progress and clamps completed titles", () => {
     expect(initialPlaybackEpisode(2, 12)).toBe(3);
     expect(initialPlaybackEpisode(12, 12)).toBe(12);

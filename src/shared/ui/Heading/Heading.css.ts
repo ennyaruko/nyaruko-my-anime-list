@@ -3,9 +3,9 @@ import { style, styleVariants } from "@vanilla-extract/css";
 import { colors, primitives, typography } from "../../styles";
 
 export const root = style({
+  minWidth: 0,
   width: "100%",
   display: "flex",
-  minWidth: "282px",
   minHeight: "36px",
   alignItems: "center",
   position: "relative",

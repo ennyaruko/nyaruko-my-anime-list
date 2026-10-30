@@ -8,4 +8,9 @@ export const page = style({
   paddingTop: primitives.spacing.l,
   paddingBottom: primitives.spacing.l,
   minHeight: "calc(100svh - 55px - env(safe-area-inset-bottom))",
+  "@media": {
+    "(min-width: 768px)": {
+      minHeight: "calc(100svh - 80px - env(safe-area-inset-bottom))",
+    },
+  },
 });

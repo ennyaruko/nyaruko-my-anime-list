@@ -1,5 +1,6 @@
 import { createServiceToken } from "@/shared/lib/app-services";
 
+import type { MediaListStatus } from "./media";
 import type { MediaDetail } from "./media-detail";
 
 export type PlaybackEpisode = { url: string; label: string; number: number };
@@ -95,4 +96,30 @@ export function initialPlaybackEpisode(progress: number, total: null | number) {
     1,
     Math.min(progress + 1, total && total > 0 ? total : Infinity),
   );
+}
+
+/** Only the anime's final episode can be counted by leaving its watch page. */
+export function progressAfterWatchPageExit(
+  progress: number,
+  current: number,
+  total: null | number,
+) {
+  return total !== null &&
+    Number.isInteger(total) &&
+    total > 0 &&
+    current === total &&
+    progress === total - 1
+    ? progress + 1
+    : progress;
+}
+
+export function statusAfterPlaybackProgress(
+  status: null | MediaListStatus,
+  progress: number,
+  total: null | number,
+): MediaListStatus {
+  if (status === "REPEATING") return status;
+  if (status === "CURRENT" && total !== null && total > 0 && progress === total)
+    return "COMPLETED";
+  return "CURRENT";
 }

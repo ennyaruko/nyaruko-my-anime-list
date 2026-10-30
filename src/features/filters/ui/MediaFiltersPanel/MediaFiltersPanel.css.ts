@@ -2,6 +2,16 @@ import { style, globalStyle } from "@vanilla-extract/css";
 
 import { colors, primitives, typography } from "@/shared/styles";
 
+export const toolbar = style({
+  width: "100%",
+  "@media": {
+    "(min-width: 1024px)": {
+      maxWidth: "440px",
+      marginInlineStart: "auto",
+    },
+  },
+});
+
 export const sort = style({ flex: "1 1 auto" });
 
 export const filterButton = style({ flex: "0 0 auto" });
@@ -20,6 +30,22 @@ export const drawer = style({
   minHeight: 0,
   height: "100%",
   overflow: "hidden",
+  selectors: {
+    "&&": {
+      width: "100vw",
+      maxWidth: "none",
+    },
+  },
+  "@media": {
+    "(min-width: 1024px)": {
+      selectors: {
+        "&&": {
+          maxWidth: "36rem",
+          width: "min(36rem, 100vw)",
+        },
+      },
+    },
+  },
 });
 
 export const appliedCount = style({

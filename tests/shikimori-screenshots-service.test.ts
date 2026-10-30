@@ -1,5 +1,6 @@
 import { it, vi, expect, describe } from "vitest";
 
+import type { MediaDetail } from "../src/entities/media";
 import { createShikimoriMediaScreenshotsService } from "../src/app/integrations/shikimori/media-screenshots-service";
 
 describe("createShikimoriMediaScreenshotsService", () => {
@@ -7,6 +8,10 @@ describe("createShikimoriMediaScreenshotsService", () => {
   const endpoint = atob(
     "aHR0cHM6Ly9zaGlraW1vcmkuaW8vYXBpL2FuaW1lcy86c2hpa2ltb3JpSWQvc2NyZWVuc2hvdHM=",
   );
+  const detail = {
+    malId: 54000,
+    media: { id: 159309 },
+  } as MediaDetail;
 
   it("uses the resolved Shikimori ID and normalizes relative image paths", async () => {
     const endpoints = {
@@ -34,7 +39,7 @@ describe("createShikimoriMediaScreenshotsService", () => {
       fetcher,
     );
 
-    await expect(service.getScreenshots(159309, 54000)).resolves.toEqual([
+    await expect(service.getScreenshots(detail)).resolves.toEqual([
       {
         preview: `${host}/system/screenshots/preview/frame.jpg?1`,
         original: `${host}/system/screenshots/original/frame.jpg?1`,
@@ -44,5 +49,6 @@ describe("createShikimoriMediaScreenshotsService", () => {
       endpoint.replace(":shikimoriId", "54000"),
       expect.objectContaining({ credentials: "omit" }),
     );
+    expect(externalIds.resolve).toHaveBeenCalledWith(159309, 54000, undefined);
   });
 });

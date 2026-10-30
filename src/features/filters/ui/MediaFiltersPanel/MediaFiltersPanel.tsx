@@ -187,7 +187,7 @@ export function MediaFiltersPanel({
 
   return (
     <>
-      <Row gap="m" justifyContent="end">
+      <Row gap="m" justifyContent="end" className={styles.toolbar}>
         <LabeledCombobox
           value={filters.sort}
           className={styles.sort}
@@ -207,12 +207,7 @@ export function MediaFiltersPanel({
         </Button>
       </Row>
 
-      <Drawer
-        fullScreen
-        open={open}
-        className={styles.drawer}
-        onClose={handleCloseDrawer}
-      >
+      <Drawer open={open} className={styles.drawer} onClose={handleCloseDrawer}>
         <Header
           trailing={
             <Button size="s" onClick={onReset}>

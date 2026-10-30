@@ -16,7 +16,12 @@ export const aniListMediaListActionsService: MediaListActionsService = {
   async updateScore(accessToken, mediaId, score) {
     await saveAniListMediaListEntry(accessToken, mediaId, { score });
   },
-  async updateProgress(accessToken, mediaId, progress) {
-    await saveAniListMediaListEntry(accessToken, mediaId, { progress });
+  async updateProgress(accessToken, mediaId, progress, options) {
+    await saveAniListMediaListEntry(
+      accessToken,
+      mediaId,
+      { progress, ...(options?.status ? { status: options.status } : {}) },
+      options?.keepalive,
+    );
   },
 };

@@ -1,6 +1,10 @@
 import { z } from "zod";
 
-import type { MediaDetail, CommentSort } from "@/entities/media";
+import type {
+  MediaDetail,
+  CommentSort,
+  MediaScreenshot,
+} from "@/entities/media";
 
 import type { RemoteConfigResolver } from "@/shared/lib/remote-endpoints";
 
@@ -11,6 +15,7 @@ import {
   animeSchema,
   videoSchema,
   detailSchema,
+  httpsResource,
   type YummyAnime,
 } from "./schema";
 
@@ -117,6 +122,21 @@ export function createYummyService(
         items: mapComments(payload),
         nextOffset: payload.comments.length === 20 ? offset + 20 : null,
       };
+    },
+    async getScreenshots(
+      detail: MediaDetail,
+      signal: AbortSignal,
+    ): Promise<MediaScreenshot[]> {
+      const animeId = await findAnime(detail, signal);
+      if (animeId === null) return [];
+      const anime = detailSchema.parse(
+        await request(`anime/${animeId}`, { need_videos: "false" }, signal),
+      );
+      return (anime.random_screenshots ?? []).flatMap(({ sizes }) => {
+        const preview = httpsResource(sizes?.small ?? sizes?.full);
+        const original = httpsResource(sizes?.full ?? sizes?.small);
+        return preview && original ? [{ preview, original }] : [];
+      });
     },
     async getCatalog(detail: MediaDetail, signal: AbortSignal) {
       const key = `playback-match:v1:${detail.media.id}`;

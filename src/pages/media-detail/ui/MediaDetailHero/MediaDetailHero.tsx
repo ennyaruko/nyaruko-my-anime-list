@@ -80,36 +80,39 @@ export function MediaDetailHero({ media, userId }: MediaDetailHeroProps) {
               )}
             </div>
           </div>
-          <Row
-            gap="xl"
-            alignItem="center"
-            className={styles.ratingBar}
-            justifyContent="space-between"
-          >
-            <Row gap="xs" alignItem="center">
-              <Rating
-                max={10}
-                size="s"
-                value={media.score ?? 0}
-                onChange={handleScoreChange}
-                className={clsx(actions.isPending && styles.ratingDisabled)}
-              />
-              <div className={styles.ratingValue}>
-                {(media.score ?? 0).toFixed(1)}
-              </div>
-            </Row>
-            {(media.status === "CURRENT" || media.status === "REPEATING") &&
-              media.progress !== null && (
-                <Progress
-                  size="l"
-                  value={media.progress}
-                  max={media.episodes ?? 12}
-                  className={styles.progress}
-                  disabled={actions.isPending}
-                  editable={actions.canManageList}
-                  onValueChange={handleProgressChange}
+          <Row wide alignItem="center" className={styles.ratingBar}>
+            <Row
+              wide
+              gap="xl"
+              alignItem="center"
+              justifyContent="space-between"
+              className={styles.ratingBarContent}
+            >
+              <Row gap="xs" alignItem="center">
+                <Rating
+                  max={10}
+                  size="s"
+                  value={media.score ?? 0}
+                  onChange={handleScoreChange}
+                  className={clsx(actions.isPending && styles.ratingDisabled)}
                 />
-              )}
+                <div className={styles.ratingValue}>
+                  {(media.score ?? 0).toFixed(1)}
+                </div>
+              </Row>
+              {(media.status === "CURRENT" || media.status === "REPEATING") &&
+                media.progress !== null && (
+                  <Progress
+                    size="l"
+                    value={media.progress}
+                    max={media.episodes ?? 12}
+                    className={styles.progress}
+                    disabled={actions.isPending}
+                    editable={actions.canManageList}
+                    onValueChange={handleProgressChange}
+                  />
+                )}
+            </Row>
           </Row>
         </div>
       </Column>

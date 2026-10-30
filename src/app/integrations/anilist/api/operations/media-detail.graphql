@@ -20,6 +20,12 @@ query MediaDetail($id: Int!) {
     source
     status
     episodes
+    airingSchedule(notYetAired: true, page: 1, perPage: 10) {
+      nodes {
+        airingAt
+        episode
+      }
+    }
     duration
     seasonYear
     startDate {

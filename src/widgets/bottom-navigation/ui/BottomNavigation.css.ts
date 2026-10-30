@@ -16,6 +16,16 @@ export const root = style({
   boxShadow: primitives.shadow.small,
   padding: `0 ${primitives.spacing.xl}`,
   bottom: "env(safe-area-inset-bottom)",
+  "@media": {
+    "(min-width: 768px)": {
+      bottom: "16px",
+      minHeight: "64px",
+      borderRadius: "16px",
+      width: "min(100% - 32px, 520px)",
+      padding: `0 ${primitives.spacing.l}`,
+      border: `1px solid ${colors.border.normal}`,
+    },
+  },
 });
 
 export const popover = style({

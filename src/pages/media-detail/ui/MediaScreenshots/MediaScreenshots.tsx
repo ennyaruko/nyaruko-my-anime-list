@@ -6,7 +6,7 @@ import useEmblaCarousel from "embla-carousel-react";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import Counter from "yet-another-react-lightbox/plugins/counter";
 
-import type { Media } from "@/entities/media";
+import type { MediaDetail } from "@/entities/media";
 
 import { Heading } from "@/shared/ui";
 
@@ -23,16 +23,13 @@ import * as styles from "./MediaScreenshots.css";
 import * as pageStyles from "../MediaDetailPage.css";
 
 type MediaScreenshotsProps = {
-  media: Media | undefined;
-  malId: null | number | undefined;
+  detail: undefined | MediaDetail;
 };
 
-export function MediaScreenshots({ media, malId }: MediaScreenshotsProps) {
+export function MediaScreenshots({ detail }: MediaScreenshotsProps) {
   const { t } = useTranslation(["common"]);
-  const screenshotsQuery = useMediaScreenshots({
-    fallbackMalId: malId,
-    mediaId: media?.id ?? 0,
-  });
+  const media = detail?.media;
+  const screenshotsQuery = useMediaScreenshots({ detail });
   const [selectedIndex, setSelectedIndex] = useState<null | number>(null);
   const images = useMemo(
     () => getMediaScreenshotImages(media, screenshotsQuery.data),

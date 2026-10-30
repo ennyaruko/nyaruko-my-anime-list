@@ -5,7 +5,7 @@ import { primitives } from "@/shared/styles";
 export const section = style({
   display: "flex",
   flexDirection: "column",
-  gap: primitives.spacing.xs,
+  gap: primitives.spacing.m,
 });
 
 export const viewport = style({

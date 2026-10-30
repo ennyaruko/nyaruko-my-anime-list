@@ -6,7 +6,7 @@ export const section = style({
   minWidth: 0,
   display: "flex",
   flexDirection: "column",
-  gap: primitives.spacing.xs,
+  gap: primitives.spacing.m,
 });
 
 export const placeholder = style({

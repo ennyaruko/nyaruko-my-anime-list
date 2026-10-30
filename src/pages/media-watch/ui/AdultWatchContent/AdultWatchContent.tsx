@@ -24,7 +24,7 @@ export function AdultWatchContent({ detail }: { detail: MediaDetail }) {
   const selectVideo = (video: AdultVideo) => setSelectedId(video.id);
 
   return (
-    <Column gap="m" className={styles.content}>
+    <Column gap="xl" className={styles.content}>
       <h1 className={styles.title}>{title}</h1>
       <AdultEpisodeList
         onSelect={selectVideo}

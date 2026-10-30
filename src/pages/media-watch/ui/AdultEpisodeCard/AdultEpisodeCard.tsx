@@ -5,7 +5,7 @@ import clsx from "clsx";
 import type { AdultVideo } from "@/entities/adult-anime";
 import { MediaContextInformation } from "@/entities/media";
 
-import { Image, Score } from "@/shared/ui";
+import { Image, Score, Status } from "@/shared/ui";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -28,6 +28,7 @@ export function AdultEpisodeCard({
   onSelect,
 }: AdultEpisodeCardProps) {
   const { t } = useTranslation(["common"]);
+  const cardTitle = `${video.title} - Ep. ${video.episode}`;
 
   return (
     <ContextMenu>
@@ -45,23 +46,18 @@ export function AdultEpisodeCard({
               image={{ url: video.cover }}
               className={styles.coverImage}
             />
-            <Score size="m" value={video.rating} className={styles.score} />
+            <Score size="s" value={video.rating} className={styles.score} />
           </span>
-          <span title={video.title} className={styles.title}>
-            {video.title}
+          <span title={cardTitle} className={styles.title}>
+            {cardTitle}
           </span>
-          <span
-            className={clsx(
-              styles.contentRating,
-              video.censored ? styles.censored : styles.uncensored,
-            )}
-          >
+          <Status size="s" variant={video.censored ? "negative" : "positive"}>
             {t(
               video.censored
                 ? "common:watch.adultCensored"
                 : "common:watch.adultUncensored",
             )}
-          </span>
+          </Status>
         </button>
       </ContextMenuTrigger>
       <ContextMenuContent style={{ width: "min(260px, calc(100vw - 24px))" }}>

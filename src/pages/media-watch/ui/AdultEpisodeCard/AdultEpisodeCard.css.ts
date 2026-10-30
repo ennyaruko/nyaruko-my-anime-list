@@ -39,7 +39,7 @@ export const score = style({
 });
 
 export const title = style({
-  ...typography.body.m,
+  ...typography.body["s-medium"],
   minHeight: "2.5em",
   overflow: "hidden",
   WebkitLineClamp: 2,
@@ -47,21 +47,4 @@ export const title = style({
   overflowWrap: "anywhere",
   color: colors.text.action,
   WebkitBoxOrient: "vertical",
-});
-
-export const contentRating = style({
-  ...typography.body["s-bold"],
-  width: "fit-content",
-  borderRadius: primitives.radii.s,
-  padding: `2px ${primitives.spacing.xs}`,
-});
-
-export const censored = style({
-  color: colors.text.primaryOnLight,
-  background: colors.status.negative,
-});
-
-export const uncensored = style({
-  color: colors.text.primaryOnLight,
-  background: colors.status.positive,
 });

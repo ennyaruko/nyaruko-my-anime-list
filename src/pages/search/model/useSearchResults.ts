@@ -70,6 +70,7 @@ export function useSearchResults({
     () =>
       searchQuery.data?.pages
         .flatMap(({ items }) => items)
+        .filter((media) => media.isAdult === parameters.isAdult)
         .map((media): Media => {
           const listEntry = listEntriesByMediaId.get(media.id);
 

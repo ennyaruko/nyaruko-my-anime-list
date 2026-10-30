@@ -35,15 +35,21 @@ const titleVariantByStatus: Record<MediaListStatus, TitleState> = {
 
 type MediaRecommendationsProps = {
   mediaId: number;
+  isAdultMode: boolean;
   userId: undefined | AccountProfile["id"];
 };
 
 export function MediaRecommendations({
   userId,
   mediaId,
+  isAdultMode,
 }: MediaRecommendationsProps) {
   const { t } = useTranslation(["common"]);
-  const recommendationsQuery = useMediaRecommendations({ userId, mediaId });
+  const recommendationsQuery = useMediaRecommendations({
+    userId,
+    mediaId,
+    isAdultMode,
+  });
   const isFetchingMore = useRef(false);
   const { hasNextPage, fetchNextPage, isFetchingNextPage } =
     recommendationsQuery;

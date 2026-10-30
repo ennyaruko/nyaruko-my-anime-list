@@ -19,6 +19,10 @@ export async function getAniListFilterOptions(
       .map((value) => ({ value, label: value })),
     tags: (data.tags ?? [])
       .filter((tag): tag is NonNullable<typeof tag> => tag !== null)
-      .map((tag) => ({ value: tag.name, label: tag.name })),
+      .map((tag) => ({
+        value: tag.name,
+        label: tag.name,
+        isAdult: tag.isAdult ?? false,
+      })),
   };
 }

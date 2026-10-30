@@ -2,13 +2,23 @@ import { useTranslation } from "react-i18next";
 
 import { useQuery } from "@tanstack/react-query";
 
+import { useAdultContent } from "@/features/toggle-adult-content";
+
 import { useAuth } from "@/entities/auth";
 import { mediaDetailServiceToken } from "@/entities/media";
 
 import { useAppService, queryCacheConfig } from "@/shared/lib";
-import { Button, Column, Header, BackLink, Container } from "@/shared/ui";
+import {
+  Button,
+  Column,
+  Header,
+  BackLink,
+  Container,
+  BlockStatusNotFound,
+} from "@/shared/ui";
 
 import { WatchContent } from "./WatchContent";
+import { AdultWatchContent } from "./AdultWatchContent";
 
 import * as styles from "./MediaWatchPage.css";
 
@@ -19,6 +29,7 @@ type MediaWatchPageProps = {
 
 export function MediaWatchPage({ userId, mediaId }: MediaWatchPageProps) {
   const { t } = useTranslation(["common"]);
+  const { enabled: isAdultMode } = useAdultContent();
   const { accessToken } = useAuth();
   const service = useAppService(mediaDetailServiceToken);
   const validMediaId = Number.isSafeInteger(mediaId) && mediaId > 0;
@@ -40,11 +51,20 @@ export function MediaWatchPage({ userId, mediaId }: MediaWatchPageProps) {
           leading={<BackLink>{t("common:mediaDetail.back")}</BackLink>}
         />
         {query.data ? (
-          <WatchContent
-            userId={userId}
-            detail={query.data}
-            key={`${userId}:${mediaId}`}
-          />
+          query.data.media.isAdult !== isAdultMode ? (
+            <BlockStatusNotFound />
+          ) : isAdultMode && query.data.media.genres.includes("Hentai") ? (
+            <AdultWatchContent
+              detail={query.data}
+              key={`${userId}:${mediaId}`}
+            />
+          ) : (
+            <WatchContent
+              userId={userId}
+              detail={query.data}
+              key={`${userId}:${mediaId}`}
+            />
+          )
         ) : query.isError || !validMediaId ? (
           <div role="alert">
             {t("common:watch.loadFailed")}

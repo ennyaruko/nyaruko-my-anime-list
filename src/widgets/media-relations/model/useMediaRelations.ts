@@ -7,6 +7,7 @@ import { useAppService, queryCacheConfig } from "@/shared/lib";
 
 type UseMediaRelationsParameters = {
   mediaId: number;
+  isAdultMode: boolean;
   userId: string | undefined;
 };
 
@@ -14,12 +15,14 @@ type UseMediaRelationsParameters = {
 export function useMediaRelations({
   userId,
   mediaId,
+  isAdultMode,
 }: UseMediaRelationsParameters) {
   const { accessToken } = useAuth();
   const service = useAppService(mediaRelationsServiceToken);
   const queryKey = queryCacheConfig.families.mediaRelations.key(
     userId ?? "unknown",
     mediaId,
+    isAdultMode,
   );
 
   return useQuery({

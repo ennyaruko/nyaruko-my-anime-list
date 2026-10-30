@@ -29,6 +29,7 @@ import {
   showNotification,
 } from "@/shared/ui";
 
+import { filterTagsForAdultMode } from "../../model/filter-tags-for-adult-mode";
 import {
   formatFilterOptions,
   sourceFilterOptions,
@@ -41,6 +42,7 @@ export type MediaFiltersPanelProps = {
   open?: boolean;
   onSave: VoidFunction;
   onReset: VoidFunction;
+  isAdultMode?: boolean;
   options?: FilterOptions;
   optionsLoading?: boolean;
   filters: MediaFiltersState;
@@ -134,6 +136,7 @@ export function MediaFiltersPanel({
   savedFilters,
   onOpenChange,
   hasUnsavedChanges,
+  isAdultMode = false,
   open: controlledOpen,
   optionsLoading = false,
 }: MediaFiltersPanelProps) {
@@ -151,7 +154,15 @@ export function MediaFiltersPanel({
     <FilterIcon />
   );
   const genreOptions = options?.genres ?? [];
-  const tagOptions = options?.tags ?? [];
+  const visibleTags = filterTagsForAdultMode(
+    filters.tags,
+    options,
+    isAdultMode,
+  );
+  const tagOptions =
+    options?.tags
+      .filter((tag) => isAdultMode || tag.isAdult === false)
+      .map(({ value, label }) => ({ value, label })) ?? [];
 
   const handleStatusChange = (
     value: MediaStatusFilter,
@@ -182,8 +193,6 @@ export function MediaFiltersPanel({
     onChange({ tags: filters.tags.filter((tag) => tag !== value) });
   const handleGenresChange = (genres: string[]) => onChange({ genres });
   const handleTagsChange = (tags: string[]) => onChange({ tags });
-  const handleAdultChange = (isAdult: boolean | "indeterminate") =>
-    onChange({ isAdult: isAdult === true });
 
   return (
     <>
@@ -259,7 +268,7 @@ export function MediaFiltersPanel({
                   searchable
                   virtualize
                   expandInFlow
-                  value={filters.tags}
+                  value={visibleTags}
                   options={tagOptions}
                   id="media-filter-tags"
                   loading={optionsLoading}
@@ -267,7 +276,7 @@ export function MediaFiltersPanel({
                   footer={
                     <SelectedValues
                       options={tagOptions}
-                      values={filters.tags}
+                      values={visibleTags}
                       onRemove={handleTagRemove}
                     />
                   }
@@ -350,20 +359,6 @@ export function MediaFiltersPanel({
                     }
                   />
                 ))}
-              </FilterSection>
-
-              <FilterSection title={t("common:ui.filters.ageRating")}>
-                <LabeledCheckbox
-                  size="l"
-                  checked={filters.isAdult}
-                  onCheckedChange={handleAdultChange}
-                  label={t("common:ui.filters.adult")}
-                  description={
-                    savedFilters.isAdult
-                      ? t("common:ui.filters.default")
-                      : undefined
-                  }
-                />
               </FilterSection>
             </Column>
           </Container>

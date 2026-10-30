@@ -1,5 +1,7 @@
 import { MediaRelations } from "@/widgets/media-relations";
 
+import { useAdultContent } from "@/features/toggle-adult-content";
+
 import type { MediaDetail } from "@/entities/media";
 
 import { ComponentErrorBoundary } from "@/shared/ui";
@@ -20,6 +22,7 @@ export function WatchContent({
   userId: string | undefined;
 }) {
   const { media } = detail;
+  const { enabled: isAdultMode } = useAdultContent();
   const playback = useWatchPlayback(detail, userId);
 
   return (
@@ -49,7 +52,11 @@ export function WatchContent({
       ) : (
         !playback.loading && (
           <ComponentErrorBoundary resetKeys={[media.id]}>
-            <MediaRelations userId={userId} mediaId={media.id} />
+            <MediaRelations
+              userId={userId}
+              mediaId={media.id}
+              isAdultMode={isAdultMode}
+            />
           </ComponentErrorBoundary>
         )
       )}

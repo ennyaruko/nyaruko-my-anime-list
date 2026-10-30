@@ -1,3 +1,5 @@
+import { useAdultContent } from "@/features/toggle-adult-content";
+
 import type { AccountState } from "@/entities/account";
 
 import {
@@ -18,8 +20,9 @@ import { MyListContent } from "./MyListContent";
 import * as styles from "./MyListPage.css";
 
 export function MyListPage(accountState: AccountState) {
+  const { enabled: isAdultMode } = useAdultContent();
   const { userId, entries, refreshList, isListPending, filterOptionsQuery } =
-    useMyListPageData(accountState);
+    useMyListPageData(accountState, isAdultMode);
   return (
     <Container as="main" className={styles.page}>
       <ScrollToTopButton />
@@ -40,6 +43,7 @@ export function MyListPage(accountState: AccountState) {
               <MyListContent
                 userId={userId}
                 entries={entries}
+                isAdultMode={isAdultMode}
                 isListPending={isListPending}
                 options={filterOptionsQuery.data}
                 optionsLoading={filterOptionsQuery.isPending}

@@ -6,6 +6,6 @@ export type FilterOption = {
 
 /** Provider-neutral filter data used by the application. */
 export type FilterOptions = {
-  tags: FilterOption[];
   genres: FilterOption[];
+  tags: (FilterOption & { isAdult: boolean })[];
 };

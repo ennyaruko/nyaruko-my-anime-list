@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
+import { useAdultContent } from "@/features/toggle-adult-content";
 import { MediaCardContextMenu } from "@/features/manage-media-list";
 import { useMediaRecommendations } from "@/features/media-recommendations";
 
@@ -30,6 +31,7 @@ export function RecommendationsPage({
   mediaId,
 }: RecommendationsPageProps) {
   const { t } = useTranslation(["common"]);
+  const { enabled: isAdultMode } = useAdultContent();
 
   if (!Number.isFinite(mediaId) || mediaId <= 0) {
     return <BlockStatusNotFound className={styles.notFound} />;
@@ -43,21 +45,31 @@ export function RecommendationsPage({
           leading={<BackLink>{t("common:mediaDetail.back")}</BackLink>}
         />
         <QueryErrorBoundary resetKeys={[mediaId]}>
-          <RecommendationsResults userId={userId} mediaId={mediaId} />
+          <RecommendationsResults
+            userId={userId}
+            mediaId={mediaId}
+            isAdultMode={isAdultMode}
+          />
         </QueryErrorBoundary>
       </Column>
     </Container>
   );
 }
 
+type RecommendationsResultsProps = RecommendationsPageProps & {
+  isAdultMode: boolean;
+};
+
 export function RecommendationsResults({
   userId,
   mediaId,
-}: RecommendationsPageProps) {
+  isAdultMode,
+}: RecommendationsResultsProps) {
   const query = useMediaRecommendations({
     userId,
     mediaId,
     perPage: 50,
+    isAdultMode,
   });
   const { data, isPending, hasNextPage, fetchNextPage, isFetchingNextPage } =
     query;

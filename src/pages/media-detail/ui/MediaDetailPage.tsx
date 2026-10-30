@@ -5,6 +5,8 @@ import { useQuery } from "@tanstack/react-query";
 
 import { MediaRelations } from "@/widgets/media-relations";
 
+import { useAdultContent } from "@/features/toggle-adult-content";
+
 import { useAuth } from "@/entities/auth";
 import type { Media } from "@/entities/media";
 import type { AccountProfile } from "@/entities/account";
@@ -42,11 +44,15 @@ type MediaRouteState = { media?: Media };
 
 export function MediaDetailPage({ userId, mediaId }: MediaDetailPageProps) {
   const { i18n } = useTranslation(["common"]);
+  const { enabled: isAdultMode } = useAdultContent();
   const { accessToken } = useAuth();
   const location = useLocation();
   const service = useAppService(mediaDetailServiceToken);
   const state = location.state as null | MediaRouteState;
-  const initialMedia = state?.media?.id === mediaId ? state.media : undefined;
+  const initialMedia =
+    state?.media?.id === mediaId && state.media.isAdult === isAdultMode
+      ? state.media
+      : undefined;
   const queryKey = queryCacheConfig.families.mediaDetail.key(
     userId ?? "unknown",
     mediaId,
@@ -70,8 +76,25 @@ export function MediaDetailPage({ userId, mediaId }: MediaDetailPageProps) {
     return <BlockStatusNotFound className={styles.notFound} />;
   }
 
+  if (detail && detail.media.isAdult !== isAdultMode) {
+    return <BlockStatusNotFound className={styles.notFound} />;
+  }
+
   if (detailQuery.isError && !media) {
     return <BlockStatusNotFound className={styles.notFound} />;
+  }
+
+  if (!media) {
+    return (
+      <Container as="main" className={styles.page}>
+        <Column gap="xl">
+          <Header variant="plain" leading={<MediaDetailBackLink />} />
+          <section className={styles.heroSection}>
+            <MediaDetailHeroSkeleton />
+          </section>
+        </Column>
+      </Container>
+    );
   }
 
   return (
@@ -79,15 +102,9 @@ export function MediaDetailPage({ userId, mediaId }: MediaDetailPageProps) {
       <Column gap="xl">
         <Header variant="plain" leading={<MediaDetailBackLink />} />
 
-        {media ? (
-          <ComponentErrorBoundary resetKeys={[mediaId]}>
-            <MediaDetailHero media={media} userId={userId} />
-          </ComponentErrorBoundary>
-        ) : (
-          <section className={styles.heroSection}>
-            <MediaDetailHeroSkeleton />
-          </section>
-        )}
+        <ComponentErrorBoundary resetKeys={[mediaId]}>
+          <MediaDetailHero media={media} userId={userId} />
+        </ComponentErrorBoundary>
 
         <ComponentErrorBoundary resetKeys={[mediaId]}>
           <MediaInformation media={media} language={i18n.language} />
@@ -98,9 +115,17 @@ export function MediaDetailPage({ userId, mediaId }: MediaDetailPageProps) {
         <ComponentErrorBoundary resetKeys={[mediaId]}>
           <MediaScreenshots detail={detail} />
         </ComponentErrorBoundary>
-        <MediaRelations userId={userId} mediaId={mediaId} />
+        <MediaRelations
+          userId={userId}
+          mediaId={mediaId}
+          isAdultMode={isAdultMode}
+        />
         <MediaReviews userId={userId} mediaId={mediaId} />
-        <MediaRecommendations userId={userId} mediaId={mediaId} />
+        <MediaRecommendations
+          userId={userId}
+          mediaId={mediaId}
+          isAdultMode={isAdultMode}
+        />
         <ComponentErrorBoundary resetKeys={[mediaId]}>
           <MediaTags tags={tags} />
         </ComponentErrorBoundary>

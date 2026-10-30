@@ -215,6 +215,14 @@ export const queryCacheConfig = {
         staleTimeMs: 10 * MINUTE_MS,
       },
     ),
+    adultAnimeVideos: defineQueryFamily(
+      ["adult-anime-videos"],
+      (title: string) => [title] as const,
+      {
+        gcTimeMs: 30 * MINUTE_MS,
+        staleTimeMs: 10 * MINUTE_MS,
+      },
+    ),
     /** Translated prose is cached in memory only. */
     contentTranslation: defineQueryFamily(
       ["content-translation"],
@@ -251,18 +259,6 @@ export const queryCacheConfig = {
         ],
       },
     ),
-    /** Related media are fetched on demand and are not persisted. */
-    mediaRelations: defineQueryFamily(
-      ["media-relations"],
-      (userId: string, mediaId: number) => [userId, mediaId] as const,
-      {
-        userIdIndex: 1,
-        keyConstraints: [
-          { index: 1, type: "non-empty-string" },
-          { index: 2, type: "finite-number" },
-        ],
-      },
-    ),
     /** Список пользователя: свежесть 24 часа, хранение до 90 дней. */
     userList: defineQueryFamily(
       ["user-list"],
@@ -273,6 +269,19 @@ export const queryCacheConfig = {
         staleTimeMs: 24 * HOUR_MS,
         persistForMs: 90 * DAY_MS,
         keyConstraints: [{ index: 1, type: "non-empty-string" }],
+      },
+    ),
+    /** Related media are fetched on demand and are not persisted. */
+    mediaRelations: defineQueryFamily(
+      ["media-relations"],
+      (userId: string, mediaId: number, isAdultMode: boolean) =>
+        [userId, mediaId, isAdultMode] as const,
+      {
+        userIdIndex: 1,
+        keyConstraints: [
+          { index: 1, type: "non-empty-string" },
+          { index: 2, type: "finite-number" },
+        ],
       },
     ),
     /** User-scoped media details: fresh and persisted for 24 hours. */
@@ -306,8 +315,12 @@ export const queryCacheConfig = {
     /** Recommendations load by page and are not persisted. */
     mediaRecommendations: defineQueryFamily(
       ["media-recommendations"],
-      (userId: string, mediaId: number, perPage: number) =>
-        [userId, mediaId, perPage] as const,
+      (
+        userId: string,
+        mediaId: number,
+        perPage: number,
+        isAdultMode: boolean,
+      ) => [userId, mediaId, perPage, isAdultMode] as const,
       {
         userIdIndex: 1,
         keyConstraints: [

@@ -16,6 +16,8 @@ export type MediaSearchParameters = {
   perPage: number;
   /** Selected genres. */
   genres: string[];
+  /** Exact site content mode: true returns adult media, false regular media. */
+  isAdult: boolean;
   /** Selected media formats. */
   formats: string[];
   /** Selected media sources. */
@@ -24,8 +26,6 @@ export type MediaSearchParameters = {
   statuses: string[];
   /** Search result ordering. */
   sort: MediaSearchSort;
-  /** Adult content inclusion; undefined leaves provider defaults unchanged. */
-  isAdult: boolean | undefined;
   /** Whether the selected formats should be sent to the provider. */
   formatFilterEnabled: boolean;
   /** Whether the selected sources should be sent to the provider. */

@@ -24,6 +24,7 @@ const statusSections = [
 ] as const;
 
 type MyListContentProps = {
+  isAdultMode: boolean;
   entries: MyListEntry[];
   isListPending: boolean;
   optionsLoading: boolean;
@@ -35,6 +36,7 @@ export function MyListContent({
   userId,
   entries,
   options,
+  isAdultMode,
   isListPending,
   optionsLoading,
 }: MyListContentProps) {
@@ -60,6 +62,7 @@ export function MyListContent({
         entries={entries}
         options={options}
         status={selectedStatus}
+        isAdultMode={isAdultMode}
         optionsLoading={optionsLoading}
       >
         {(filteredEntries, resetFilters, hasUnsavedChanges, filtersPanel) => (

@@ -2,6 +2,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import type { InfiniteData } from "@tanstack/react-query";
 
 import { useAuth } from "@/entities/auth";
+import { filterMediaForAdultMode } from "@/entities/media";
 import type { MediaRecommendationsPage } from "@/entities/media";
 import { mediaRecommendationsServiceToken } from "@/entities/media";
 
@@ -10,6 +11,7 @@ import { useAppService, queryCacheConfig } from "@/shared/lib";
 type UseMediaRecommendationsParameters = {
   mediaId: number;
   perPage?: number;
+  isAdultMode: boolean;
   userId: string | undefined;
 };
 
@@ -18,6 +20,7 @@ export function useMediaRecommendations({
   userId,
   mediaId,
   perPage = 5,
+  isAdultMode,
 }: UseMediaRecommendationsParameters) {
   const { accessToken } = useAuth();
   const service = useAppService(mediaRecommendationsServiceToken);
@@ -25,6 +28,7 @@ export function useMediaRecommendations({
     userId ?? "unknown",
     mediaId,
     perPage,
+    isAdultMode,
   );
 
   return useInfiniteQuery<
@@ -39,18 +43,22 @@ export function useMediaRecommendations({
     enabled: Boolean(accessToken && userId && mediaId > 0),
     getNextPageParam: (lastPage) =>
       lastPage.hasNextPage ? lastPage.page + 1 : undefined,
-    queryFn: ({ signal, pageParam }) => {
+    queryFn: async ({ signal, pageParam }) => {
       if (!accessToken) {
         throw new Error("An authenticated AniList session is required.");
       }
 
-      return service.getMediaRecommendations(
+      const page = await service.getMediaRecommendations(
         accessToken,
         mediaId,
         pageParam,
         signal,
         perPage,
       );
+      return {
+        ...page,
+        items: filterMediaForAdultMode(page.items, isAdultMode),
+      };
     },
   });
 }

@@ -30,13 +30,20 @@ const relationLabelKey = {
 
 type MediaRelationsProps = {
   mediaId: number;
+  isAdultMode: boolean;
   userId: string | undefined;
 };
 
-export function MediaRelations({ userId, mediaId }: MediaRelationsProps) {
+export function MediaRelations({
+  userId,
+  mediaId,
+  isAdultMode,
+}: MediaRelationsProps) {
   const { t } = useTranslation(["common"]);
-  const relationsQuery = useMediaRelations({ userId, mediaId });
-  const relations = relationsQuery.data;
+  const relationsQuery = useMediaRelations({ userId, mediaId, isAdultMode });
+  const relations = relationsQuery.data?.filter(
+    ({ media }) => media.isAdult === isAdultMode,
+  );
 
   if (relationsQuery.isError || relations?.length === 0) return null;
 

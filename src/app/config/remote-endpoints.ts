@@ -14,6 +14,10 @@ export const remoteEndpoints = createGistEndpointResolver({
       fallbacks: [],
       default: "aHR0cHM6Ly9hcGkueWFuaS50di8=",
     },
+    hentaiTvApi: {
+      fallbacks: [],
+      default: "aHR0cHM6Ly9oZW50YWkudHYvYXBpLw==",
+    },
     getMalId: {
       default: null,
       fallbacks: ["aHR0cHM6Ly9hbmltZWFwaS5teS5pZC9hbmlsaXN0LzphbmlsaXN0SWQ="],

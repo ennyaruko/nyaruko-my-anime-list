@@ -27,11 +27,12 @@ export function filterMyListEntries(
   entries: readonly MyListEntry[],
   status: MyListStatus,
   filters: MediaFiltersState,
+  isAdultMode: boolean,
 ): MyListEntry[] {
   const matchingEntries = entries.filter(
     (entry) =>
       entry.status === status &&
-      (!filters.isAdult || entry.isAdult) &&
+      entry.isAdult === isAdultMode &&
       matchesAnySelection(entry.genres, filters.genres) &&
       matchesAnySelection(entry.tags, filters.tags) &&
       matchesFacet(entry.format, filters.formats, filters.formatMode) &&

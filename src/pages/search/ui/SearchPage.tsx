@@ -4,6 +4,7 @@ import { useOutletContext } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 
 import { MediaSearchFilters } from "@/features/filters";
+import { useAdultContent } from "@/features/toggle-adult-content";
 
 import type { AccountState } from "@/entities/account";
 import { filterOptionsProviderToken } from "@/entities/filters";
@@ -29,6 +30,7 @@ const RESULTS_PER_PAGE = 50;
 
 export function SearchPage() {
   const { t } = useTranslation(["common"]);
+  const { enabled: isAdultMode } = useAdultContent();
   const { account } = useOutletContext<AccountState>();
   const {
     searchTerm,
@@ -61,6 +63,7 @@ export function SearchPage() {
         <QueryErrorBoundary>
           <MediaSearchFilters
             userId={account?.id}
+            isAdultMode={isAdultMode}
             perPage={RESULTS_PER_PAGE}
             search={debouncedSearchTerm}
             initialFilters={initialFilters}

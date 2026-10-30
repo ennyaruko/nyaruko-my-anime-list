@@ -6,6 +6,7 @@ import type { FilterOptions, MediaFiltersState } from "@/entities/filters";
 import { useMediaFilters } from "../model/useMediaFilters";
 import { searchSortOptions } from "../model/media-filter-options";
 import { getMediaSearchParameters } from "../model/media-search-parameters";
+import { filterTagsForAdultMode } from "../model/filter-tags-for-adult-mode";
 
 import { MediaFiltersPanel } from "./MediaFiltersPanel";
 import { useFilterDrawerState } from "./useFilterDrawerState";
@@ -14,6 +15,7 @@ type MediaSearchFiltersProps = {
   search: string;
   userId?: string;
   perPage: number;
+  isAdultMode: boolean;
   options?: FilterOptions;
   optionsLoading?: boolean;
   onResetInitialFilters?: VoidFunction;
@@ -28,6 +30,7 @@ export function MediaSearchFilters({
   options,
   perPage,
   children,
+  isAdultMode,
   optionsLoading,
   initialFilters = {},
   onResetInitialFilters,
@@ -44,8 +47,18 @@ export function MediaSearchFilters({
   } = useMediaFilters("search", userId, initialFilters);
 
   const parameters = useMemo(
-    () => getMediaSearchParameters(search, filters, appliedValues, perPage),
-    [appliedValues, filters, perPage, search],
+    () =>
+      getMediaSearchParameters(
+        search,
+        {
+          ...filters,
+          tags: filterTagsForAdultMode(filters.tags, options, isAdultMode),
+        },
+        appliedValues,
+        perPage,
+        isAdultMode,
+      ),
+    [appliedValues, filters, isAdultMode, options, perPage, search],
   );
   const resetAllFilters = () => {
     resetFilters();
@@ -60,6 +73,7 @@ export function MediaSearchFilters({
         onSave={saveFilters}
         open={filterDrawer.open}
         onChange={updateFilters}
+        isAdultMode={isAdultMode}
         onReset={resetAllFilters}
         savedFilters={savedFilters}
         sortOptions={searchSortOptions}

@@ -46,8 +46,6 @@ export type MediaFiltersState = {
   tags: string[];
   /** Selected genres. */
   genres: string[];
-  /** Whether adult media is included. */
-  isAdult: boolean;
   /** Selected ordering. */
   sort: MediaSortKey;
   /** Selected AniList formats. */

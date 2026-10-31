@@ -1,0 +1,55 @@
+query MediaRecommendations($id: Int!, $page: Int!, $perPage: Int!) {
+  Media(id: $id, type: ANIME) {
+    recommendations(page: $page, perPage: $perPage, sort: RATING_DESC) {
+      pageInfo {
+        hasNextPage
+      }
+      nodes {
+        mediaRecommendation {
+          id
+          type
+          title {
+            romaji
+            english
+            native
+          }
+          coverImage {
+            large
+            medium
+          }
+          averageScore
+          popularity
+          isAdult
+          episodes
+          duration
+          genres
+          tags {
+            name
+          }
+          format
+          seasonYear
+          source
+          status
+          startDate {
+            year
+            month
+            day
+          }
+          endDate {
+            year
+            month
+            day
+          }
+          description
+          bannerImage
+          mediaListEntry {
+            id
+            status
+            score
+            progress
+          }
+        }
+      }
+    }
+  }
+}

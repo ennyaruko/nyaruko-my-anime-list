@@ -1,0 +1,57 @@
+import { useAdultContent } from "@/features/toggle-adult-content";
+
+import type { AccountState } from "@/entities/account";
+
+import {
+  Column,
+  Spinner,
+  Container,
+  Breadcrumbs,
+  PullToRefresh,
+  ScrollToTopButton,
+  ComponentErrorBoundary,
+} from "@/shared/ui";
+
+import { useMyListPageData } from "../model/useMyListPageData";
+
+import { MyListGenres } from "./MyListGenres";
+import { MyListContent } from "./MyListContent";
+
+import * as styles from "./MyListPage.css";
+
+export function MyListPage(accountState: AccountState) {
+  const { enabled: isAdultMode } = useAdultContent();
+  const { userId, entries, refreshList, isListPending, filterOptionsQuery } =
+    useMyListPageData(accountState, isAdultMode);
+  return (
+    <Container as="main" className={styles.page}>
+      <ScrollToTopButton />
+      <Column gap="m">
+        <Breadcrumbs
+          items={[{ to: "/", label: "Аниме" }, { label: "Моё аниме" }]}
+        />
+        <PullToRefresh
+          pullingContent=""
+          onRefresh={refreshList}
+          refreshingContent={<Spinner />}
+        >
+          <Column gap="m">
+            <ComponentErrorBoundary>
+              <MyListGenres entries={entries} isPending={isListPending} />
+            </ComponentErrorBoundary>
+            <ComponentErrorBoundary>
+              <MyListContent
+                userId={userId}
+                entries={entries}
+                isAdultMode={isAdultMode}
+                isListPending={isListPending}
+                options={filterOptionsQuery.data}
+                optionsLoading={filterOptionsQuery.isPending}
+              />
+            </ComponentErrorBoundary>
+          </Column>
+        </PullToRefresh>
+      </Column>
+    </Container>
+  );
+}

@@ -1,0 +1,11 @@
+query CurrentViewer {
+  Viewer {
+    id
+    name
+    siteUrl
+    avatar {
+      large
+      medium
+    }
+  }
+}

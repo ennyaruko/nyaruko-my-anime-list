@@ -1,0 +1,14 @@
+node_modules
+dist
+build
+.react-router
+*.tsbuildinfo
+*.local
+.vscode/*
+!.vscode/extensions.json
+.DS_Store
+
+# Local environment configuration
+.env
+.env.*
+!.env.example

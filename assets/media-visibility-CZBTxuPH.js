@@ -1,0 +1,1 @@
+function e(e,t){return e.filter(e=>e.isAdult===t)}export{e as t};

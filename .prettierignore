@@ -1,0 +1,14 @@
+node_modules/
+build/
+coverage/
+.cache/
+.react-router/
+docs/
+public/
+package-lock.json
+*.md
+*.config.js
+*.config.ts
+codegen.ts
+src/app/integrations/anilist/api/generated/
+tsconfig.*

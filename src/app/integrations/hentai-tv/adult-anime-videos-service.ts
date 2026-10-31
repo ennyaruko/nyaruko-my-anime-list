@@ -8,10 +8,12 @@ import type { RemoteConfigResolver } from "@/shared/lib/remote-endpoints";
 import type { HentaiTvVideo } from "./schema";
 import { searchResponseSchema } from "./schema";
 
-const HENTAI_TV_ORIGIN = "https://hentai.tv";
+const PROXY_ENDPOINT = "myAnimeListProxy";
+const ASSET_ORIGIN_ENDPOINT = "hentaiTvOrigin";
+const SEARCH_PATH = "api/hentai-tv/search";
 
-function resolveAsset(path: string): string {
-  const url = new URL(path, HENTAI_TV_ORIGIN);
+function resolveAsset(path: string, origin: string): string {
+  const url = new URL(path, origin);
   if (url.protocol !== "https:" || url.username || url.password) {
     throw new Error("Invalid hentai.tv image URL");
   }
@@ -27,7 +29,10 @@ function isValidEmbedUrl(value: string): boolean {
   }
 }
 
-function mapVideo(video: HentaiTvVideo): null | AdultVideo {
+function mapVideo(
+  video: HentaiTvVideo,
+  assetOrigin: string,
+): null | AdultVideo {
   if (!isValidEmbedUrl(video.embedUrl)) return null;
 
   return {
@@ -42,8 +47,8 @@ function mapVideo(video: HentaiTvVideo): null | AdultVideo {
     language: video.language,
     duration: video.duration,
     embedUrl: video.embedUrl,
-    cover: resolveAsset(video.cover),
-    thumbnail: resolveAsset(video.thumb),
+    cover: resolveAsset(video.cover, assetOrigin),
+    thumbnail: resolveAsset(video.thumb, assetOrigin),
   };
 }
 
@@ -53,9 +58,14 @@ export function createHentaiTvAdultAnimeVideosService(
 ): AdultAnimeVideosService {
   return {
     async searchByTitle(title, signal) {
-      const baseUrl = await config.resolve("hentaiTvProxy");
-      const apiBaseUrl = new URL(`${baseUrl.replace(/\/$/, "")}/`);
-      const url = new URL("search", apiBaseUrl);
+      const [proxyBase, assetOrigin] = await Promise.all([
+        config.resolve(PROXY_ENDPOINT),
+        config.resolve(ASSET_ORIGIN_ENDPOINT),
+      ]);
+      const proxyBaseUrl = proxyBase.endsWith("/")
+        ? proxyBase
+        : `${proxyBase}/`;
+      const url = new URL(SEARCH_PATH, proxyBaseUrl);
       url.searchParams.set("q", title);
       const timeoutSignal = AbortSignal.timeout(12_000);
       const response = await fetcher(url, {
@@ -73,7 +83,7 @@ export function createHentaiTvAdultAnimeVideosService(
       const payload: unknown = await response.json();
       const result = searchResponseSchema.parse(payload);
       return result.videos.flatMap((video) => {
-        const mapped = mapVideo(video);
+        const mapped = mapVideo(video, assetOrigin);
         return mapped ? [mapped] : [];
       });
     },

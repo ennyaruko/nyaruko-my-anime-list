@@ -43,13 +43,10 @@ describe("createYummyMediaScreenshotsService", () => {
         ),
       );
     const config = {
-      resolveValue: vi.fn().mockResolvedValue("app-token"),
-      resolve: vi.fn().mockResolvedValue("https://api.yani.tv/"),
+      applicationToken: "app-token",
+      apiUrl: "https://api.yani.tv/",
     };
-    const service = createYummyMediaScreenshotsService(
-      config as never,
-      fetcher,
-    );
+    const service = createYummyMediaScreenshotsService(config, fetcher);
     const detail = {
       malId: 123,
       titles: ["Example anime"],

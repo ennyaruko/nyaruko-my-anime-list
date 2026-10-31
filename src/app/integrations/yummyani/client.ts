@@ -1,5 +1,3 @@
-import type { RemoteConfigResolver } from "@/shared/lib/remote-endpoints";
-
 export class YummyApiError extends Error {
   constructor(public readonly status: number) {
     super(`Yummyani request failed: ${status}`);
@@ -21,8 +19,13 @@ function wait(ms: number, signal: AbortSignal) {
   });
 }
 
+export type YummyApiConfig = {
+  apiUrl: string;
+  applicationToken: string;
+};
+
 export function createYummyClient(
-  config: RemoteConfigResolver,
+  config: YummyApiConfig,
   fetcher: typeof fetch = fetch,
 ) {
   let nextRequestAt = 0;
@@ -32,11 +35,11 @@ export function createYummyClient(
     signal: AbortSignal,
   ): Promise<unknown> {
     signal.throwIfAborted();
-    const [base, token] = await Promise.all([
-      config.resolve("yummyApi"),
-      config.resolveValue("yummyApplication"),
-    ]);
-    const url = new URL(path, `${base.replace(/\/$/, "")}/`);
+    if (!config.apiUrl.trim())
+      throw new Error("VITE_YUMMY_API is not configured");
+    if (!config.applicationToken.trim())
+      throw new Error("VITE_YUMMY_APPLICATION is not configured");
+    const url = new URL(path, `${config.apiUrl.replace(/\/$/, "")}/`);
     for (const [key, value] of Object.entries(params))
       url.searchParams.set(key, value);
     for (let attempt = 0; attempt < 2; attempt++) {
@@ -49,8 +52,8 @@ export function createYummyClient(
         signal: AbortSignal.any([signal, AbortSignal.timeout(12_000)]),
         headers: {
           Lang: "ru",
-          "X-Application": token,
           Accept: "application/json",
+          "X-Application": config.applicationToken,
         },
       });
       if (response.status === 429 && attempt === 0) {

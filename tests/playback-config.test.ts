@@ -1,21 +1,21 @@
 import { it, vi, expect, describe } from "vitest";
 
 import { createYummyClient } from "../src/app/integrations/yummyani/client";
+import { kodikEmbedTemplate } from "../src/app/integrations/playback/embed-url";
 import { createGistEndpointResolver } from "../src/shared/lib/remote-endpoints";
 
-describe("playback remote configuration", () => {
-  it("loads public values and endpoints with one shared Gist request", async () => {
+describe("Gist endpoint configuration", () => {
+  it("loads endpoints from the Gist", async () => {
     const fetcher = vi.fn(
       async () =>
         new Response(
           JSON.stringify({
             version: 2,
             encoding: "base64",
-            values: { yummyApplication: btoa("public-test") },
             endpoints: {
-              yummyApi: {
+              translation: {
                 fallbacks: [],
-                default: btoa("https://example.com/api/"),
+                default: btoa("https://example.com/translate"),
               },
             },
           }),
@@ -23,41 +23,36 @@ describe("playback remote configuration", () => {
     );
     const config = createGistEndpointResolver({
       fetcher,
-      defaults: {},
       gistUrl: "https://gist.githubusercontent.com/test/123/raw/config.json",
     });
-    expect(
-      await Promise.all([
-        config.resolve("yummyApi"),
-        config.resolveValue("yummyApplication"),
-      ]),
-    ).toEqual(["https://example.com/api/", "public-test"]);
+
+    await expect(config.resolve("translation")).resolves.toBe(
+      "https://example.com/translate",
+    );
     expect(fetcher).toHaveBeenCalledTimes(1);
   });
-  it("retains defaults when the Gist is unavailable", async () => {
+
+  it("does not use embedded endpoints when the Gist is unavailable", async () => {
     const config = createGistEndpointResolver({
-      defaultValues: { yummyApplication: btoa("public-test") },
       fetcher: async () => {
         throw new Error("Offline");
       },
       gistUrl: "https://gist.githubusercontent.com/test/123/raw/config.json",
-      defaults: {
-        yummyApi: { fallbacks: [], default: btoa("https://example.com/") },
-      },
     });
-    expect(await config.resolve("yummyApi")).toBe("https://example.com/");
-    expect(await config.resolveValue("yummyApplication")).toBe("public-test");
+
+    await expect(config.resolve("translation")).rejects.toThrow(
+      "Endpoint default is not configured",
+    );
   });
 });
 
 describe("Yummyani transport", () => {
-  const config = createGistEndpointResolver({
-    defaultValues: { yummyApplication: btoa("public-test") },
-    defaults: {
-      yummyApi: { fallbacks: [], default: btoa("https://example.com/") },
-    },
-  });
-  it("sends only the public application header and unwraps the response", async () => {
+  const config = {
+    apiUrl: "https://example.com/api/",
+    applicationToken: "test-application",
+  };
+
+  it("sends the application header and unwraps the response", async () => {
     const fetcher = vi.fn(
       async () => new Response(JSON.stringify({ response: { anime_id: 1 } })),
     );
@@ -73,14 +68,35 @@ describe("Yummyani transport", () => {
       URL,
       RequestInit,
     ];
-    expect(url.searchParams.get("need_videos")).toBe("true");
+    expect(url.href).toBe("https://example.com/api/anime/1?need_videos=true");
     expect(options.credentials).toBe("omit");
     expect(options.headers).toEqual({
       Lang: "ru",
       Accept: "application/json",
-      "X-Application": "public-test",
+      "X-Application": "test-application",
     });
   });
+
+  it("requires the configured API URL and application token", async () => {
+    const signal = new AbortController().signal;
+    const fetcher = vi.fn();
+    await expect(
+      createYummyClient({ ...config, applicationToken: "" }, fetcher)(
+        "anime/1",
+        {},
+        signal,
+      ),
+    ).rejects.toThrow("VITE_YUMMY_APPLICATION is not configured");
+    await expect(
+      createYummyClient({ ...config, apiUrl: "" }, fetcher)(
+        "anime/1",
+        {},
+        signal,
+      ),
+    ).rejects.toThrow("VITE_YUMMY_API is not configured");
+    expect(fetcher).not.toHaveBeenCalled();
+  });
+
   it("propagates outages and rejects malformed data for the page fallback", async () => {
     const signal = new AbortController().signal;
     await expect(
@@ -98,6 +114,7 @@ describe("Yummyani transport", () => {
       ),
     ).rejects.toThrow("Invalid Yummyani response");
   });
+
   it("does not send requests after cancellation", async () => {
     const fetcher = vi.fn();
     const controller = new AbortController();
@@ -108,7 +125,7 @@ describe("Yummyani transport", () => {
     expect(fetcher).not.toHaveBeenCalled();
   });
 });
-import { kodikEmbedTemplate } from "../src/app/integrations/playback/embed-url";
+
 describe("Kodik dimensions", () => {
   it("replaces unsupported percentage dimensions with measured size placeholders", () => {
     const template = kodikEmbedTemplate(

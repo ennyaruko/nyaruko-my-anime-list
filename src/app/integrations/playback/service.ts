@@ -2,6 +2,7 @@ import type { EmbedPlayer, MediaPlaybackService } from "@/entities/media";
 
 import type { RemoteConfigResolver } from "@/shared/lib/remote-endpoints";
 
+import type { YummyApiConfig } from "../yummyani/client";
 import { createYummyService } from "../yummyani/service";
 import { createAniListGraphQLClient } from "../anilist/api/client";
 
@@ -18,8 +19,9 @@ const embedSources = [
 /** Composition of the catalog adapter and independently configured embed sources. */
 export function createMediaPlaybackService(
   config: RemoteConfigResolver,
+  yummyConfig: YummyApiConfig,
 ): MediaPlaybackService {
-  const catalog = createYummyService(config);
+  const catalog = createYummyService(yummyConfig);
   return {
     getCatalog: catalog.getCatalog,
     getReplies: catalog.getReplies,

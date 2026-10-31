@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.1",
   "type": "module",
-  "homepage": "https://nyar1othotep.github.io/my-anime-list/",
+  "homepage": "https://ennyaruko.github.io/nyaruko-my-anime-list/",
   "scripts": {
     "dev": "react-router dev",
     "encode:endpoint": "node scripts/encode-endpoint.mjs",

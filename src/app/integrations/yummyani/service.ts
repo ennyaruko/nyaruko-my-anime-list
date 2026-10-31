@@ -6,9 +6,8 @@ import type {
   MediaScreenshot,
 } from "@/entities/media";
 
-import type { RemoteConfigResolver } from "@/shared/lib/remote-endpoints";
-
 import { selectAnimeMatch } from "./matching";
+import type { YummyApiConfig } from "./client";
 import { mapCatalog, mapComments } from "./mapper";
 import { YummyApiError, createYummyClient } from "./client";
 import {
@@ -26,10 +25,10 @@ const matchSchema = z.object({
 });
 
 export function createYummyService(
-  config: RemoteConfigResolver,
+  yummyConfig: YummyApiConfig,
   fetcher: typeof fetch = fetch,
 ) {
-  const request = createYummyClient(config, fetcher);
+  const request = createYummyClient(yummyConfig, fetcher);
   async function getDetail(id: string, signal: AbortSignal) {
     return detailSchema.parse(
       await request(

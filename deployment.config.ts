@@ -1,2 +1,2 @@
-export const deploymentBasePath = "/my-anime-list";
+export const deploymentBasePath = "/nyaruko-my-anime-list";
 export const deploymentBaseUrl = `${deploymentBasePath}/`;

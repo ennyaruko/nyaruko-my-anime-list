@@ -1,3 +1,4 @@
+import { yummyApiConfig } from "@/app/config/yummy-api";
 import { remoteEndpoints } from "@/app/config/remote-endpoints";
 import { createMediaPlaybackService } from "@/app/integrations/playback/service";
 import { createMyMemoryTranslationService } from "@/app/integrations/mymemory/translation-service";
@@ -53,7 +54,7 @@ export const appServices = createServiceRegistry()
   )
   .register(
     mediaPlaybackServiceToken,
-    createMediaPlaybackService(remoteEndpoints),
+    createMediaPlaybackService(remoteEndpoints, yummyApiConfig),
   )
   .register(identityProviderToken, aniListIdentityProvider)
   .register(accountProviderToken, aniListAccountProvider)
@@ -83,7 +84,7 @@ export const appServices = createServiceRegistry()
         remoteEndpoints,
         mediaExternalIdResolver,
       ),
-      createYummyMediaScreenshotsService(remoteEndpoints),
+      createYummyMediaScreenshotsService(yummyApiConfig),
     ),
   )
   .build();

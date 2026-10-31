@@ -1,14 +1,13 @@
 import type { MediaDetail, MediaScreenshotsService } from "@/entities/media";
 
-import type { RemoteConfigResolver } from "@/shared/lib/remote-endpoints";
-
+import type { YummyApiConfig } from "./client";
 import { createYummyService } from "./service";
 
 export function createYummyMediaScreenshotsService(
-  config: RemoteConfigResolver,
+  yummyConfig: YummyApiConfig,
   fetcher: typeof fetch = fetch,
 ): MediaScreenshotsService {
-  const yummy = createYummyService(config, fetcher);
+  const yummy = createYummyService(yummyConfig, fetcher);
   return {
     getScreenshots(detail: MediaDetail, signal) {
       return yummy.getScreenshots(

@@ -1,8 +1,6 @@
 # Конфигурация адресов через GitHub Gist
 
-Подключён Gist с файлом **app-config.json**: [актуальный JSON](https://gist.githubusercontent.com/Nyar1othotep/db157de01d95d0ea10e5d7dd236462ac/raw/app-config.json). Формат также сохранён в [app-config.example.json](./app-config.example.json).
-
-The manifest uses version `2`. Endpoint values are Base64 encoded; see [app-config.example.json](./app-config.example.json) for the complete format.
+Подключён Gist с файлом **app-config.json**.
 
 Encode an HTTPS endpoint for the manifest with `npm run encode:endpoint -- "https://example.com/path/:id"`. The command prints the Base64 value only; paste it into the appropriate `endpoints` field.
 
@@ -10,7 +8,7 @@ Encode an HTTPS endpoint for the manifest with `npm run encode:endpoint -- "http
 
 `https://gist.githubusercontent.com/<username>/<gist-id>/raw/app-config.json`
 
-Ссылка задана в `GIST_CONFIG_URL` в `src/app/config/remote-endpoints.ts`. Если убрать её (задать `undefined`), будет использоваться встроенный адрес перевода без запросов к GitHub.
+Ссылка задана в `GIST_CONFIG_URL` в `src/app/config/remote-endpoints.ts`. Адреса endpoints берутся только из Gist; встроенных URL по умолчанию нет. Если Gist недоступен или endpoint отсутствует, соответствующий запрос завершится ошибкой.
 
 ## Контракт
 
@@ -22,7 +20,7 @@ Encode an HTTPS endpoint for the manifest with `npm run encode:endpoint -- "http
 - Это публично доступная клиенту конфигурация: токены и секреты в неё не помещаются. Код из Gist не исполняется.
 - Адрес `translation` должен поддерживать параметры `client=gtx`, `sl=auto`, `tl=ru`, `dt=t`, `q` и ответ формата Google Translate из примера. Заменяемый сервер должен разрешать браузерные CORS-запросы. Смена протокола API потребует другого адаптера, одной замены URL недостаточно.
 
-Конфигурация запрашивается при первом использовании endpoint и кешируется в памяти на 10 минут. Параллельные потребители используют один запрос. При следующем обращении после TTL адреса обновляются; при ошибке сети, неизвестной версии или невалидном JSON сохраняется последняя валидная конфигурация, а до её загрузки — встроенные адреса. Повторная попытка возможна через 30 секунд. Таймаут Gist — 8 секунд.
+Конфигурация запрашивается при первом использовании endpoint и кешируется в памяти на 10 минут. Параллельные потребители используют один запрос. При следующем обращении после TTL адреса обновляются; при ошибке сети, неизвестной версии или невалидном JSON сохраняется последняя валидная конфигурация. До первой успешной загрузки адресов нет. Повторная попытка возможна через 30 секунд. Таймаут Gist — 8 секунд.
 
 ## Перевод
 

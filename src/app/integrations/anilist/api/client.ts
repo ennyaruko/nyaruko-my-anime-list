@@ -1,7 +1,7 @@
 import { GraphQLClient } from "graphql-request";
 
 import type { AniListViewerDto } from "./dto";
-import { CurrentViewerDocument } from "./queries";
+import { CurrentViewerDocument, UpdateAdultContentDocument } from "./queries";
 
 function getGraphQLEndpoint(): string {
   const endpoint = import.meta.env.VITE_ANILIST_GRAPHQL_ENDPOINT?.trim();
@@ -41,4 +41,19 @@ export async function getViewer(
     throw new Error("AniList did not return the authenticated viewer.");
   }
   return response.Viewer;
+}
+
+export async function setAdultContentEnabled(
+  accessToken: string,
+  enabled: boolean,
+): Promise<boolean> {
+  const client = createAniListGraphQLClient(accessToken);
+  const response = await client.request({
+    document: UpdateAdultContentDocument,
+    variables: { displayAdultContent: enabled },
+  });
+  if (!response.UpdateUser) {
+    throw new Error("AniList did not update adult content settings.");
+  }
+  return response.UpdateUser.options?.displayAdultContent ?? enabled;
 }

@@ -4,6 +4,10 @@ import type { AccountProfile } from "./account";
 
 /** Data port for retrieving the profile associated with an active OAuth token. */
 export interface AccountProvider {
+  setAdultContentEnabled(
+    accessToken: string,
+    enabled: boolean,
+  ): Promise<boolean>;
   getCurrentAccount(
     accessToken: string,
     signal?: AbortSignal,

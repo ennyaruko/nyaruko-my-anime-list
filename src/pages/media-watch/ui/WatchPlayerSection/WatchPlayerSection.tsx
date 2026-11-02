@@ -86,10 +86,19 @@ export function WatchPlayerSection({
                   searchable={false}
                   id="playback-player"
                   onValueChange={playback.selectPlayer}
-                  options={(trackPlayers ?? []).map((item) => ({
-                    value: item.id,
-                    label: item.name,
-                  }))}
+                  options={(trackPlayers ?? []).map((item) => {
+                    const playerTrack = item.tracks.find(
+                      (candidate) => candidate.id === track?.id,
+                    );
+
+                    return {
+                      value: item.id,
+                      label: t("common:watch.trackEpisodes", {
+                        name: item.name,
+                        count: playerTrack?.episodes.length ?? 0,
+                      }),
+                    };
+                  })}
                 />
               </div>
             </div>
@@ -146,11 +155,6 @@ export function WatchPlayerSection({
                 ))}
               </div>
             </ScrollArea>
-          )}
-          {saving && (
-            <p role="status" className={styles.message}>
-              {t("common:watch.syncing")}
-            </p>
           )}
           {src ? (
             <EmbedFrame

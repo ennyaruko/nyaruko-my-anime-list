@@ -18,9 +18,7 @@ describe("createShikimoriMediaScreenshotsService", () => {
       resolve: vi.fn().mockResolvedValue(endpoint),
     };
     const externalIds = {
-      resolve: vi
-        .fn()
-        .mockResolvedValue({ malId: 54000, shikimoriId: 54000 }),
+      resolve: vi.fn().mockResolvedValue({ malId: 54000, shikimoriId: 54000 }),
     };
     const fetcher = vi.fn().mockResolvedValue(
       new Response(

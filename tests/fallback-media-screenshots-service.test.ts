@@ -1,11 +1,17 @@
 import { it, vi, expect, describe } from "vitest";
 
-import type { MediaDetail, MediaScreenshotsService } from "../src/entities/media";
+import type {
+  MediaDetail,
+  MediaScreenshotsService,
+} from "../src/entities/media";
 import { createFallbackMediaScreenshotsService } from "../src/app/integrations/fallback-media-screenshots-service";
 
 describe("createFallbackMediaScreenshotsService", () => {
   const detail = { malId: 2, media: { id: 1 } } as MediaDetail;
-  const frame = { original: "https://img.test/full.webp", preview: "https://img.test/preview.webp" };
+  const frame = {
+    original: "https://img.test/full.webp",
+    preview: "https://img.test/preview.webp",
+  };
 
   it("uses the fallback only when the primary source has no frames", async () => {
     const primary: MediaScreenshotsService = {

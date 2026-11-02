@@ -114,6 +114,10 @@ export function useMediaListActions(userId: string | undefined) {
       if (action.type === "score") {
         showNotification(t("common:notify.mediaScoreChanged"), "success");
       }
+
+      if (action.type === "progress") {
+        showNotification(t("common:notify.mediaProgressChanged"), "success");
+      }
     },
   });
 

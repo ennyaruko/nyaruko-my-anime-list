@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 
 import { useQuery } from "@tanstack/react-query";
 
@@ -27,6 +27,7 @@ export function useWatchPlayback(
   const actions = useMediaListActions(userId);
   const catalogQuery = useQuery({
     retry: false,
+    throwOnError: false,
     refetchOnWindowFocus: false,
     meta: { errorNotifier: () => null },
     queryFn: ({ signal }) => service.getCatalog(detail, signal),
@@ -34,6 +35,7 @@ export function useWatchPlayback(
   });
   const embedsQuery = useQuery({
     retry: false,
+    throwOnError: false,
     meta: { errorNotifier: () => null },
     queryFn: ({ signal }) =>
       service.getEmbedPlayers(media.id, detail.malId, signal),
@@ -88,6 +90,31 @@ export function useWatchPlayback(
   );
   const availableEmbeds =
     embedsQuery.data?.filter((item) => item.language === language) ?? [];
+  useEffect(() => {
+    if (
+      catalog ||
+      language !== "ru" ||
+      embedsQuery.isPending ||
+      (!forceFallback && catalogQuery.isPending)
+    )
+      return;
+
+    const hasRussianEmbed = embedsQuery.data?.some(
+      (item) => item.language === "ru",
+    );
+    const hasEnglishEmbed = embedsQuery.data?.some(
+      (item) => item.language === "en",
+    );
+
+    if (!hasRussianEmbed && hasEnglishEmbed) setLanguage("en");
+  }, [
+    catalog,
+    catalogQuery.isPending,
+    embedsQuery.data,
+    embedsQuery.isPending,
+    forceFallback,
+    language,
+  ]);
   const embed =
     availableEmbeds.find((item) => item.id === embedId) ?? availableEmbeds[0];
   const total = media.episodes || catalog?.episodes || null;

@@ -9,9 +9,7 @@ describe("createMediaFilterDraftKey", () => {
 
     expect(
       createMediaFilterDraftKey(storageKey, "/search", initialFiltersKey),
-    ).toBe(
-      createMediaFilterDraftKey(storageKey, "/search", initialFiltersKey),
-    );
+    ).toBe(createMediaFilterDraftKey(storageKey, "/search", initialFiltersKey));
     expect(
       createMediaFilterDraftKey(
         storageKey,

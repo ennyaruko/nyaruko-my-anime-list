@@ -3,7 +3,9 @@
 const [url, ...extraArgs] = process.argv.slice(2);
 
 if (!url || extraArgs.length > 0) {
-  console.error('Usage: npm run encode:endpoint -- "https://example.com/path/:id"');
+  console.error(
+    'Usage: npm run encode:endpoint -- "https://example.com/path/:id"',
+  );
   process.exit(1);
 }
 

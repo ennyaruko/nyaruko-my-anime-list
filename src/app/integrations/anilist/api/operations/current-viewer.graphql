@@ -3,6 +3,9 @@ query CurrentViewer {
     id
     name
     siteUrl
+    options {
+      displayAdultContent
+    }
     avatar {
       large
       medium

@@ -12,10 +12,7 @@ describe("createAnimeApiMediaExternalIdResolver", () => {
       resolveFallback: vi.fn().mockResolvedValue(endpoint),
     };
     const fetcher = vi.fn();
-    const resolver = createAnimeApiMediaExternalIdResolver(
-      endpoints,
-      fetcher,
-    );
+    const resolver = createAnimeApiMediaExternalIdResolver(endpoints, fetcher);
 
     await expect(resolver.resolve(145728, 51122)).resolves.toEqual({
       malId: 51122,
@@ -29,13 +26,12 @@ describe("createAnimeApiMediaExternalIdResolver", () => {
     const endpoints = {
       resolveFallback: vi.fn().mockResolvedValue(endpoint),
     };
-    const fetcher = vi.fn().mockResolvedValue(
-      Response.json({ shikimori: 51122, myanimelist: 51122 }),
-    );
-    const resolver = createAnimeApiMediaExternalIdResolver(
-      endpoints,
-      fetcher,
-    );
+    const fetcher = vi
+      .fn()
+      .mockResolvedValue(
+        Response.json({ shikimori: 51122, myanimelist: 51122 }),
+      );
+    const resolver = createAnimeApiMediaExternalIdResolver(endpoints, fetcher);
 
     await expect(resolver.resolve(145728, null)).resolves.toEqual({
       malId: 51122,
@@ -53,10 +49,7 @@ describe("createAnimeApiMediaExternalIdResolver", () => {
       resolveFallback: vi.fn().mockResolvedValue(endpoint),
     };
     const fetcher = vi.fn().mockRejectedValue(new TypeError("Failed to fetch"));
-    const resolver = createAnimeApiMediaExternalIdResolver(
-      endpoints,
-      fetcher,
-    );
+    const resolver = createAnimeApiMediaExternalIdResolver(endpoints, fetcher);
 
     await expect(resolver.resolve(145728)).resolves.toEqual({
       malId: null,

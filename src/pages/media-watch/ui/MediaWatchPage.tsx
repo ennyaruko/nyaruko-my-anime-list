@@ -9,6 +9,7 @@ import { mediaDetailServiceToken } from "@/entities/media";
 
 import { useAppService, queryCacheConfig } from "@/shared/lib";
 import {
+  Row,
   Button,
   Column,
   Header,
@@ -52,7 +53,9 @@ export function MediaWatchPage({ userId, mediaId }: MediaWatchPageProps) {
         />
         {query.data ? (
           query.data.media.isAdult !== isAdultMode ? (
-            <BlockStatusNotFound />
+            <Row wide alignItem="center" justifyContent="center">
+              <BlockStatusNotFound />
+            </Row>
           ) : isAdultMode && query.data.media.genres.includes("Hentai") ? (
             <AdultWatchContent
               detail={query.data}

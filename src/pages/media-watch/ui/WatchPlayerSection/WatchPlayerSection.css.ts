@@ -70,8 +70,6 @@ export const selected = style({
   background: colors.background.elevation1Info,
 });
 
-export const message = style({ margin: 0, color: colors.text.secondary });
-
 export const placeholder = style({
   display: "grid",
   minHeight: "150px",

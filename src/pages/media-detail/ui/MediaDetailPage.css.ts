@@ -19,5 +19,3 @@ export const section = style({
   flexDirection: "column",
   gap: primitives.spacing.xs,
 });
-
-export const notFound = style({ minHeight: "50svh" });

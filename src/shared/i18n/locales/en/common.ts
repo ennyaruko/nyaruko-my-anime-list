@@ -79,16 +79,6 @@ export default {
     loading: "Translating… Showing the original for now.",
     failed: "Translation unavailable. Showing the original.",
   },
-  profileMenu: {
-    logout: "Log out",
-    session: "Session",
-    settings: "Settings",
-    darkTheme: "Dark theme",
-    lightTheme: "Light theme",
-    adultContent: "18+ Content",
-    provider: "{{provider}} API",
-    adaptiveTheme: "Adaptive theme",
-  },
   login: {
     title: "Sign in",
     retry: "Try again",
@@ -96,13 +86,6 @@ export default {
     description: "On this page, you will be able to log in to our website.",
     authFailed:
       "AniList authorization could not be completed. Please try again.",
-  },
-  notify: {
-    mediaScoreChanged: "Score saved",
-    saveFilters: "The filters are saved",
-    mediaStatusChanged: "Status changed to {{status}}",
-    mediaRemovedFromList: "Entry removed from your list",
-    mediaListActionFailed: "Could not update your list. Please try again.",
   },
   sort: {
     score: "By Score",
@@ -115,6 +98,30 @@ export default {
     progress: "By Viewing Progress",
     averageScore: "By Average Score",
     completedDate: "By Completion Date",
+  },
+  notify: {
+    mediaScoreChanged: "Score saved",
+    saveFilters: "The filters are saved",
+    mediaProgressChanged: "Viewing progress saved",
+    mediaStatusChanged: "Status changed to {{status}}",
+    mediaRemovedFromList: "Entry removed from your list",
+    mediaListActionFailed: "Could not update your list. Please try again.",
+    adultContentEnableFailed:
+      "Could not enable adult content in your account settings. Please try again.",
+  },
+  profileMenu: {
+    logout: "Log out",
+    session: "Session",
+    settings: "Settings",
+    darkTheme: "Dark theme",
+    lightTheme: "Light theme",
+    adultContent: "18+ Content",
+    provider: "{{provider}} API",
+    adultContentConfirmAccept: "OK",
+    adaptiveTheme: "Adaptive theme",
+    adultContentConfirmCancel: "Cancel",
+    adultContentConfirmTitle: "Enable adult content?",
+    adultContentConfirmDescription: "If you press “OK” there’s no God anymore.",
   },
   ui: {
     watchStatus: {
@@ -250,7 +257,6 @@ export default {
     sorting: "Comment sorting",
     hideReplies: "Hide replies",
     nextEpisode: "Next episode",
-    syncing: "Saving progress…",
     adultEpisodeLabel: "Episode",
     schedule: "Release schedule",
     continue: "Continue watching",

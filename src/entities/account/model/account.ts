@@ -4,4 +4,6 @@ export type AccountProfile = {
   username: string;
   avatarUrl?: null | string;
   profileUrl?: null | string;
+  /** Whether the connected account allows displaying adult content. */
+  adultContentEnabled?: boolean;
 };

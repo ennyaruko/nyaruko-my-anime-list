@@ -34,11 +34,16 @@ import * as styles from "./ProfileMenu.css";
 export type ProfileMenuProps = {
   onClose: VoidFunction;
   account?: AccountProfile;
+  onAdultContentEnableRequest: VoidFunction;
 };
 
 const languageCodes: SupportedLanguage[] = ["en", "ru"];
 
-export function ProfileMenu({ account, onClose }: ProfileMenuProps) {
+export function ProfileMenu({
+  account,
+  onClose,
+  onAdultContentEnableRequest,
+}: ProfileMenuProps) {
   const { t } = useTranslation(["common"]);
   const { identityProvider } = useAuth();
   const { theme, setTheme } = useTheme();
@@ -61,6 +66,20 @@ export function ProfileMenu({ account, onClose }: ProfileMenuProps) {
   const handleLogout = () => {
     onClose();
     void logout();
+  };
+
+  const handleAdultContentChange = (enabled: boolean) => {
+    if (!enabled) {
+      setAdultContentEnabled(false);
+      return;
+    }
+
+    if (account?.adultContentEnabled) {
+      setAdultContentEnabled(true);
+      return;
+    }
+
+    onAdultContentEnableRequest();
   };
 
   const summary = (
@@ -176,7 +195,7 @@ export function ProfileMenu({ account, onClose }: ProfileMenuProps) {
         <ProfileSetting label={t("common:profileMenu.adultContent")}>
           <Switch
             checked={adultContentEnabled}
-            onCheckedChange={setAdultContentEnabled}
+            onCheckedChange={handleAdultContentChange}
             thumbClassName={
               adultContentEnabled
                 ? styles.adultContentThumb.enabled

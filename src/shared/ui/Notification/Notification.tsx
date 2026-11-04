@@ -8,7 +8,7 @@ export function NotificationContainer() {
       closeOnClick
       icon={false}
       theme="colored"
-      autoClose={5000}
+      autoClose={1000}
       closeButton={false}
       position="top-right"
       className={styles.toastContainer}

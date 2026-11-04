@@ -59,6 +59,11 @@ const availableStatuses: Array<{
   translationKey: StatusTranslationKey;
 }> = [
   {
+    Icon: PlanningIcon,
+    status: "PLANNING",
+    translationKey: "common:ui.watchStatus.planned",
+  },
+  {
     Icon: ViewIcon,
     status: "CURRENT",
     translationKey: "common:ui.watchStatus.watching",
@@ -82,11 +87,6 @@ const availableStatuses: Array<{
     Icon: PausedIcon,
     status: "PAUSED",
     translationKey: "common:ui.watchStatus.paused",
-  },
-  {
-    Icon: PlanningIcon,
-    status: "PLANNING",
-    translationKey: "common:ui.watchStatus.planned",
   },
 ];
 

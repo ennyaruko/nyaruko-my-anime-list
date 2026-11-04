@@ -44,7 +44,7 @@ export function MediaSearchFilters({
     updateFilters,
     appliedValues,
     hasUnsavedChanges,
-  } = useMediaFilters("search", userId, initialFilters);
+  } = useMediaFilters("search", userId, isAdultMode, initialFilters);
 
   const parameters = useMemo(
     () =>

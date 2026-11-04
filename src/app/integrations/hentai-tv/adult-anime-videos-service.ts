@@ -33,7 +33,7 @@ function mapVideo(
   video: HentaiTvVideo,
   assetOrigin: string,
 ): null | AdultVideo {
-  if (!isValidEmbedUrl(video.embedUrl)) return null;
+  if (!video.embedUrl || !isValidEmbedUrl(video.embedUrl)) return null;
 
   return {
     id: video.id,

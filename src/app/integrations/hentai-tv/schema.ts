@@ -12,8 +12,8 @@ const adultVideoSchema = z.object({
   year: z.number().int(),
   ep: z.number().positive(),
   tags: z.array(z.string()),
-  embedUrl: z.string().url(),
   rating: z.number().finite(),
+  embedUrl: z.string().nullish(),
 });
 
 export const searchResponseSchema = z.object({

@@ -159,17 +159,23 @@ function readSavedFilters(key: string): MediaFiltersState {
   }
 }
 
-function getStorageKey(scope: MediaFilterScope, userId?: string): string {
-  return `media-filter-settings:v2:${scope}:${userId ?? "anonymous"}`;
+function getStorageKey(
+  scope: MediaFilterScope,
+  userId: string | undefined,
+  isAdultMode: boolean,
+): string {
+  const modeSuffix = isAdultMode ? ":adult" : "";
+  return `media-filter-settings:v2:${scope}:${userId ?? "anonymous"}${modeSuffix}`;
 }
 
 export function useMediaFilters(
   scope: MediaFilterScope,
   userId?: string,
+  isAdultMode = false,
   initialFilters: Partial<MediaFiltersState> = EMPTY_INITIAL_FILTERS,
 ) {
   const { pathname, key: locationKey } = useLocation();
-  const storageKey = getStorageKey(scope, userId);
+  const storageKey = getStorageKey(scope, userId, isAdultMode);
   const initialFiltersKey = JSON.stringify(initialFilters);
   const draftKey = createMediaFilterDraftKey(
     storageKey,

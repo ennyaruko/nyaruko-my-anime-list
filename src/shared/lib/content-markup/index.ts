@@ -37,10 +37,28 @@ export function normalizeMarkdown(content: string, variant: MarkupVariant) {
 
   const normalized =
     variant === "review"
-      ? normalizeReviewHeadings(withoutEmbeddedStyles)
+      ? normalizeReviewHeadings(
+          normalizeReviewCodeMarkup(withoutEmbeddedStyles),
+        )
       : withoutEmbeddedStyles;
 
   return normalizeInlineMarkdown(normalized);
+}
+
+/** Unwraps AniList reviews accidentally serialized as escaped HTML in code. */
+function normalizeReviewCodeMarkup(content: string) {
+  return content.replace(
+    /<pre\b[^>]*>\s*<code\b[^>]*>([\s\S]*?)<\/code>\s*<\/pre>/gi,
+    (block, body: string) => {
+      if (!/&lt;\/?(?:img|center|span)\b/i.test(body)) return block;
+
+      return body
+        .replace(/&lt;/gi, "<")
+        .replace(/&gt;/gi, ">")
+        .replace(/^[ \t]+/gm, "")
+        .replace(/~~~\s*$/, "");
+    },
+  );
 }
 
 function normalizeInlineMarkdown(content: string) {

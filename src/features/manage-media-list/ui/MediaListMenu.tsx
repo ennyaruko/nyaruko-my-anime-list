@@ -17,12 +17,12 @@ export type MediaListMenuProps = {
 };
 
 const statusOptions: MediaListStatus[] = [
+  "PLANNING",
   "CURRENT",
   "COMPLETED",
   "REPEATING",
   "DROPPED",
   "PAUSED",
-  "PLANNING",
 ];
 
 const statusTranslationKey = {

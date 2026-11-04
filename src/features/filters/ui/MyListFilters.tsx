@@ -44,7 +44,7 @@ export function MyListFilters({
     resetFilters,
     updateFilters,
     hasUnsavedChanges,
-  } = useMediaFilters("my-list", userId);
+  } = useMediaFilters("my-list", userId, isAdultMode);
 
   const filteredEntries = useMemo(
     () =>

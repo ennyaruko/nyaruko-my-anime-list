@@ -3,6 +3,8 @@ import { useOutletContext } from "react-router";
 
 import { useQuery } from "@tanstack/react-query";
 
+import { MediaSearchResults } from "@/widgets/media-search-results";
+
 import { MediaSearchFilters } from "@/features/filters";
 import { useAdultContent } from "@/features/toggle-adult-content";
 
@@ -22,7 +24,6 @@ import {
 import { useSearchPageParams } from "../model/useSearchPageParams";
 
 import { SearchInput } from "./SearchInput";
-import { SearchResults } from "./SearchResults";
 
 import * as styles from "./SearchPage.css";
 
@@ -72,7 +73,7 @@ export function SearchPage() {
             optionsLoading={filterOptionsQuery.isPending}
           >
             {(parameters) => (
-              <SearchResults account={account} parameters={parameters} />
+              <MediaSearchResults account={account} parameters={parameters} />
             )}
           </MediaSearchFilters>
         </QueryErrorBoundary>

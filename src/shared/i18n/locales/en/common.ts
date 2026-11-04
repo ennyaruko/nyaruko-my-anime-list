@@ -48,12 +48,9 @@ export default {
     released: "Released",
     announced: "Announced",
   },
-  list: {
-    list: "List",
-    tags: "Tags",
-    genres: "Genres",
-    filteredResults_one: "Found: {{count}}",
-    filteredResults_other: "Found: {{count}}",
+  recommendationSort: {
+    rating: "Lower rating first",
+    ratingDesc: "Higher rating first",
   },
   validation: {
     loginRequired: "Username is required",
@@ -64,6 +61,14 @@ export default {
     emptyDescription: "Try changing your search criteria or adding a new anime",
     notFoundDescription:
       "The link may be outdated or the address may contain an error",
+  },
+  list: {
+    list: "List",
+    tags: "Tags",
+    genres: "Genres",
+    recommendations: "Recommendations",
+    filteredResults_one: "Found: {{count}}",
+    filteredResults_other: "Found: {{count}}",
   },
   errorBoundary: {
     reload: "Reload",
@@ -86,6 +91,14 @@ export default {
     description: "On this page, you will be able to log in to our website.",
     authFailed:
       "AniList authorization could not be completed. Please try again.",
+  },
+  listRecommendations: {
+    noCompletedAnimeTitle: "No completed anime",
+    noRecommendationsTitle: "No recommendations yet",
+    noRecommendationsDescription:
+      "No similar titles were found for your completed anime",
+    noCompletedAnimeDescription:
+      "Add anime with the Completed status to get recommendations",
   },
   sort: {
     score: "By Score",

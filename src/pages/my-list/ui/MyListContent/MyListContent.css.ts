@@ -13,3 +13,12 @@ export const resetFilters = style({
   height: "14px",
   cursor: "pointer",
 });
+
+export const recommendationsLink = style({
+  ...typography.caption["2xs"],
+  textDecoration: "none",
+  color: colors.text.action,
+  selectors: {
+    "&:hover": { textDecoration: "underline" },
+  },
+});

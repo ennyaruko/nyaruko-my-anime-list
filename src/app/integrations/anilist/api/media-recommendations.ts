@@ -6,7 +6,7 @@ import { MediaRecommendationsDocument } from "./queries";
 
 const DEFAULT_RECOMMENDATIONS_PER_PAGE = 5;
 
-/** Loads and maps one page of AniList recommendations. */
+/** Loads and maps one page of recommendations for a media detail page. */
 export async function getAniListMediaRecommendations(
   accessToken: string,
   mediaId: number,
@@ -27,7 +27,6 @@ export async function getAniListMediaRecommendations(
     hasNextPage: recommendations?.pageInfo?.hasNextPage ?? false,
     items: (recommendations?.nodes ?? []).flatMap((node) => {
       const media = node?.mediaRecommendation;
-
       return media?.type === "ANIME" ? [mapAniListMedia(media)] : [];
     }),
   };

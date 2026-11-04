@@ -1,0 +1,162 @@
+import { useMemo } from "react";
+
+import type { InfiniteData } from "@tanstack/react-query";
+import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
+
+import { useAuth } from "@/entities/auth";
+import { myListServiceToken } from "@/entities/media";
+import type { AccountState } from "@/entities/account";
+import { filterMediaForContentMode } from "@/entities/media";
+import { mediaRecommendationsServiceToken } from "@/entities/media";
+import { MEDIA_RECOMMENDATION_SOURCE_BATCH_SIZE } from "@/entities/media";
+import type {
+  Media,
+  MyListEntry,
+  MediaContentMode,
+  MediaRecommendationSort,
+} from "@/entities/media";
+
+import { useAppService, queryCacheConfig } from "@/shared/lib";
+
+type RecommendationBatch = {
+  items: Media[];
+};
+
+function compareDescending(
+  first: null | number,
+  second: null | number,
+): number {
+  if (first === null && second === null) return 0;
+  if (first === null) return 1;
+  if (second === null) return -1;
+  return second - first;
+}
+
+function sortCompletedAnime(entries: MyListEntry[]): MyListEntry[] {
+  const completedEntries = [
+    ...new Map(
+      entries
+        .filter((entry) => entry.status === "COMPLETED")
+        .map((entry) => [entry.id, entry] as const),
+    ).values(),
+  ];
+
+  return completedEntries.sort((first, second) => {
+    const favorite =
+      Number(Boolean(second.isFavorite)) - Number(Boolean(first.isFavorite));
+    if (favorite !== 0) return favorite;
+
+    const firstHasUserScore = first.score !== null && first.score > 0;
+    const secondHasUserScore = second.score !== null && second.score > 0;
+    if (firstHasUserScore !== secondHasUserScore) {
+      return Number(secondHasUserScore) - Number(firstHasUserScore);
+    }
+    const userScore = compareDescending(first.score, second.score);
+    if (userScore !== 0) return userScore;
+
+    const averageScore = compareDescending(
+      first.averageScore,
+      second.averageScore,
+    );
+    return averageScore || first.id - second.id;
+  });
+}
+
+type UseListRecommendationsParams = {
+  contentMode: MediaContentMode;
+  sort: MediaRecommendationSort;
+  account: AccountState["account"];
+};
+
+export function useListRecommendations({
+  sort,
+  account,
+  contentMode,
+}: UseListRecommendationsParams) {
+  const { accessToken } = useAuth();
+  const listService = useAppService(myListServiceToken);
+  const recommendationsService = useAppService(
+    mediaRecommendationsServiceToken,
+  );
+  const userId = account?.id ?? "";
+
+  const listQuery = useQuery({
+    throwOnError: true,
+    enabled: Boolean(accessToken && userId),
+    queryKey: queryCacheConfig.families.userList.key(userId),
+    queryFn: ({ signal }) =>
+      listService.getMyList(accessToken!, userId, signal),
+  });
+
+  const sourceAnime = useMemo(() => {
+    const entries = listQuery.data?.flatMap(({ list }) => list) ?? [];
+    return sortCompletedAnime(filterMediaForContentMode(entries, contentMode));
+  }, [contentMode, listQuery.data]);
+
+  const recommendationsFamily = queryCacheConfig.families.listRecommendations;
+  const recommendationsQuery = useInfiniteQuery<
+    RecommendationBatch,
+    Error,
+    InfiniteData<RecommendationBatch>,
+    readonly unknown[],
+    number
+  >({
+    throwOnError: true,
+    initialPageParam: 0,
+    gcTime: recommendationsFamily.gcTimeMs,
+    staleTime: recommendationsFamily.staleTimeMs,
+    queryKey: recommendationsFamily.key(userId, sort, contentMode),
+    enabled: Boolean(
+      accessToken &&
+      userId &&
+      !listQuery.isPending &&
+      !listQuery.isFetching &&
+      sourceAnime.length > 0,
+    ),
+    getNextPageParam: (_lastBatch, batches) => {
+      const nextOffset =
+        batches.length * MEDIA_RECOMMENDATION_SOURCE_BATCH_SIZE;
+      return nextOffset < sourceAnime.length ? batches.length : undefined;
+    },
+    queryFn: async ({ signal, pageParam }) => {
+      if (!accessToken) {
+        throw new Error("An authenticated AniList session is required.");
+      }
+      const sourceOffset = pageParam * MEDIA_RECOMMENDATION_SOURCE_BATCH_SIZE;
+      const sourceMediaIds = sourceAnime
+        .slice(
+          sourceOffset,
+          sourceOffset + MEDIA_RECOMMENDATION_SOURCE_BATCH_SIZE,
+        )
+        .map(({ id }) => id);
+      const items =
+        await recommendationsService.getMediaRecommendationsForSources(
+          accessToken,
+          sourceMediaIds,
+          sort,
+          signal,
+        );
+
+      return {
+        items: filterMediaForContentMode(items, contentMode),
+      };
+    },
+  });
+
+  const items = useMemo(() => {
+    const seenIds = new Set<number>();
+    const listedMediaIds = new Set(
+      (listQuery.data ?? []).flatMap(({ list }) => list.map(({ id }) => id)),
+    );
+    return (recommendationsQuery.data?.pages ?? []).flatMap(
+      ({ items: batchItems }) =>
+        batchItems.filter((item) => {
+          if (seenIds.has(item.id) || listedMediaIds.has(item.id)) return false;
+          seenIds.add(item.id);
+          return true;
+        }),
+    );
+  }, [listQuery.data, recommendationsQuery.data]);
+
+  return { items, listQuery, sourceAnime, recommendationsQuery };
+}

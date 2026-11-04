@@ -6,20 +6,22 @@ import type { MediaSearchParameters } from "@/entities/media";
 
 import { GridList, BlockStatusEmpty } from "@/shared/ui";
 
-import { useSearchResults } from "../../model/useSearchResults";
+import { useMediaSearchResults } from "../../model/useMediaSearchResults";
 
-import * as styles from "./SearchResults.css";
+import * as styles from "./MediaSearchResults.css";
 
 const SKELETON_COUNT = 6;
-type SearchResultsProps = {
+export type MediaSearchResultsProps = {
   account: AccountState["account"];
   parameters: MediaSearchParameters;
 };
 
-export function SearchResults({ account, parameters }: SearchResultsProps) {
-  const { results, loadMore, isPending, isFetchingNextPage } = useSearchResults(
-    { account, parameters },
-  );
+export function MediaSearchResults({
+  account,
+  parameters,
+}: MediaSearchResultsProps) {
+  const { results, loadMore, isPending, isFetchingNextPage } =
+    useMediaSearchResults({ account, parameters });
   const skeletons = isFetchingNextPage ? (
     <div className={styles.skeletonGrid}>
       {Array.from({ length: SKELETON_COUNT }, (_, index) => (

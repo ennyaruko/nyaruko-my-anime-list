@@ -21,6 +21,7 @@ query ViewerMediaList($userId: Int!, $type: MediaType = ANIME) {
         progress
         media {
           id
+          isFavourite
           title {
             romaji
             english

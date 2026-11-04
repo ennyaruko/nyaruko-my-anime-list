@@ -48,6 +48,10 @@ export default {
     scrollToTop: "Наверх",
     clearSelection: "Очистить выбранные значения",
   },
+  recommendationSort: {
+    rating: "По низкому рейтингу",
+    ratingDesc: "По высокому рейтингу",
+  },
   validation: {
     passwordRequired: "Введите пароль",
     loginRequired: "Введите имя пользователя",
@@ -73,21 +77,30 @@ export default {
     loading: "Переводим… Пока показан оригинал.",
     failed: "Не удалось перевести. Показан оригинал.",
   },
-  list: {
-    tags: "Теги",
-    list: "Список",
-    genres: "Жанры",
-    filteredResults_one: "Найдено: {{count}}",
-    filteredResults_few: "Найдено: {{count}}",
-    filteredResults_many: "Найдено: {{count}}",
-    filteredResults_other: "Найдено: {{count}}",
-  },
   login: {
     retry: "Повторить",
     title: "Авторизация",
     continueWithProvider: "Продолжить с {{provider}}",
     authFailed: "Не удалось завершить авторизацию AniList. Попробуйте ещё раз.",
     description: "На данной странице вы сможете авторизоваться на нашем сайте.",
+  },
+  list: {
+    tags: "Теги",
+    list: "Список",
+    genres: "Жанры",
+    recommendations: "Рекомендации",
+    filteredResults_one: "Найдено: {{count}}",
+    filteredResults_few: "Найдено: {{count}}",
+    filteredResults_many: "Найдено: {{count}}",
+    filteredResults_other: "Найдено: {{count}}",
+  },
+  listRecommendations: {
+    noRecommendationsTitle: "Рекомендаций пока нет",
+    noCompletedAnimeTitle: "Нет просмотренного аниме",
+    noRecommendationsDescription:
+      "Для просмотренного аниме пока не найдено похожих тайтлов",
+    noCompletedAnimeDescription:
+      "Добавьте аниме со статусом «Просмотрено», чтобы получить рекомендации",
   },
   sort: {
     score: "По рейтингу",

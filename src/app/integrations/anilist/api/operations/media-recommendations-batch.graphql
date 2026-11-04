@@ -1,0 +1,160 @@
+query MediaRecommendationsBatch(
+  $id0: Int
+  $id1: Int
+  $id2: Int
+  $id3: Int
+  $id4: Int
+  $id5: Int
+  $id6: Int
+  $id7: Int
+  $id8: Int
+  $id9: Int
+  $include0: Boolean!
+  $include1: Boolean!
+  $include2: Boolean!
+  $include3: Boolean!
+  $include4: Boolean!
+  $include5: Boolean!
+  $include6: Boolean!
+  $include7: Boolean!
+  $include8: Boolean!
+  $include9: Boolean!
+  $perPage: Int!
+  $sort: [RecommendationSort]
+) {
+  source0: Media(id: $id0, type: ANIME) @include(if: $include0) {
+    recommendations(perPage: $perPage, sort: $sort) {
+      nodes {
+        mediaRecommendation {
+          ...RecommendedAnime
+        }
+      }
+    }
+  }
+  source1: Media(id: $id1, type: ANIME) @include(if: $include1) {
+    recommendations(perPage: $perPage, sort: $sort) {
+      nodes {
+        mediaRecommendation {
+          ...RecommendedAnime
+        }
+      }
+    }
+  }
+  source2: Media(id: $id2, type: ANIME) @include(if: $include2) {
+    recommendations(perPage: $perPage, sort: $sort) {
+      nodes {
+        mediaRecommendation {
+          ...RecommendedAnime
+        }
+      }
+    }
+  }
+  source3: Media(id: $id3, type: ANIME) @include(if: $include3) {
+    recommendations(perPage: $perPage, sort: $sort) {
+      nodes {
+        mediaRecommendation {
+          ...RecommendedAnime
+        }
+      }
+    }
+  }
+  source4: Media(id: $id4, type: ANIME) @include(if: $include4) {
+    recommendations(perPage: $perPage, sort: $sort) {
+      nodes {
+        mediaRecommendation {
+          ...RecommendedAnime
+        }
+      }
+    }
+  }
+  source5: Media(id: $id5, type: ANIME) @include(if: $include5) {
+    recommendations(perPage: $perPage, sort: $sort) {
+      nodes {
+        mediaRecommendation {
+          ...RecommendedAnime
+        }
+      }
+    }
+  }
+  source6: Media(id: $id6, type: ANIME) @include(if: $include6) {
+    recommendations(perPage: $perPage, sort: $sort) {
+      nodes {
+        mediaRecommendation {
+          ...RecommendedAnime
+        }
+      }
+    }
+  }
+  source7: Media(id: $id7, type: ANIME) @include(if: $include7) {
+    recommendations(perPage: $perPage, sort: $sort) {
+      nodes {
+        mediaRecommendation {
+          ...RecommendedAnime
+        }
+      }
+    }
+  }
+  source8: Media(id: $id8, type: ANIME) @include(if: $include8) {
+    recommendations(perPage: $perPage, sort: $sort) {
+      nodes {
+        mediaRecommendation {
+          ...RecommendedAnime
+        }
+      }
+    }
+  }
+  source9: Media(id: $id9, type: ANIME) @include(if: $include9) {
+    recommendations(perPage: $perPage, sort: $sort) {
+      nodes {
+        mediaRecommendation {
+          ...RecommendedAnime
+        }
+      }
+    }
+  }
+}
+
+fragment RecommendedAnime on Media {
+  id
+  type
+  title {
+    romaji
+    english
+    native
+  }
+  coverImage {
+    large
+    medium
+  }
+  averageScore
+  popularity
+  isAdult
+  episodes
+  duration
+  genres
+  tags {
+    name
+  }
+  format
+  seasonYear
+  source
+  status
+  startDate {
+    year
+    month
+    day
+  }
+  endDate {
+    year
+    month
+    day
+  }
+  description
+  bannerImage
+  mediaListEntry {
+    id
+    status
+    score
+    progress
+  }
+}

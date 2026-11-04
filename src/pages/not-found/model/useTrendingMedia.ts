@@ -46,10 +46,10 @@ export function useTrendingMedia({ account }: AccountState) {
   const trendingQuery = useInfiniteQuery({
     initialPageParam: 1,
     queryKey: queryCacheConfig.families.mediaSearch.key(parameters),
-    queryFn: ({ signal, pageParam }) =>
-      searchService.searchMedia({ ...parameters, page: pageParam }, signal),
     getNextPageParam: (lastPage: MediaSearchResult, pages) =>
       lastPage.hasNextPage ? pages.length + 1 : undefined,
+    queryFn: ({ signal, pageParam }) =>
+      searchService.searchMedia({ ...parameters, page: pageParam }, { signal }),
   });
 
   const listQuery = useQuery({

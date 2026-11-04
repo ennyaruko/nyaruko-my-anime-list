@@ -186,7 +186,7 @@ export const queryCacheConfig = {
   defaultStaleTimeMs: 5 * MINUTE_MS,
   snapshot: {
     maxAgeMs: 24 * DAY_MS,
-    buster: "my-anime-list-v3",
+    buster: "my-anime-list-v4",
   },
   families: {
     playbackReplies: defineQueryFamily(
@@ -282,6 +282,18 @@ export const queryCacheConfig = {
           { index: 1, type: "non-empty-string" },
           { index: 2, type: "finite-number" },
         ],
+      },
+    ),
+    /** List recommendations are cached per user, content mode, and sort. */
+    listRecommendations: defineQueryFamily(
+      ["list-recommendations"],
+      (userId: string, sort: string, contentMode: string) =>
+        [userId, sort, contentMode] as const,
+      {
+        userIdIndex: 1,
+        gcTimeMs: 30 * MINUTE_MS,
+        staleTimeMs: 10 * MINUTE_MS,
+        keyConstraints: [{ index: 1, type: "non-empty-string" }],
       },
     ),
     /** User-scoped media details: fresh and persisted for 24 hours. */

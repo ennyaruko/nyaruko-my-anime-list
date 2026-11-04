@@ -20,24 +20,26 @@ type UseSearchResultsParams = {
   parameters: MediaSearchParameters;
 };
 
-export function useSearchResults({
+export function useMediaSearchResults({
   account,
   parameters,
 }: UseSearchResultsParams) {
   const { accessToken } = useAuth();
   const searchService = useAppService(mediaSearchServiceToken);
   const myListService = useAppService(myListServiceToken);
+  const queryKey = queryCacheConfig.families.mediaSearch.key(parameters);
 
   const searchQuery = useInfiniteQuery<
     MediaSearchResult,
     Error,
     InfiniteData<MediaSearchResult>,
-    ReturnType<typeof queryCacheConfig.families.mediaSearch.key>,
+    readonly unknown[],
     number
   >({
+    queryKey,
     initialPageParam: 1,
     gcTime: queryCacheConfig.families.mediaSearch.gcTimeMs,
-    queryKey: queryCacheConfig.families.mediaSearch.key(parameters),
+    staleTime: queryCacheConfig.families.mediaSearch.staleTimeMs,
     getNextPageParam: (lastPage, pages) =>
       lastPage.hasNextPage ? pages.length + 1 : undefined,
     queryFn: ({ signal, pageParam }) =>
@@ -46,7 +48,7 @@ export function useSearchResults({
           ...parameters,
           page: pageParam,
         },
-        signal,
+        { signal },
       ),
   });
 
@@ -90,7 +92,7 @@ export function useSearchResults({
                 : null),
           };
         }) ?? [],
-    [listEntriesByMediaId, searchQuery.data],
+    [listEntriesByMediaId, parameters.contentMode, searchQuery.data],
   );
   const loadMore = () => {
     if (searchQuery.hasNextPage && !searchQuery.isFetchingNextPage) {

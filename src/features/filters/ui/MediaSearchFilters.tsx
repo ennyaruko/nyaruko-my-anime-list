@@ -4,6 +4,7 @@ import type { FilterOptions, MediaFiltersState } from "@/entities/filters";
 import type { MediaContentMode, MediaSearchParameters } from "@/entities/media";
 
 import { useMediaFilters } from "../model/useMediaFilters";
+import type { MediaFilterScope } from "../model/useMediaFilters";
 import { searchSortOptions } from "../model/media-filter-options";
 import { getMediaSearchParameters } from "../model/media-search-parameters";
 import { filterTagsForContentMode } from "../model/filter-tags-for-content-mode";
@@ -17,6 +18,7 @@ type MediaSearchFiltersProps = {
   perPage: number;
   options?: FilterOptions;
   optionsLoading?: boolean;
+  scope?: MediaFilterScope;
   contentMode: MediaContentMode;
   onResetInitialFilters?: VoidFunction;
   initialFilters?: Partial<MediaFiltersState>;
@@ -32,6 +34,7 @@ export function MediaSearchFilters({
   children,
   contentMode,
   optionsLoading,
+  scope = "search",
   initialFilters = {},
   onResetInitialFilters,
 }: MediaSearchFiltersProps) {
@@ -44,22 +47,22 @@ export function MediaSearchFilters({
     updateFilters,
     appliedValues,
     hasUnsavedChanges,
-  } = useMediaFilters("search", userId, contentMode, initialFilters);
+  } = useMediaFilters(scope, userId, contentMode, initialFilters);
 
-  const parameters = useMemo(
-    () =>
-      getMediaSearchParameters(
-        search,
-        {
-          ...filters,
-          tags: filterTagsForContentMode(filters.tags, options, contentMode),
-        },
-        appliedValues,
-        perPage,
-        contentMode,
-      ),
-    [appliedValues, contentMode, filters, options, perPage, search],
-  );
+  const parameters = useMemo(() => {
+    const searchParameters = getMediaSearchParameters(
+      search,
+      {
+        ...filters,
+        tags: filterTagsForContentMode(filters.tags, options, contentMode),
+      },
+      appliedValues,
+      perPage,
+      contentMode,
+    );
+
+    return searchParameters;
+  }, [appliedValues, contentMode, filters, options, perPage, search]);
   const resetAllFilters = () => {
     resetFilters();
     onResetInitialFilters?.();

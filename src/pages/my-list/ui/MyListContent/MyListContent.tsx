@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import { useTranslation } from "react-i18next";
 
 import { MyListFilters } from "@/features/filters";
@@ -47,7 +48,19 @@ export function MyListContent({
   )!;
   return (
     <>
-      <Heading variant="neutral">{t("common:list.list")}</Heading>
+      <Heading
+        variant="neutral"
+        action={
+          <Link
+            to="/list-recommendations"
+            className={styles.recommendationsLink}
+          >
+            {t("common:list.recommendations")}
+          </Link>
+        }
+      >
+        {t("common:list.list")}
+      </Heading>
       <StatusNavigation
         loading={isListPending}
         onSelect={selectStatus}

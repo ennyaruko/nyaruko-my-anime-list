@@ -35,7 +35,7 @@ type SearchMediaItem = NonNullable<
 
 export async function searchAniListMedia(
   parameters: MediaSearchParameters,
-  signal?: AbortSignal,
+  { signal }: { signal?: AbortSignal } = {},
 ): Promise<MediaSearchResult> {
   const client = createAniListGraphQLClient();
   const genres = [

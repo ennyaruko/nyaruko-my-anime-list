@@ -10,6 +10,7 @@ const config: CodegenConfig = {
     "src/app/integrations/anilist/api/generated/": {
       preset: "client",
       config: { useTypeImports: true },
+      presetConfig: { fragmentMasking: false },
     },
   },
 };

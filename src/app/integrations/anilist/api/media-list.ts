@@ -50,6 +50,7 @@ export function mapAniListMyListEntry(entry: AniListEntry): MyListEntry {
     score: entry.score ?? null,
     format: media.format ?? null,
     source: media.source ?? null,
+    isFavorite: media.isFavourite,
     createdAt: entry.createdAt ?? 0,
     updatedAt: entry.updatedAt ?? 0,
     isAdult: media.isAdult ?? false,

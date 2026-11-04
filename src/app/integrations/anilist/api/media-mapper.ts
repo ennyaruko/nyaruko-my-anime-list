@@ -5,6 +5,7 @@ import type {
   MediaDetailQuery,
   MediaRelationsQuery,
   MediaRecommendationsQuery,
+  MediaRecommendationsBatchQuery,
 } from "./generated/graphql";
 
 type AniListDetailMedia = NonNullable<MediaDetailQuery["Media"]>;
@@ -26,9 +27,20 @@ type AniListRecommendedMedia = NonNullable<
     >[number]
   >["mediaRecommendation"]
 >;
-
+type AniListBatchRecommendedMedia = NonNullable<
+  NonNullable<
+    NonNullable<
+      NonNullable<MediaRecommendationsBatchQuery["source0"]>["recommendations"]
+    >["nodes"]
+  >[number]
+>["mediaRecommendation"];
+type AniListBatchRecommendedMediaValue =
+  NonNullable<AniListBatchRecommendedMedia>;
 type AniListMedia =
-  AniListDetailMedia | AniListRelatedMedia | AniListRecommendedMedia;
+  | AniListDetailMedia
+  | AniListRelatedMedia
+  | AniListRecommendedMedia
+  | AniListBatchRecommendedMediaValue;
 
 /** Maps AniList media records used by detail, relations, and recommendations. */
 export function mapAniListMedia(media: AniListMedia): Media {

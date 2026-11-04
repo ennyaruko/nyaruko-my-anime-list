@@ -1,12 +1,12 @@
 import { useMemo, type ReactNode } from "react";
 
-import type { MediaSearchParameters } from "@/entities/media";
 import type { FilterOptions, MediaFiltersState } from "@/entities/filters";
+import type { MediaContentMode, MediaSearchParameters } from "@/entities/media";
 
 import { useMediaFilters } from "../model/useMediaFilters";
 import { searchSortOptions } from "../model/media-filter-options";
 import { getMediaSearchParameters } from "../model/media-search-parameters";
-import { filterTagsForAdultMode } from "../model/filter-tags-for-adult-mode";
+import { filterTagsForContentMode } from "../model/filter-tags-for-content-mode";
 
 import { MediaFiltersPanel } from "./MediaFiltersPanel";
 import { useFilterDrawerState } from "./useFilterDrawerState";
@@ -15,9 +15,9 @@ type MediaSearchFiltersProps = {
   search: string;
   userId?: string;
   perPage: number;
-  isAdultMode: boolean;
   options?: FilterOptions;
   optionsLoading?: boolean;
+  contentMode: MediaContentMode;
   onResetInitialFilters?: VoidFunction;
   initialFilters?: Partial<MediaFiltersState>;
   children: (parameters: MediaSearchParameters) => ReactNode;
@@ -30,7 +30,7 @@ export function MediaSearchFilters({
   options,
   perPage,
   children,
-  isAdultMode,
+  contentMode,
   optionsLoading,
   initialFilters = {},
   onResetInitialFilters,
@@ -44,7 +44,7 @@ export function MediaSearchFilters({
     updateFilters,
     appliedValues,
     hasUnsavedChanges,
-  } = useMediaFilters("search", userId, isAdultMode, initialFilters);
+  } = useMediaFilters("search", userId, contentMode, initialFilters);
 
   const parameters = useMemo(
     () =>
@@ -52,13 +52,13 @@ export function MediaSearchFilters({
         search,
         {
           ...filters,
-          tags: filterTagsForAdultMode(filters.tags, options, isAdultMode),
+          tags: filterTagsForContentMode(filters.tags, options, contentMode),
         },
         appliedValues,
         perPage,
-        isAdultMode,
+        contentMode,
       ),
-    [appliedValues, filters, isAdultMode, options, perPage, search],
+    [appliedValues, contentMode, filters, options, perPage, search],
   );
   const resetAllFilters = () => {
     resetFilters();
@@ -73,7 +73,7 @@ export function MediaSearchFilters({
         onSave={saveFilters}
         open={filterDrawer.open}
         onChange={updateFilters}
-        isAdultMode={isAdultMode}
+        contentMode={contentMode}
         onReset={resetAllFilters}
         savedFilters={savedFilters}
         sortOptions={searchSortOptions}

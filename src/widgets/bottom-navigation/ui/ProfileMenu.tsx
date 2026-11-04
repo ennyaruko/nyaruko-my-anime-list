@@ -11,6 +11,7 @@ import { useAdultContent } from "@/features/toggle-adult-content";
 import { useAutoTranslationPreferences } from "@/features/translate-content";
 
 import { useAuth } from "@/entities/auth";
+import type { MediaContentMode } from "@/entities/media";
 import type { AccountProfile } from "@/entities/account";
 
 import { Switch } from "@/shared/ui";
@@ -34,7 +35,7 @@ import * as styles from "./ProfileMenu.css";
 export type ProfileMenuProps = {
   onClose: VoidFunction;
   account?: AccountProfile;
-  onAdultContentEnableRequest: VoidFunction;
+  onAdultContentEnableRequest: (mode: MediaContentMode) => void;
 };
 
 const languageCodes: SupportedLanguage[] = ["en", "ru"];
@@ -48,8 +49,7 @@ export function ProfileMenu({
   const { identityProvider } = useAuth();
   const { theme, setTheme } = useTheme();
   const { language, setLanguage } = useLanguage();
-  const { enabled: adultContentEnabled, setEnabled: setAdultContentEnabled } =
-    useAdultContent();
+  const { mode: contentMode, setMode: setContentMode } = useAdultContent();
   const { enabled: autoTranslation, setEnabled: setAutoTranslation } =
     useAutoTranslationPreferences();
   const logout = useLogout();
@@ -68,18 +68,27 @@ export function ProfileMenu({
     void logout();
   };
 
-  const handleAdultContentChange = (enabled: boolean) => {
-    if (!enabled) {
-      setAdultContentEnabled(false);
+  const contentModes: MediaContentMode[] = ["safe", "ecchi", "hentai"];
+  const contentModeLabels: Record<MediaContentMode, string> = {
+    safe: t("common:profileMenu.safeContentMode"),
+    ecchi: t("common:profileMenu.ecchiContentMode"),
+    hentai: t("common:profileMenu.hentaiContentMode"),
+  };
+  const contentModePosition = contentModes.indexOf(contentMode) as 0 | 1 | 2;
+
+  const handleContentModeChange = (position: 0 | 1 | 2) => {
+    const nextMode = contentModes[position];
+    if (nextMode === "safe") {
+      setContentMode(nextMode);
       return;
     }
 
     if (account?.adultContentEnabled) {
-      setAdultContentEnabled(true);
+      setContentMode(nextMode);
       return;
     }
 
-    onAdultContentEnableRequest();
+    onAdultContentEnableRequest(nextMode);
   };
 
   const summary = (
@@ -192,22 +201,15 @@ export function ProfileMenu({
             )}
           </Switch>
         </ProfileSetting>
-        <ProfileSetting label={t("common:profileMenu.adultContent")}>
+        <ProfileSetting label={`${contentModeLabels[contentMode]}`}>
           <Switch
-            checked={adultContentEnabled}
-            onCheckedChange={handleAdultContentChange}
-            thumbClassName={
-              adultContentEnabled
-                ? styles.adultContentThumb.enabled
-                : styles.adultContentThumb.disabled
-            }
+            position={contentModePosition}
+            label={contentModeLabels[contentMode]}
+            onPositionChange={handleContentModeChange}
+            thumbClassName={styles.adultContentThumb[contentMode]}
           >
             <AdultContentIcon
-              className={
-                adultContentEnabled
-                  ? styles.adultContentIcon.enabled
-                  : styles.adultContentIcon.disabled
-              }
+              className={styles.adultContentIcon[contentMode]}
             />
           </Switch>
         </ProfileSetting>

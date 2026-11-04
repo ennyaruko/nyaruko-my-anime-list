@@ -2,17 +2,20 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import type { InfiniteData } from "@tanstack/react-query";
 
 import { useAuth } from "@/entities/auth";
-import { filterMediaForAdultMode } from "@/entities/media";
-import type { MediaRecommendationsPage } from "@/entities/media";
+import { filterMediaForContentMode } from "@/entities/media";
 import { mediaRecommendationsServiceToken } from "@/entities/media";
+import type {
+  MediaContentMode,
+  MediaRecommendationsPage,
+} from "@/entities/media";
 
 import { useAppService, queryCacheConfig } from "@/shared/lib";
 
 type UseMediaRecommendationsParameters = {
   mediaId: number;
   perPage?: number;
-  isAdultMode: boolean;
   userId: string | undefined;
+  contentMode: MediaContentMode;
 };
 
 /** Loads paginated similar media without persisting provider results. */
@@ -20,7 +23,7 @@ export function useMediaRecommendations({
   userId,
   mediaId,
   perPage = 5,
-  isAdultMode,
+  contentMode,
 }: UseMediaRecommendationsParameters) {
   const { accessToken } = useAuth();
   const service = useAppService(mediaRecommendationsServiceToken);
@@ -28,7 +31,7 @@ export function useMediaRecommendations({
     userId ?? "unknown",
     mediaId,
     perPage,
-    isAdultMode,
+    contentMode,
   );
 
   return useInfiniteQuery<
@@ -57,7 +60,7 @@ export function useMediaRecommendations({
       );
       return {
         ...page,
-        items: filterMediaForAdultMode(page.items, isAdultMode),
+        items: filterMediaForContentMode(page.items, contentMode),
       };
     },
   });

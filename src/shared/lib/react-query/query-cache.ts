@@ -274,8 +274,8 @@ export const queryCacheConfig = {
     /** Related media are fetched on demand and are not persisted. */
     mediaRelations: defineQueryFamily(
       ["media-relations"],
-      (userId: string, mediaId: number, isAdultMode: boolean) =>
-        [userId, mediaId, isAdultMode] as const,
+      (userId: string, mediaId: number, contentMode: string) =>
+        [userId, mediaId, contentMode] as const,
       {
         userIdIndex: 1,
         keyConstraints: [
@@ -315,12 +315,8 @@ export const queryCacheConfig = {
     /** Recommendations load by page and are not persisted. */
     mediaRecommendations: defineQueryFamily(
       ["media-recommendations"],
-      (
-        userId: string,
-        mediaId: number,
-        perPage: number,
-        isAdultMode: boolean,
-      ) => [userId, mediaId, perPage, isAdultMode] as const,
+      (userId: string, mediaId: number, perPage: number, contentMode: string) =>
+        [userId, mediaId, perPage, contentMode] as const,
       {
         userIdIndex: 1,
         keyConstraints: [

@@ -6,6 +6,7 @@ import { useAdultContent } from "@/features/toggle-adult-content";
 
 import { useAuth } from "@/entities/auth";
 import { mediaDetailServiceToken } from "@/entities/media";
+import { isMediaVisibleInContentMode } from "@/entities/media";
 
 import { useAppService, queryCacheConfig } from "@/shared/lib";
 import {
@@ -30,7 +31,7 @@ type MediaWatchPageProps = {
 
 export function MediaWatchPage({ userId, mediaId }: MediaWatchPageProps) {
   const { t } = useTranslation(["common"]);
-  const { enabled: isAdultMode } = useAdultContent();
+  const { mode: contentMode } = useAdultContent();
   const { accessToken } = useAuth();
   const service = useAppService(mediaDetailServiceToken);
   const validMediaId = Number.isSafeInteger(mediaId) && mediaId > 0;
@@ -52,11 +53,11 @@ export function MediaWatchPage({ userId, mediaId }: MediaWatchPageProps) {
           leading={<BackLink>{t("common:mediaDetail.back")}</BackLink>}
         />
         {query.data ? (
-          query.data.media.isAdult !== isAdultMode ? (
+          !isMediaVisibleInContentMode(query.data.media, contentMode) ? (
             <Row wide alignItem="center" justifyContent="center">
               <BlockStatusNotFound />
             </Row>
-          ) : isAdultMode && query.data.media.genres.includes("Hentai") ? (
+          ) : contentMode === "hentai" ? (
             <AdultWatchContent
               detail={query.data}
               key={`${userId}:${mediaId}`}

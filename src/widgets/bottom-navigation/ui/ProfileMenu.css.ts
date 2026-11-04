@@ -156,17 +156,23 @@ export const autoIcon = style({
 });
 
 export const adultContentThumb = styleVariants({
-  disabled: { background: colors.background.elevation1Info },
-  enabled: { background: colors.background.elevation1Warning },
+  safe: { background: colors.background.elevation1Info },
+  ecchi: { background: colors.background.elevation1Warning },
+  hentai: { background: colors.background.elevation1Warning },
 });
 
 export const adultContentIcon = styleVariants({
-  disabled: {
+  safe: {
     width: "11px",
     height: "11px",
     color: colors.text.tertiary,
   },
-  enabled: {
+  ecchi: {
+    width: "11px",
+    height: "11px",
+    color: colors.status.warning,
+  },
+  hentai: {
     width: "11px",
     height: "11px",
     color: colors.status.negative,

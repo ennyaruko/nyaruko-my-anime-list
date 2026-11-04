@@ -6,7 +6,7 @@ import { useAdultContent } from "@/features/toggle-adult-content";
 
 import { useAuth } from "@/entities/auth";
 import type { AccountState } from "@/entities/account";
-import { filterMediaForAdultMode } from "@/entities/media";
+import { filterMediaForContentMode } from "@/entities/media";
 import {
   type Media,
   myListServiceToken,
@@ -17,29 +17,30 @@ import {
 
 import { useAppService, queryCacheConfig } from "@/shared/lib";
 
-const trendingParameters: Omit<MediaSearchParameters, "page" | "isAdult"> = {
-  tags: [],
-  search: "",
-  genres: [],
-  perPage: 12,
-  formats: [],
-  sources: [],
-  statuses: [],
-  sort: "trending",
-  formatFilterEnabled: false,
-  sourceFilterEnabled: false,
-  statusFilterEnabled: false,
-};
+const trendingParameters: Omit<MediaSearchParameters, "page" | "contentMode"> =
+  {
+    tags: [],
+    search: "",
+    genres: [],
+    perPage: 12,
+    formats: [],
+    sources: [],
+    statuses: [],
+    sort: "trending",
+    formatFilterEnabled: false,
+    sourceFilterEnabled: false,
+    statusFilterEnabled: false,
+  };
 
 export function useTrendingMedia({ account }: AccountState) {
-  const { enabled: isAdultMode } = useAdultContent();
+  const { mode: contentMode } = useAdultContent();
   const { accessToken } = useAuth();
   const searchService = useAppService(mediaSearchServiceToken);
   const listService = useAppService(myListServiceToken);
   const parameters: MediaSearchParameters = {
     ...trendingParameters,
     page: 1,
-    isAdult: isAdultMode,
+    contentMode,
   };
 
   const trendingQuery = useInfiniteQuery({
@@ -71,9 +72,9 @@ export function useTrendingMedia({ account }: AccountState) {
   const media = useMemo(
     () => [
       ...new Map(
-        filterMediaForAdultMode(
+        filterMediaForContentMode(
           trendingQuery.data?.pages.flatMap(({ items }) => items) ?? [],
-          isAdultMode,
+          contentMode,
         ).map((item) => {
           const entry = entriesByMediaId.get(item.id);
           const media: Media = {
@@ -92,7 +93,7 @@ export function useTrendingMedia({ account }: AccountState) {
         }),
       ).values(),
     ],
-    [entriesByMediaId, isAdultMode, trendingQuery.data],
+    [contentMode, entriesByMediaId, trendingQuery.data],
   );
 
   return {

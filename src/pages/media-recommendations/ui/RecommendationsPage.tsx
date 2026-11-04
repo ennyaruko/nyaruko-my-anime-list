@@ -7,6 +7,7 @@ import { useMediaRecommendations } from "@/features/media-recommendations";
 
 import { MediaCardSkeleton } from "@/entities/media";
 import type { AccountProfile } from "@/entities/account";
+import type { MediaContentMode } from "@/entities/media";
 
 import {
   Column,
@@ -31,7 +32,7 @@ export function RecommendationsPage({
   mediaId,
 }: RecommendationsPageProps) {
   const { t } = useTranslation(["common"]);
-  const { enabled: isAdultMode } = useAdultContent();
+  const { mode: contentMode } = useAdultContent();
 
   if (!Number.isFinite(mediaId) || mediaId <= 0) {
     return <BlockStatusNotFound className={styles.notFound} />;
@@ -48,7 +49,7 @@ export function RecommendationsPage({
           <RecommendationsResults
             userId={userId}
             mediaId={mediaId}
-            isAdultMode={isAdultMode}
+            contentMode={contentMode}
           />
         </QueryErrorBoundary>
       </Column>
@@ -57,19 +58,19 @@ export function RecommendationsPage({
 }
 
 type RecommendationsResultsProps = RecommendationsPageProps & {
-  isAdultMode: boolean;
+  contentMode: MediaContentMode;
 };
 
 export function RecommendationsResults({
   userId,
   mediaId,
-  isAdultMode,
+  contentMode,
 }: RecommendationsResultsProps) {
   const query = useMediaRecommendations({
     userId,
     mediaId,
     perPage: 50,
-    isAdultMode,
+    contentMode,
   });
   const { data, isPending, hasNextPage, fetchNextPage, isFetchingNextPage } =
     query;

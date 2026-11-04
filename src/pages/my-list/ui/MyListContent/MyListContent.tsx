@@ -2,8 +2,8 @@ import { useTranslation } from "react-i18next";
 
 import { MyListFilters } from "@/features/filters";
 
-import type { MyListEntry } from "@/entities/media";
 import type { FilterOptions } from "@/entities/filters";
+import type { MyListEntry, MediaContentMode } from "@/entities/media";
 
 import { Row, Heading } from "@/shared/ui";
 import { DeleteIcon } from "@/shared/icons";
@@ -24,11 +24,11 @@ const statusSections = [
 ] as const;
 
 type MyListContentProps = {
-  isAdultMode: boolean;
   entries: MyListEntry[];
   isListPending: boolean;
   optionsLoading: boolean;
   userId: string | undefined;
+  contentMode: MediaContentMode;
   options: undefined | FilterOptions;
 };
 
@@ -36,7 +36,7 @@ export function MyListContent({
   userId,
   entries,
   options,
-  isAdultMode,
+  contentMode,
   isListPending,
   optionsLoading,
 }: MyListContentProps) {
@@ -62,7 +62,7 @@ export function MyListContent({
         entries={entries}
         options={options}
         status={selectedStatus}
-        isAdultMode={isAdultMode}
+        contentMode={contentMode}
         optionsLoading={optionsLoading}
       >
         {(filteredEntries, resetFilters, hasUnsavedChanges, filtersPanel) => (

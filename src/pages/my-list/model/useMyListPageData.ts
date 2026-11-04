@@ -4,7 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 
 import { useAuth } from "@/entities/auth";
 import type { AccountState } from "@/entities/account";
-import { filterMediaForAdultMode } from "@/entities/media";
+import type { MediaContentMode } from "@/entities/media";
+import { filterMediaForContentMode } from "@/entities/media";
 import { filterOptionsProviderToken } from "@/entities/filters";
 import { type MyListEntry, myListServiceToken } from "@/entities/media";
 
@@ -12,7 +13,7 @@ import { useAppService, queryCacheConfig } from "@/shared/lib";
 
 export function useMyListPageData(
   { account, accountPending }: AccountState,
-  isAdultMode: boolean,
+  contentMode: MediaContentMode,
 ) {
   const userId = account?.id;
   const { accessToken } = useAuth();
@@ -45,11 +46,11 @@ export function useMyListPageData(
 
   const entries = useMemo<MyListEntry[]>(
     () =>
-      filterMediaForAdultMode(
+      filterMediaForContentMode(
         listQuery.data?.flatMap(({ list }) => list) ?? [],
-        isAdultMode,
+        contentMode,
       ),
-    [isAdultMode, listQuery.data],
+    [contentMode, listQuery.data],
   );
   const isListPending =
     isManualRefreshPending ||

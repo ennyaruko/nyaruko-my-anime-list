@@ -20,9 +20,9 @@ import { MyListContent } from "./MyListContent";
 import * as styles from "./MyListPage.css";
 
 export function MyListPage(accountState: AccountState) {
-  const { enabled: isAdultMode } = useAdultContent();
+  const { mode: contentMode } = useAdultContent();
   const { userId, entries, refreshList, isListPending, filterOptionsQuery } =
-    useMyListPageData(accountState, isAdultMode);
+    useMyListPageData(accountState, contentMode);
   return (
     <Container as="main" className={styles.page}>
       <ScrollToTopButton />
@@ -43,7 +43,7 @@ export function MyListPage(accountState: AccountState) {
               <MyListContent
                 userId={userId}
                 entries={entries}
-                isAdultMode={isAdultMode}
+                contentMode={contentMode}
                 isListPending={isListPending}
                 options={filterOptionsQuery.data}
                 optionsLoading={filterOptionsQuery.isPending}

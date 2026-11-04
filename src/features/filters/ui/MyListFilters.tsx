@@ -1,12 +1,13 @@
 import { useMemo, type ReactNode } from "react";
 
 import type { FilterOptions } from "@/entities/filters";
+import type { MediaContentMode } from "@/entities/media";
 import type { MyListEntry, MyListStatus } from "@/entities/media";
 
 import { useMediaFilters } from "../model/useMediaFilters";
 import { listSortOptions } from "../model/media-filter-options";
 import { filterMyListEntries } from "../model/filter-my-list-entries";
-import { filterTagsForAdultMode } from "../model/filter-tags-for-adult-mode";
+import { filterTagsForContentMode } from "../model/filter-tags-for-content-mode";
 
 import { MediaFiltersPanel } from "./MediaFiltersPanel";
 import { useFilterDrawerState } from "./useFilterDrawerState";
@@ -14,10 +15,10 @@ import { useFilterDrawerState } from "./useFilterDrawerState";
 type MyListFiltersProps = {
   userId?: string;
   status: MyListStatus;
-  isAdultMode: boolean;
   entries: MyListEntry[];
   options?: FilterOptions;
   optionsLoading?: boolean;
+  contentMode: MediaContentMode;
   children: (
     filteredEntries: MyListEntry[],
     resetFilters: VoidFunction,
@@ -33,7 +34,7 @@ export function MyListFilters({
   entries,
   options,
   children,
-  isAdultMode,
+  contentMode,
   optionsLoading,
 }: MyListFiltersProps) {
   const filterDrawer = useFilterDrawerState();
@@ -44,7 +45,7 @@ export function MyListFilters({
     resetFilters,
     updateFilters,
     hasUnsavedChanges,
-  } = useMediaFilters("my-list", userId, isAdultMode);
+  } = useMediaFilters("my-list", userId, contentMode);
 
   const filteredEntries = useMemo(
     () =>
@@ -53,11 +54,11 @@ export function MyListFilters({
         status,
         {
           ...filters,
-          tags: filterTagsForAdultMode(filters.tags, options, isAdultMode),
+          tags: filterTagsForContentMode(filters.tags, options, contentMode),
         },
-        isAdultMode,
+        contentMode,
       ),
-    [entries, filters, isAdultMode, options, status],
+    [contentMode, entries, filters, options, status],
   );
 
   return children(
@@ -71,7 +72,7 @@ export function MyListFilters({
       onReset={resetFilters}
       onChange={updateFilters}
       open={filterDrawer.open}
-      isAdultMode={isAdultMode}
+      contentMode={contentMode}
       savedFilters={savedFilters}
       sortOptions={listSortOptions}
       optionsLoading={optionsLoading}

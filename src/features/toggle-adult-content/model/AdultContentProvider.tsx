@@ -6,6 +6,8 @@ import {
   type ReactNode,
 } from "react";
 
+import type { MediaContentMode } from "@/entities/media";
+
 import { AdultContentContext } from "./adult-content-context";
 
 export type { AdultContentContextValue } from "./adult-content-context";
@@ -14,24 +16,31 @@ export type AdultContentProviderProps = {
   children: ReactNode;
 };
 
-const STORAGE_KEY = "anime-list:adult-content:enabled";
+const STORAGE_KEY = "anime-list:content-mode";
+const contentModes: MediaContentMode[] = ["safe", "ecchi", "hentai"];
 
-function readStoredPreference(): boolean {
+function readStoredMode(): MediaContentMode {
   try {
-    return window.localStorage.getItem(STORAGE_KEY) === "true";
+    const storedMode = window.localStorage.getItem(STORAGE_KEY);
+    if (contentModes.includes(storedMode as MediaContentMode)) {
+      return storedMode as MediaContentMode;
+    }
+
+    window.localStorage.setItem(STORAGE_KEY, "safe");
+    return "safe";
   } catch {
-    return false;
+    return "safe";
   }
 }
 
 export function AdultContentProvider({ children }: AdultContentProviderProps) {
-  const [enabled, setEnabled] = useState(false);
+  const [mode, setModeState] = useState<MediaContentMode>("safe");
   useEffect(() => {
-    setEnabled(readStoredPreference());
+    setModeState(readStoredMode());
 
     const handleStorage = (event: StorageEvent) => {
       if (event.key === null || event.key === STORAGE_KEY) {
-        setEnabled(readStoredPreference());
+        setModeState(readStoredMode());
       }
     };
 
@@ -39,18 +48,18 @@ export function AdultContentProvider({ children }: AdultContentProviderProps) {
     return () => window.removeEventListener("storage", handleStorage);
   }, []);
 
-  const updateEnabled = useCallback((nextEnabled: boolean) => {
-    setEnabled(nextEnabled);
+  const updateMode = useCallback((nextMode: MediaContentMode) => {
+    setModeState(nextMode);
     try {
-      window.localStorage.setItem(STORAGE_KEY, String(nextEnabled));
+      window.localStorage.setItem(STORAGE_KEY, nextMode);
     } catch {
       // Keep the setting active for this session when storage is unavailable.
     }
   }, []);
 
   const value = useMemo(
-    () => ({ enabled, setEnabled: updateEnabled }),
-    [enabled, updateEnabled],
+    () => ({ mode, setMode: updateMode }),
+    [mode, updateMode],
   );
 
   return (

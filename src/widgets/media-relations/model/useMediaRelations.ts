@@ -1,28 +1,29 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { useAuth } from "@/entities/auth";
+import type { MediaContentMode } from "@/entities/media";
 import { mediaRelationsServiceToken } from "@/entities/media";
 
 import { useAppService, queryCacheConfig } from "@/shared/lib";
 
 type UseMediaRelationsParameters = {
   mediaId: number;
-  isAdultMode: boolean;
   userId: string | undefined;
+  contentMode: MediaContentMode;
 };
 
 /** Loads the separate, non-persisted relations query for the media page. */
 export function useMediaRelations({
   userId,
   mediaId,
-  isAdultMode,
+  contentMode,
 }: UseMediaRelationsParameters) {
   const { accessToken } = useAuth();
   const service = useAppService(mediaRelationsServiceToken);
   const queryKey = queryCacheConfig.families.mediaRelations.key(
     userId ?? "unknown",
     mediaId,
-    isAdultMode,
+    contentMode,
   );
 
   return useQuery({

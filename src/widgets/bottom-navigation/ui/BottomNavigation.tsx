@@ -12,6 +12,7 @@ import {
 } from "@/features/toggle-adult-content";
 
 import type { AccountProfile } from "@/entities/account";
+import type { MediaContentMode } from "@/entities/media";
 
 import { ListIcon, UserIcon, SearchIcon } from "@/shared/icons";
 
@@ -28,21 +29,23 @@ export type BottomNavigationProps = {
 export function BottomNavigation({ account }: BottomNavigationProps) {
   const { t } = useTranslation(["common"]);
   const [profileOpen, setProfileOpen] = useState(false);
-  const [adultContentConfirmationOpen, setAdultContentConfirmationOpen] =
-    useState(false);
-  const { setEnabled: setAdultContentEnabled } = useAdultContent();
+  const [requestedContentMode, setRequestedContentMode] =
+    useState<null | MediaContentMode>(null);
+  const { setMode: setContentMode } = useAdultContent();
   const enableAdultContent = useEnableAdultContent();
 
   const handleProfileClose = () => {
     setProfileOpen(false);
   };
 
-  const handleAdultContentEnableRequest = () => {
+  const handleAdultContentEnableRequest = (mode: MediaContentMode) => {
     setProfileOpen(false);
-    setAdultContentConfirmationOpen(true);
+    setRequestedContentMode(mode);
   };
 
   const handleAdultContentConfirm = async () => {
+    if (!requestedContentMode) return;
+
     let enabled: boolean;
     try {
       enabled = await enableAdultContent.enable();
@@ -51,8 +54,8 @@ export function BottomNavigation({ account }: BottomNavigationProps) {
     }
 
     if (!enabled) return;
-    setAdultContentEnabled(true);
-    setAdultContentConfirmationOpen(false);
+    setContentMode(requestedContentMode);
+    setRequestedContentMode(null);
   };
 
   return (
@@ -107,10 +110,10 @@ export function BottomNavigation({ account }: BottomNavigationProps) {
         </Popover.Portal>
       </Popover.Root>
       <AdultContentConfirmationDialog
-        open={adultContentConfirmationOpen}
+        open={requestedContentMode !== null}
         pending={enableAdultContent.isPending}
+        onCancel={() => setRequestedContentMode(null)}
         onConfirm={() => void handleAdultContentConfirm()}
-        onCancel={() => setAdultContentConfirmationOpen(false)}
       />
     </>
   );

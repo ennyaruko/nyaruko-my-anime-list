@@ -1,4 +1,5 @@
 import type { Media } from "./media";
+import type { MediaContentMode } from "./media-visibility";
 
 /** Search result ordering supported by the media search service. */
 export type MediaSearchSort =
@@ -16,8 +17,6 @@ export type MediaSearchParameters = {
   perPage: number;
   /** Selected genres. */
   genres: string[];
-  /** Exact site content mode: true returns adult media, false regular media. */
-  isAdult: boolean;
   /** Selected media formats. */
   formats: string[];
   /** Selected media sources. */
@@ -32,6 +31,8 @@ export type MediaSearchParameters = {
   sourceFilterEnabled: boolean;
   /** Whether the selected statuses should be sent to the provider. */
   statusFilterEnabled: boolean;
+  /** Content category requested from the provider. */
+  contentMode: MediaContentMode;
 };
 
 /** A page of media returned by a search provider. */

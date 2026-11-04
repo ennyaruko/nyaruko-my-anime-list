@@ -1,16 +1,18 @@
 import type { FilterOptions } from "@/entities/filters";
+import { isAdultContentMode, type MediaContentMode } from "@/entities/media";
 
 /** Drops persisted tags that are not available in the current site mode. */
-export function filterTagsForAdultMode(
+export function filterTagsForContentMode(
   tags: readonly string[],
   options: undefined | FilterOptions,
-  isAdultMode: boolean,
+  contentMode: MediaContentMode,
 ): string[] {
-  if (!options) return isAdultMode ? [...tags] : [];
+  const includeAdultTags = isAdultContentMode(contentMode);
+  if (!options) return includeAdultTags ? [...tags] : [];
 
   const availableTags = new Set(
     options.tags
-      .filter((tag) => isAdultMode || tag.isAdult === false)
+      .filter((tag) => includeAdultTags || tag.isAdult === false)
       .map(({ value }) => value),
   );
 

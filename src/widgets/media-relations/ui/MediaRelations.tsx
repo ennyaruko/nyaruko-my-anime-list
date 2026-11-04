@@ -2,6 +2,8 @@ import { useTranslation } from "react-i18next";
 
 import { MediaListContextMenu } from "@/features/manage-media-list";
 
+import type { MediaContentMode } from "@/entities/media";
+import { isMediaVisibleInContentMode } from "@/entities/media";
 import { CompactCard, CompactCardSkeleton } from "@/entities/media";
 import type { MediaRelation, MediaRelationType } from "@/entities/media";
 
@@ -30,19 +32,19 @@ const relationLabelKey = {
 
 type MediaRelationsProps = {
   mediaId: number;
-  isAdultMode: boolean;
   userId: string | undefined;
+  contentMode: MediaContentMode;
 };
 
 export function MediaRelations({
   userId,
   mediaId,
-  isAdultMode,
+  contentMode,
 }: MediaRelationsProps) {
   const { t } = useTranslation(["common"]);
-  const relationsQuery = useMediaRelations({ userId, mediaId, isAdultMode });
-  const relations = relationsQuery.data?.filter(
-    ({ media }) => media.isAdult === isAdultMode,
+  const relationsQuery = useMediaRelations({ userId, mediaId, contentMode });
+  const relations = relationsQuery.data?.filter(({ media }) =>
+    isMediaVisibleInContentMode(media, contentMode),
   );
 
   if (relationsQuery.isError || relations?.length === 0) return null;

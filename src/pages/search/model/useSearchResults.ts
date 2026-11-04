@@ -5,6 +5,7 @@ import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
 
 import { useAuth } from "@/entities/auth";
 import type { AccountState } from "@/entities/account";
+import { isMediaVisibleInContentMode } from "@/entities/media";
 import { myListServiceToken, mediaSearchServiceToken } from "@/entities/media";
 import type {
   Media,
@@ -70,7 +71,9 @@ export function useSearchResults({
     () =>
       searchQuery.data?.pages
         .flatMap(({ items }) => items)
-        .filter((media) => media.isAdult === parameters.isAdult)
+        .filter((media) =>
+          isMediaVisibleInContentMode(media, parameters.contentMode),
+        )
         .map((media): Media => {
           const listEntry = listEntriesByMediaId.get(media.id);
 

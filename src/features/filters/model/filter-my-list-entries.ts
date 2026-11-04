@@ -1,5 +1,10 @@
 import type { MediaFiltersState } from "@/entities/filters";
-import type { MyListEntry, MyListStatus } from "@/entities/media";
+import { isMediaVisibleInContentMode } from "@/entities/media";
+import type {
+  MyListEntry,
+  MyListStatus,
+  MediaContentMode,
+} from "@/entities/media";
 
 import { sortMyListEntries } from "./sort-my-list-entries";
 
@@ -27,12 +32,12 @@ export function filterMyListEntries(
   entries: readonly MyListEntry[],
   status: MyListStatus,
   filters: MediaFiltersState,
-  isAdultMode: boolean,
+  contentMode: MediaContentMode,
 ): MyListEntry[] {
   const matchingEntries = entries.filter(
     (entry) =>
       entry.status === status &&
-      entry.isAdult === isAdultMode &&
+      isMediaVisibleInContentMode(entry, contentMode) &&
       matchesAnySelection(entry.genres, filters.genres) &&
       matchesAnySelection(entry.tags, filters.tags) &&
       matchesFacet(entry.format, filters.formats, filters.formatMode) &&

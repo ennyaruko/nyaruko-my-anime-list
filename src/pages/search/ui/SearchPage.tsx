@@ -30,7 +30,7 @@ const RESULTS_PER_PAGE = 50;
 
 export function SearchPage() {
   const { t } = useTranslation(["common"]);
-  const { enabled: isAdultMode } = useAdultContent();
+  const { mode: contentMode } = useAdultContent();
   const { account } = useOutletContext<AccountState>();
   const {
     searchTerm,
@@ -63,7 +63,7 @@ export function SearchPage() {
         <QueryErrorBoundary>
           <MediaSearchFilters
             userId={account?.id}
-            isAdultMode={isAdultMode}
+            contentMode={contentMode}
             perPage={RESULTS_PER_PAGE}
             search={debouncedSearchTerm}
             initialFilters={initialFilters}

@@ -11,6 +11,7 @@ import { useAuth } from "@/entities/auth";
 import type { Media } from "@/entities/media";
 import type { AccountProfile } from "@/entities/account";
 import { mediaDetailServiceToken } from "@/entities/media";
+import { isMediaVisibleInContentMode } from "@/entities/media";
 
 import { useAppService, queryCacheConfig } from "@/shared/lib";
 import {
@@ -49,13 +50,14 @@ type MediaRouteState = { media?: Media };
 
 export function MediaDetailPage({ userId, mediaId }: MediaDetailPageProps) {
   const { i18n } = useTranslation(["common"]);
-  const { enabled: isAdultMode } = useAdultContent();
+  const { mode: contentMode } = useAdultContent();
   const { accessToken } = useAuth();
   const location = useLocation();
   const service = useAppService(mediaDetailServiceToken);
   const state = location.state as null | MediaRouteState;
   const initialMedia =
-    state?.media?.id === mediaId && state.media.isAdult === isAdultMode
+    state?.media?.id === mediaId &&
+    isMediaVisibleInContentMode(state.media, contentMode)
       ? state.media
       : undefined;
   const queryKey = queryCacheConfig.families.mediaDetail.key(
@@ -79,7 +81,7 @@ export function MediaDetailPage({ userId, mediaId }: MediaDetailPageProps) {
   const refreshMedia = useMediaDetailRefresh({
     userId,
     mediaId,
-    isAdultMode,
+    contentMode,
     malId: detail?.malId,
   });
 
@@ -91,7 +93,7 @@ export function MediaDetailPage({ userId, mediaId }: MediaDetailPageProps) {
     );
   }
 
-  if (detail && detail.media.isAdult !== isAdultMode) {
+  if (detail && !isMediaVisibleInContentMode(detail.media, contentMode)) {
     return (
       <Row wide alignItem="center" justifyContent="center">
         <BlockStatusNotFound />
@@ -152,13 +154,13 @@ export function MediaDetailPage({ userId, mediaId }: MediaDetailPageProps) {
           <MediaRelations
             userId={userId}
             mediaId={mediaId}
-            isAdultMode={isAdultMode}
+            contentMode={contentMode}
           />
           <MediaReviews userId={userId} mediaId={mediaId} />
           <MediaRecommendations
             userId={userId}
             mediaId={mediaId}
-            isAdultMode={isAdultMode}
+            contentMode={contentMode}
           />
           <ComponentErrorBoundary resetKeys={[mediaId]}>
             <MediaTags tags={tags} />

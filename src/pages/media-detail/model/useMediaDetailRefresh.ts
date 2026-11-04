@@ -2,12 +2,14 @@ import { useCallback } from "react";
 
 import { useQueryClient } from "@tanstack/react-query";
 
+import type { MediaContentMode } from "@/entities/media";
+
 import { queryCacheConfig } from "@/shared/lib";
 
 type UseMediaDetailRefreshParameters = {
   mediaId: number;
-  isAdultMode: boolean;
   userId: string | undefined;
+  contentMode: MediaContentMode;
   malId: null | number | undefined;
 };
 
@@ -16,7 +18,7 @@ export function useMediaDetailRefresh({
   malId,
   userId,
   mediaId,
-  isAdultMode,
+  contentMode,
 }: UseMediaDetailRefreshParameters) {
   const queryClient = useQueryClient();
 
@@ -44,7 +46,7 @@ export function useMediaDetailRefresh({
         queryKey: queryCacheConfig.families.mediaRelations.key(
           userId ?? "unknown",
           mediaId,
-          isAdultMode,
+          contentMode,
         ),
       }),
       queryClient.invalidateQueries({
@@ -52,9 +54,9 @@ export function useMediaDetailRefresh({
           userId ?? "unknown",
           mediaId,
           5,
-          isAdultMode,
+          contentMode,
         ),
       }),
     ]);
-  }, [isAdultMode, malId, mediaId, queryClient, userId]);
+  }, [contentMode, malId, mediaId, queryClient, userId]);
 }

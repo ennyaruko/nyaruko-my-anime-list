@@ -15,6 +15,12 @@ import type {
   MediaStatus,
 } from "./generated/graphql";
 
+const requiredGenreByContentMode = {
+  ecchi: "Ecchi",
+  safe: undefined,
+  hentai: "Hentai",
+} as const;
+
 const searchSort: Record<MediaSearchParameters["sort"], MediaSort> = {
   title: "TITLE_ROMAJI",
   trending: "TRENDING_DESC",
@@ -32,17 +38,25 @@ export async function searchAniListMedia(
   signal?: AbortSignal,
 ): Promise<MediaSearchResult> {
   const client = createAniListGraphQLClient();
+  const genres = [
+    ...new Set(
+      [
+        ...parameters.genres,
+        requiredGenreByContentMode[parameters.contentMode],
+      ].filter((genre): genre is string => Boolean(genre)),
+    ),
+  ];
   const response = await client.request({
     signal,
     document: SearchMediaDocument,
     variables: {
       page: parameters.page,
       perPage: parameters.perPage,
-      isAdult: parameters.isAdult,
       sort: [searchSort[parameters.sort]],
       search: parameters.search || undefined,
+      isAdult: parameters.contentMode !== "safe",
+      genreIn: genres.length > 0 ? genres : undefined,
       tagIn: parameters.tags.length > 0 ? parameters.tags : undefined,
-      genreIn: parameters.genres.length > 0 ? parameters.genres : undefined,
       formatIn: parameters.formatFilterEnabled
         ? (parameters.formats as MediaFormat[])
         : undefined,

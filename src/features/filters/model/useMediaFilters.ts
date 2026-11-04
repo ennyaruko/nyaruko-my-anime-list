@@ -1,6 +1,7 @@
 import { useLocation } from "react-router";
 import { useMemo, useState, useEffect, useCallback } from "react";
 
+import type { MediaContentMode } from "@/entities/media";
 import type { MediaFiltersState } from "@/entities/filters";
 
 import {
@@ -162,20 +163,25 @@ function readSavedFilters(key: string): MediaFiltersState {
 function getStorageKey(
   scope: MediaFilterScope,
   userId: string | undefined,
-  isAdultMode: boolean,
+  contentMode: MediaContentMode,
 ): string {
-  const modeSuffix = isAdultMode ? ":adult" : "";
+  const modeSuffix =
+    contentMode === "hentai"
+      ? ":adult"
+      : contentMode === "ecchi"
+        ? ":ecchi"
+        : "";
   return `media-filter-settings:v2:${scope}:${userId ?? "anonymous"}${modeSuffix}`;
 }
 
 export function useMediaFilters(
   scope: MediaFilterScope,
   userId?: string,
-  isAdultMode = false,
+  contentMode: MediaContentMode = "safe",
   initialFilters: Partial<MediaFiltersState> = EMPTY_INITIAL_FILTERS,
 ) {
   const { pathname, key: locationKey } = useLocation();
-  const storageKey = getStorageKey(scope, userId, isAdultMode);
+  const storageKey = getStorageKey(scope, userId, contentMode);
   const initialFiltersKey = JSON.stringify(initialFilters);
   const draftKey = createMediaFilterDraftKey(
     storageKey,

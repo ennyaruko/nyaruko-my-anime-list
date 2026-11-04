@@ -2,6 +2,8 @@ import type { ReactNode } from "react";
 import { Fragment, useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { isAdultContentMode } from "@/entities/media";
+import type { MediaContentMode } from "@/entities/media";
 import type {
   MediaSortKey,
   FilterOptions,
@@ -29,7 +31,7 @@ import {
   showNotification,
 } from "@/shared/ui";
 
-import { filterTagsForAdultMode } from "../../model/filter-tags-for-adult-mode";
+import { filterTagsForContentMode } from "../../model/filter-tags-for-content-mode";
 import {
   formatFilterOptions,
   sourceFilterOptions,
@@ -42,11 +44,11 @@ export type MediaFiltersPanelProps = {
   open?: boolean;
   onSave: VoidFunction;
   onReset: VoidFunction;
-  isAdultMode?: boolean;
   options?: FilterOptions;
   optionsLoading?: boolean;
   filters: MediaFiltersState;
   hasUnsavedChanges: boolean;
+  contentMode?: MediaContentMode;
   savedFilters: MediaFiltersState;
   sortOptions: readonly MediaSortKey[];
   onOpenChange?: (open: boolean) => void;
@@ -136,7 +138,7 @@ export function MediaFiltersPanel({
   savedFilters,
   onOpenChange,
   hasUnsavedChanges,
-  isAdultMode = false,
+  contentMode = "safe",
   open: controlledOpen,
   optionsLoading = false,
 }: MediaFiltersPanelProps) {
@@ -154,14 +156,15 @@ export function MediaFiltersPanel({
     <FilterIcon />
   );
   const genreOptions = options?.genres ?? [];
-  const visibleTags = filterTagsForAdultMode(
+  const includeAdultTags = isAdultContentMode(contentMode);
+  const visibleTags = filterTagsForContentMode(
     filters.tags,
     options,
-    isAdultMode,
+    contentMode,
   );
   const tagOptions =
     options?.tags
-      .filter((tag) => isAdultMode || tag.isAdult === false)
+      .filter((tag) => includeAdultTags || tag.isAdult === false)
       .map(({ value, label }) => ({ value, label })) ?? [];
 
   const handleStatusChange = (

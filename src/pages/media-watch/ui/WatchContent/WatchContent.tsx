@@ -22,7 +22,7 @@ export function WatchContent({
   userId: string | undefined;
 }) {
   const { media } = detail;
-  const { enabled: isAdultMode } = useAdultContent();
+  const { mode: contentMode } = useAdultContent();
   const playback = useWatchPlayback(detail, userId);
 
   return (
@@ -55,7 +55,7 @@ export function WatchContent({
             <MediaRelations
               userId={userId}
               mediaId={media.id}
-              isAdultMode={isAdultMode}
+              contentMode={contentMode}
             />
           </ComponentErrorBoundary>
         )

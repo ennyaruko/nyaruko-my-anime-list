@@ -20,14 +20,14 @@ export function getMediaSearchParameters(
   filters: MediaFiltersState,
   appliedValues: AppliedMediaFilterValues,
   perPage: number,
-  isAdultMode: boolean,
+  contentMode: MediaSearchParameters["contentMode"],
 ): MediaSearchParameters {
   return {
     search,
     page: 1,
     perPage,
+    contentMode,
     tags: filters.tags,
-    isAdult: isAdultMode,
     genres: filters.genres,
     formats: appliedValues.formats,
     sources: appliedValues.sources,

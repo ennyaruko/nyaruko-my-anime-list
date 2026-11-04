@@ -14,6 +14,7 @@ import {
 
 import { MediaDetailLink } from "@/entities/media";
 import type { AccountProfile } from "@/entities/account";
+import type { MediaContentMode } from "@/entities/media";
 import type { Media, MediaListStatus } from "@/entities/media";
 
 import { NoImageIcon } from "@/shared/icons";
@@ -35,20 +36,20 @@ const titleVariantByStatus: Record<MediaListStatus, TitleState> = {
 
 type MediaRecommendationsProps = {
   mediaId: number;
-  isAdultMode: boolean;
+  contentMode: MediaContentMode;
   userId: undefined | AccountProfile["id"];
 };
 
 export function MediaRecommendations({
   userId,
   mediaId,
-  isAdultMode,
+  contentMode,
 }: MediaRecommendationsProps) {
   const { t } = useTranslation(["common"]);
   const recommendationsQuery = useMediaRecommendations({
     userId,
     mediaId,
-    isAdultMode,
+    contentMode,
   });
   const isFetchingMore = useRef(false);
   const { hasNextPage, fetchNextPage, isFetchingNextPage } =

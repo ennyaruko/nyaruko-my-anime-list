@@ -192,6 +192,34 @@ export const logout = style({
   gap: primitives.spacing.xxs,
 });
 
+export const debugConsoleButton = style({
+  padding: 0,
+  width: "100%",
+  display: "flex",
+  minHeight: "32px",
+  textAlign: "left",
+  cursor: "pointer",
+  alignItems: "center",
+  background: "transparent",
+  color: colors.text.primary,
+  gap: primitives.spacing.xxs,
+  ...typography.caption["2xs"],
+  selectors: {
+    "&:hover": { color: colors.text.action },
+    "&:focus-visible": {
+      outlineOffset: "2px",
+      outline: `2px solid ${colors.text.action}`,
+    },
+  },
+});
+
+export const debugConsoleIcon = style({
+  width: "24px",
+  height: "24px",
+  flex: "0 0 40px",
+  color: colors.text.tertiary,
+});
+
 export const logoutIconSlot = style({
   width: "40px",
   height: "32px",

@@ -52,7 +52,7 @@ describe("watch progress", () => {
       "COMPLETED",
     );
     expect(statusAfterPlaybackProgress("REPEATING", progress, 12)).toBe(
-      "REPEATING",
+      "COMPLETED",
     );
     expect(progressAfterWatchPageExit(progress, 12, 12)).toBe(12);
     expect(progressAfterWatchPageExit(0, 1, 1)).toBe(1);

@@ -100,6 +100,18 @@ export default {
     noCompletedAnimeDescription:
       "Add anime with the Completed status to get recommendations",
   },
+  debugConsole: {
+    copy: "Copy",
+    clear: "Clear",
+    close: "Close",
+    open: "Debug log",
+    title: "Debug log",
+    empty: "No entries yet",
+    sectionTitle: "Diagnostics",
+    entryCount_one: "{{count}} entry",
+    entryCount_other: "{{count}} entries",
+    description: "Recent app messages and browser errors",
+  },
   sort: {
     score: "By Score",
     title: "By Title",

@@ -118,8 +118,13 @@ export function statusAfterPlaybackProgress(
   progress: number,
   total: null | number,
 ): MediaListStatus {
-  if (status === "REPEATING") return status;
-  if (status === "CURRENT" && total !== null && total > 0 && progress === total)
+  if (
+    (status === "CURRENT" || status === "REPEATING") &&
+    total !== null &&
+    total > 0 &&
+    progress >= total
+  )
     return "COMPLETED";
+  if (status === "REPEATING") return status;
   return "CURRENT";
 }

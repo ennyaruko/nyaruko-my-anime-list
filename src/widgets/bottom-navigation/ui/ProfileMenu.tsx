@@ -7,6 +7,7 @@ import { useLogout } from "@/features/logout";
 import { useTheme } from "@/features/change-theme";
 import type { ThemeMode } from "@/features/change-theme";
 import { useLanguage } from "@/features/change-language";
+import { useDebugConsole } from "@/features/debug-console";
 import { useAdultContent } from "@/features/toggle-adult-content";
 import { useAutoTranslationPreferences } from "@/features/translate-content";
 
@@ -19,6 +20,7 @@ import type { SupportedLanguage } from "@/shared/i18n";
 import {
   ExitIcon,
   UserIcon,
+  InfoIcon,
   ThemeSunIcon,
   ThemeAutoIcon,
   ThemeMoonIcon,
@@ -53,6 +55,7 @@ export function ProfileMenu({
   const { enabled: autoTranslation, setEnabled: setAutoTranslation } =
     useAutoTranslationPreferences();
   const logout = useLogout();
+  const { openConsole } = useDebugConsole();
   const themeLabels: Record<ThemeMode, string> = {
     dark: t("common:profileMenu.darkTheme"),
     light: t("common:profileMenu.lightTheme"),
@@ -213,6 +216,20 @@ export function ProfileMenu({
             />
           </Switch>
         </ProfileSetting>
+      </ProfileMenuSection>
+
+      <ProfileMenuSection title={t("common:debugConsole.sectionTitle")}>
+        <button
+          type="button"
+          className={styles.debugConsoleButton}
+          onClick={() => {
+            onClose();
+            openConsole();
+          }}
+        >
+          <InfoIcon className={styles.debugConsoleIcon} />
+          <span>{t("common:debugConsole.open")}</span>
+        </button>
       </ProfileMenuSection>
 
       <ProfileMenuSection title={t("common:profileMenu.session")}>

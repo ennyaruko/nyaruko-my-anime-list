@@ -51,7 +51,9 @@ export function MediaDetailHero({ media, userId }: MediaDetailHeroProps) {
   const handleProgressChange = (value: number) => {
     actions.updateProgress(media.id, value);
   };
-  const canContinue = media.status === "CURRENT" && (media.progress ?? 0) > 0;
+  const canContinue =
+    (media.status === "CURRENT" || media.status === "REPEATING") &&
+    (media.progress ?? 0) > 0;
 
   return (
     <Column gap="xs">

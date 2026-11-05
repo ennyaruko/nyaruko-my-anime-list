@@ -20,6 +20,7 @@ import { useAppService, queryCacheConfig } from "@/shared/lib";
 
 type RecommendationBatch = {
   items: Media[];
+  sourceIds: number[];
 };
 
 function compareDescending(
@@ -99,10 +100,10 @@ export function useListRecommendations({
     Error,
     InfiniteData<RecommendationBatch>,
     readonly unknown[],
-    number
+    number[]
   >({
     throwOnError: true,
-    initialPageParam: 0,
+    initialPageParam: [],
     gcTime: recommendationsFamily.gcTimeMs,
     staleTime: recommendationsFamily.staleTimeMs,
     queryKey: recommendationsFamily.key(userId, sort, contentMode),
@@ -114,21 +115,26 @@ export function useListRecommendations({
       sourceAnime.length > 0,
     ),
     getNextPageParam: (_lastBatch, batches) => {
-      const nextOffset =
-        batches.length * MEDIA_RECOMMENDATION_SOURCE_BATCH_SIZE;
-      return nextOffset < sourceAnime.length ? batches.length : undefined;
+      const loadedSourceIds = new Set(
+        batches.flatMap(({ sourceIds }) => sourceIds ?? []),
+      );
+      const nextSourceIds = sourceAnime
+        .filter(({ id }) => !loadedSourceIds.has(id))
+        .slice(0, MEDIA_RECOMMENDATION_SOURCE_BATCH_SIZE)
+        .map(({ id }) => id);
+
+      return nextSourceIds.length > 0 ? nextSourceIds : undefined;
     },
     queryFn: async ({ signal, pageParam }) => {
       if (!accessToken) {
         throw new Error("An authenticated AniList session is required.");
       }
-      const sourceOffset = pageParam * MEDIA_RECOMMENDATION_SOURCE_BATCH_SIZE;
-      const sourceMediaIds = sourceAnime
-        .slice(
-          sourceOffset,
-          sourceOffset + MEDIA_RECOMMENDATION_SOURCE_BATCH_SIZE,
-        )
-        .map(({ id }) => id);
+      const sourceMediaIds =
+        pageParam.length > 0
+          ? pageParam
+          : sourceAnime
+              .slice(0, MEDIA_RECOMMENDATION_SOURCE_BATCH_SIZE)
+              .map(({ id }) => id);
       const items =
         await recommendationsService.getMediaRecommendationsForSources(
           accessToken,
@@ -138,6 +144,7 @@ export function useListRecommendations({
         );
 
       return {
+        sourceIds: sourceMediaIds,
         items: filterMediaForContentMode(items, contentMode),
       };
     },

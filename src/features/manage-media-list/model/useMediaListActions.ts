@@ -77,13 +77,6 @@ export function useMediaListActions(userId: string | undefined) {
           queryKey: [...queryCacheConfig.families.userList.keyPrefix, userId],
         });
 
-        await queryClient.invalidateQueries({
-          queryKey: [
-            ...queryCacheConfig.families.listRecommendations.keyPrefix,
-            userId,
-          ],
-        });
-
         await Promise.all([
           queryClient.invalidateQueries({
             queryKey: queryCacheConfig.families.mediaDetail.key(

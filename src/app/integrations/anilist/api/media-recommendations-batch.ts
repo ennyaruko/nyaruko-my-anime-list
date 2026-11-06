@@ -5,7 +5,7 @@ import { createAniListGraphQLClient } from "./client";
 import { MediaRecommendationsBatchDocument } from "./queries";
 import type { RecommendationSort } from "./generated/graphql";
 
-const RECOMMENDATIONS_PER_SOURCE = 25;
+const RECOMMENDATIONS_PER_SOURCE = 50;
 
 const recommendationSort: Record<MediaRecommendationSort, RecommendationSort> =
   {

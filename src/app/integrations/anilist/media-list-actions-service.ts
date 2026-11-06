@@ -2,11 +2,15 @@ import type { MediaListActionsService } from "@/entities/media";
 
 import {
   saveAniListMediaListEntry,
+  toggleAniListMediaFavourite,
   deleteAniListMediaListEntry,
 } from "./api/media-list-actions";
 
 /** Adapter implementing the provider-neutral media-list actions contract. */
 export const aniListMediaListActionsService: MediaListActionsService = {
+  async toggleFavorite(accessToken, mediaId) {
+    await toggleAniListMediaFavourite(accessToken, mediaId);
+  },
   async removeEntry(accessToken, listEntryId) {
     await deleteAniListMediaListEntry(accessToken, listEntryId);
   },

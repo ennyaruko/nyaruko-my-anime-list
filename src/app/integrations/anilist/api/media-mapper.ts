@@ -70,6 +70,10 @@ export function mapAniListMedia(media: AniListMedia): Media {
       "isAdult" in media && typeof media.isAdult === "boolean"
         ? media.isAdult
         : false,
+    isFavorite:
+      "isFavourite" in media && typeof media.isFavourite === "boolean"
+        ? media.isFavourite
+        : false,
     tags:
       "tags" in media && Array.isArray(media.tags)
         ? media.tags.flatMap((tag) => (tag?.name ? [tag.name] : []))

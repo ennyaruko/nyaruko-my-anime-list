@@ -4,6 +4,7 @@ import { createAniListGraphQLClient } from "./client";
 import {
   SaveMediaListEntryDocument,
   DeleteMediaListEntryDocument,
+  ToggleMediaFavouriteDocument,
 } from "./queries";
 
 /** Creates or updates the AniList entry for a media item. */
@@ -37,5 +38,21 @@ export async function deleteAniListMediaListEntry(
 
   if (!response.DeleteMediaListEntry?.deleted) {
     throw new Error("AniList did not delete the media-list entry.");
+  }
+}
+
+/** Toggles whether the viewer has marked an anime as a favorite. */
+export async function toggleAniListMediaFavourite(
+  accessToken: string,
+  mediaId: number,
+): Promise<void> {
+  const client = createAniListGraphQLClient(accessToken);
+  const mutationResponse = await client.request({
+    variables: { animeId: mediaId },
+    document: ToggleMediaFavouriteDocument,
+  });
+
+  if (!mutationResponse.ToggleFavourite) {
+    throw new Error("AniList did not confirm the favorite update.");
   }
 }

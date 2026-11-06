@@ -5,22 +5,30 @@ import { useTranslation } from "react-i18next";
 import clsx from "clsx";
 
 import {
-  MediaListMenu,
   useMediaListActions,
+  MediaListContextMenu,
 } from "@/features/manage-media-list";
 
 import type { Media } from "@/entities/media";
 
-import { NoImageIcon } from "@/shared/icons";
 import { skeletonAnimation } from "@/shared/styles";
+import {
+  CopyIcon,
+  ListIcon,
+  HeartIcon,
+  NoImageIcon,
+  HeartFilledIcon,
+} from "@/shared/icons";
 import {
   Row,
   Chip,
   Image,
   Column,
   Rating,
+  Button,
   BackLink,
   Progress,
+  showNotification,
 } from "@/shared/ui";
 
 import * as styles from "./MediaDetailHero.css";
@@ -51,6 +59,16 @@ export function MediaDetailHero({ media, userId }: MediaDetailHeroProps) {
   const handleProgressChange = (value: number) => {
     actions.updateProgress(media.id, value);
   };
+  const handleFavoriteToggle = () =>
+    actions.toggleFavorite(media.id, !media.isFavorite);
+  const handleCopyLink = async () => {
+    try {
+      await copyToClipboard(window.location.href);
+      showNotification(t("common:notify.mediaLinkCopied"), "info");
+    } catch {
+      showNotification(t("common:notify.mediaLinkCopyFailed"), "error");
+    }
+  };
   const canContinue =
     (media.status === "CURRENT" || media.status === "REPEATING") &&
     (media.progress ?? 0) > 0;
@@ -80,6 +98,36 @@ export function MediaDetailHero({ media, userId }: MediaDetailHeroProps) {
                   label={t("mediaDetail.noImagelabel")}
                 />
               )}
+              <div className={styles.actions}>
+                <MediaListContextMenu
+                  media={media}
+                  userId={userId}
+                  triggerMode="click"
+                >
+                  <Button round>
+                    <ListIcon className={styles.actionIcon} />
+                  </Button>
+                </MediaListContextMenu>
+                <Button
+                  round
+                  onClick={handleFavoriteToggle}
+                  disabled={!actions.canManageList || actions.isPending}
+                >
+                  {media.isFavorite ? (
+                    <HeartFilledIcon
+                      className={clsx(
+                        styles.actionIcon,
+                        styles.actionIconFavorite,
+                      )}
+                    />
+                  ) : (
+                    <HeartIcon className={styles.actionIcon} />
+                  )}
+                </Button>
+                <Button round onClick={handleCopyLink}>
+                  <CopyIcon className={styles.actionIcon} />
+                </Button>
+              </div>
             </div>
           </div>
           <Row wide alignItem="center" className={styles.ratingBar}>
@@ -118,7 +166,6 @@ export function MediaDetailHero({ media, userId }: MediaDetailHeroProps) {
           </Row>
         </div>
       </Column>
-      <MediaListMenu media={media} userId={userId} />
       <Link
         className={styles.watchLink}
         to={`/media/${media.id}/watch`}
@@ -126,7 +173,7 @@ export function MediaDetailHero({ media, userId }: MediaDetailHeroProps) {
           canContinue ? "common:watch.continue" : "common:watch.open",
         )}
       >
-        <span aria-hidden="true" className={styles.watchPlayIcon}>
+        <span className={styles.watchPlayIcon}>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
             <path d="M7 4.8v14.4L19 12 7 4.8Z" />
           </svg>
@@ -141,12 +188,29 @@ export function MediaDetailHero({ media, userId }: MediaDetailHeroProps) {
             </span>
           )}
         </span>
-        <span aria-hidden="true" className={styles.watchArrow}>
-          →
-        </span>
+        <span className={styles.watchArrow}>→</span>
       </Link>
     </Column>
   );
+}
+
+async function copyToClipboard(value: string) {
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(value);
+    return;
+  }
+
+  const input = document.createElement("textarea");
+  input.value = value;
+  input.setAttribute("readonly", "");
+  input.style.position = "fixed";
+  input.style.opacity = "0";
+  document.body.append(input);
+  input.select();
+  const copied = document.execCommand("copy");
+  input.remove();
+
+  if (!copied) throw new Error("The link could not be copied.");
 }
 
 export type MediaDetailHeroSkeletonProps = {
@@ -177,7 +241,6 @@ export function MediaDetailHeroSkeleton({
           />
         </div>
       </div>
-      <span className={clsx(styles.menuSkeleton, skeletonAnimation)} />
     </>
   );
 }

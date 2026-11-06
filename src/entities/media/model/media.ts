@@ -25,7 +25,7 @@ export type Media = {
   /** Whether the provider marks the media as adult content. */
   isAdult: boolean;
   /** Whether the authenticated user has marked this media as a favorite. */
-  isFavorite?: boolean;
+  isFavorite: boolean;
   /** Current user's personal score, or null if this media is not in their list. */
   score: null | number;
   /** AniList format such as TV, MOVIE, or OVA. */

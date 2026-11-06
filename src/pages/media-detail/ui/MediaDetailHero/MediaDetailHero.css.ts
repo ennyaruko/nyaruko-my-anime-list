@@ -165,6 +165,25 @@ export const hero = style({
   },
 });
 
+export const actions = style({
+  top: 0,
+  zIndex: 2,
+  right: "-36px",
+  display: "flex",
+  position: "absolute",
+  flexDirection: "column",
+  gap: primitives.spacing.xxxs,
+});
+
+export const actionIcon = style({
+  width: "16px",
+  height: "16px",
+});
+
+export const actionIconFavorite = style({
+  color: colors.text.negative,
+});
+
 export const previewSkeleton = style({
   width: "100%",
   display: "flex",
@@ -272,10 +291,4 @@ export const ratingValue = style({
 export const progress = style({
   maxWidth: "100%",
   background: "transparent",
-});
-
-export const menuSkeleton = style({
-  width: "200px",
-  height: "36px",
-  marginTop: primitives.spacing.xxs,
 });

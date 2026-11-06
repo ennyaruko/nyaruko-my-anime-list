@@ -86,6 +86,7 @@ function mapAniListSearchMedia(media: SearchMediaItem): Media {
     status: null,
     progress: null,
     listEntryId: null,
+    isFavorite: false,
     format: media.format ?? null,
     source: media.source ?? null,
     isAdult: media.isAdult ?? false,

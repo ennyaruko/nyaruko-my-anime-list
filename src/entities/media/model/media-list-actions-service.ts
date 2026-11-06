@@ -4,6 +4,8 @@ import type { MyListStatus } from "./my-list";
 
 /** Application port for changing the authenticated user's media-list entries. */
 export type MediaListActionsService = {
+  /** Toggles the current user's favorite state for a media item. */
+  toggleFavorite(accessToken: string, mediaId: number): Promise<void>;
   /** Removes a media-list entry by its provider-specific entry ID. */
   removeEntry(accessToken: string, listEntryId: number): Promise<void>;
   /** Updates the current user's score for a media item. */

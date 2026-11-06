@@ -15,6 +15,7 @@ query MediaDetail($id: Int!) {
     bannerImage
     averageScore
     popularity
+    isFavourite
     isAdult
     format
     source

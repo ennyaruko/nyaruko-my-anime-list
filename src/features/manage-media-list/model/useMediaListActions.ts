@@ -12,6 +12,7 @@ import { useAppService, queryCacheConfig } from "@/shared/lib";
 type MediaListAction =
   | { type: "score"; score: number; mediaId: number }
   | { type: "remove"; mediaId: number; listEntryId: number }
+  | { mediaId: number; type: "favorite"; isFavorite: boolean }
   | { type: "status"; mediaId: number; status: MediaListStatus }
   | {
       mediaId: number;
@@ -45,10 +46,17 @@ export function useMediaListActions(userId: string | undefined) {
   const service = useAppService(mediaListActionsServiceToken);
   const canManageList = Boolean(accessToken && userId);
 
-  const mutation = useMutation({
+  const mutation = useMutation<void, Error, MediaListAction>({
     meta: { errorNotifier: () => null },
-    onError: () => {
-      showNotification(t("common:notify.mediaListActionFailed"), "error");
+    onError: (_error, action) => {
+      showNotification(
+        t(
+          action.type === "favorite"
+            ? "common:notify.mediaFavoriteActionFailed"
+            : "common:notify.mediaListActionFailed",
+        ),
+        "error",
+      );
     },
     mutationFn: (action: MediaListAction) => {
       if (!accessToken) {
@@ -69,21 +77,28 @@ export function useMediaListActions(userId: string | undefined) {
           );
         case "score":
           return service.updateScore(accessToken, action.mediaId, action.score);
+        case "favorite":
+          return service.toggleFavorite(accessToken, action.mediaId);
       }
     },
     onSuccess: async (_, action) => {
+      if (action.type === "favorite") {
+        showNotification(
+          t(
+            action.isFavorite
+              ? "common:notify.mediaFavoriteAdded"
+              : "common:notify.mediaFavoriteRemoved",
+          ),
+          "success",
+        );
+      }
+
       if (userId) {
         await queryClient.invalidateQueries({
           queryKey: [...queryCacheConfig.families.userList.keyPrefix, userId],
         });
 
-        await Promise.all([
-          queryClient.invalidateQueries({
-            queryKey: queryCacheConfig.families.mediaDetail.key(
-              userId,
-              action.mediaId,
-            ),
-          }),
+        const invalidations = [
           queryClient.invalidateQueries({
             queryKey: [
               ...queryCacheConfig.families.mediaRecommendations.keyPrefix,
@@ -96,7 +111,18 @@ export function useMediaListActions(userId: string | undefined) {
               userId,
             ],
           }),
-        ]);
+        ];
+
+        invalidations.push(
+          queryClient.invalidateQueries({
+            queryKey: queryCacheConfig.families.mediaDetail.key(
+              userId,
+              action.mediaId,
+            ),
+          }),
+        );
+
+        await Promise.all(invalidations);
       }
 
       if (action.type === "status") {
@@ -146,10 +172,17 @@ export function useMediaListActions(userId: string | undefined) {
     }
   };
 
+  const toggleFavorite = (mediaId: number, isFavorite: boolean) => {
+    if (canManageList) {
+      mutation.mutate({ mediaId, isFavorite, type: "favorite" });
+    }
+  };
+
   return {
     updateScore,
     changeStatus,
     canManageList,
+    toggleFavorite,
     removeFromList,
     updateProgress,
     isPending: mutation.isPending,

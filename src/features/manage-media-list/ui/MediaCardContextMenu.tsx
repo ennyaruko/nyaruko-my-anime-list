@@ -1,6 +1,12 @@
-import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import type { SVGProps, ReactNode, ComponentType } from "react";
+import { useRef, useState, cloneElement, isValidElement } from "react";
+import type {
+  SVGProps,
+  ReactNode,
+  ReactElement,
+  ComponentType,
+  MouseEventHandler,
+} from "react";
 
 import type { Media, MediaListStatus } from "@/entities/media";
 import {
@@ -94,6 +100,7 @@ export type MediaListContextMenuProps = {
   media: Media;
   children: ReactNode;
   userId: string | undefined;
+  triggerMode?: "click" | "context";
 };
 
 export type MediaCardContextMenuProps = {
@@ -107,6 +114,7 @@ export function MediaListContextMenu({
   media,
   userId,
   children,
+  triggerMode = "context",
 }: MediaListContextMenuProps) {
   const { t } = useTranslation(["common"]);
   const [showMobileInfo, setShowMobileInfo] = useState(false);
@@ -122,6 +130,37 @@ export function MediaListContextMenu({
     }));
   const hasListEntry = media.listEntryId !== null;
   const canRemove = hasListEntry && actions.canManageList;
+  const trigger =
+    triggerMode === "click" && isValidElement(children) ? (
+      cloneElement(
+        children as ReactElement<{
+          onClick?: MouseEventHandler<HTMLButtonElement>;
+        }>,
+        {
+          onClick: (event) => {
+            const childOnClick = (
+              children as ReactElement<{
+                onClick?: MouseEventHandler<HTMLButtonElement>;
+              }>
+            ).props.onClick;
+            childOnClick?.(event);
+
+            if (event.defaultPrevented) return;
+
+            event.currentTarget.dispatchEvent(
+              new MouseEvent("contextmenu", {
+                bubbles: true,
+                cancelable: true,
+                clientX: event.clientX,
+                clientY: event.clientY,
+              }),
+            );
+          },
+        },
+      )
+    ) : (
+      <div className={styles.trigger}>{children}</div>
+    );
 
   const changeStatus = (status: MediaListStatus) => {
     actions.changeStatus(media.id, status);
@@ -139,9 +178,7 @@ export function MediaListContextMenu({
         if (!open) setShowMobileInfo(false);
       }}
     >
-      <ContextMenuTrigger asChild>
-        <div className={styles.trigger}>{children}</div>
-      </ContextMenuTrigger>
+      <ContextMenuTrigger asChild>{trigger}</ContextMenuTrigger>
       <ContextMenuContent
         ref={contentRef}
         collisionPadding={8}

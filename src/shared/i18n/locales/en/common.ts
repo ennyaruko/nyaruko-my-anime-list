@@ -124,16 +124,6 @@ export default {
     averageScore: "By Average Score",
     completedDate: "By Completion Date",
   },
-  notify: {
-    mediaScoreChanged: "Score saved",
-    saveFilters: "The filters are saved",
-    mediaProgressChanged: "Viewing progress saved",
-    mediaStatusChanged: "Status changed to {{status}}",
-    mediaRemovedFromList: "Entry removed from your list",
-    mediaListActionFailed: "Could not update your list. Please try again.",
-    adultContentEnableFailed:
-      "Could not enable adult content in your account settings. Please try again.",
-  },
   profileMenu: {
     logout: "Log out",
     session: "Session",
@@ -151,6 +141,23 @@ export default {
     adultContentConfirmCancel: "Cancel",
     adultContentConfirmTitle: "Enable adult content?",
     adultContentConfirmDescription: "If you press “OK” there’s no God anymore.",
+  },
+  notify: {
+    mediaScoreChanged: "Score saved",
+    saveFilters: "The filters are saved",
+    mediaLinkCopied: "Anime link copied",
+    mediaProgressChanged: "Viewing progress saved",
+    mediaStatusChanged: "Status changed to {{status}}",
+    mediaRemovedFromList: "Entry removed from your list",
+    mediaLinkCopyFailed: "Could not copy the anime link",
+    mediaListActionFailed: "Could not update your list. Please try again.",
+    mediaFavoriteAdded: "Anime added to favorites. Please wait for the update.",
+    mediaFavoriteRemoved:
+      "Anime removed from favorites. Please wait for the update.",
+    mediaFavoriteActionFailed:
+      "Could not update the favorite status. Please try again.",
+    adultContentEnableFailed:
+      "Could not enable adult content in your account settings. Please try again.",
   },
   ui: {
     watchStatus: {
@@ -222,6 +229,7 @@ export default {
     reviews: "Reviews",
     info: "Information",
     relations: "Related",
+    copyLink: "Copy link",
     episodes: "Episodes:",
     expandReview: "Expand",
     noImagelabel: "No image",
@@ -234,8 +242,11 @@ export default {
     releaseDate: "Release date:",
     allRecommendations: "See all",
     zoomOutScreenshot: "Zoom out",
+    addFavorite: "Add to favorites",
     nextScreenshot: "Next screenshot",
     closeScreenshots: "Close screenshots",
+    openListActions: "Change anime status",
+    removeFavorite: "Remove from favorites",
     previousScreenshot: "Previous screenshot",
     releaseRange: "from {{start}} to {{end}}",
     emptyDescription: "No description available",

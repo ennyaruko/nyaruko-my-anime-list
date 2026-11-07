@@ -38,7 +38,13 @@ export const resultsContainer = style({
 });
 
 export const toolbar = style({
-  flexWrap: "nowrap",
+  width: "100%",
+  "@media": {
+    "(min-width: 1024px)": {
+      maxWidth: "440px",
+      marginInlineStart: "auto",
+    },
+  },
 });
 
 export const randomToggle = style({

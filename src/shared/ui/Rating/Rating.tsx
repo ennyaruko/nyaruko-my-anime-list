@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type {
   MouseEvent,
   PointerEvent,
@@ -25,6 +25,7 @@ export type RatingProps = Omit<
   size?: "s" | "m";
   defaultValue?: number;
   onChange?: (value: number) => void;
+  onValuePreview?: (value: null | number) => void;
 };
 
 function normalizeMax(max: number): number {
@@ -39,16 +40,12 @@ function normalizeValue(value: number, max: number): number {
   return Math.round(Math.max(0, Math.min(value, max)));
 }
 
-type RatingPointerEvent = {
-  clientX: number;
-  currentTarget: HTMLButtonElement;
-};
-
 export function Rating({
   value,
   onChange,
   className,
   size = "m",
+  onValuePreview,
   onPointerLeave,
   defaultValue = 0,
   max = DEFAULT_RATING_MAX,
@@ -61,6 +58,11 @@ export function Rating({
     normalizeValue(defaultValue, ratingMax),
   );
   const [hoveredValue, setHoveredValue] = useState<null | number>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const activePointerId = useRef<null | number>(null);
+  const pointerStartX = useRef(0);
+  const isDragging = useRef(false);
+  const suppressClick = useRef(false);
 
   const selectedValue = normalizeValue(value ?? internalValue, ratingMax);
   const displayValue = hoveredValue ?? selectedValue;
@@ -75,12 +77,39 @@ export function Rating({
     onChange?.(normalizedValue);
   };
 
-  const getValueAtPointer = (event: RatingPointerEvent, index: number) => {
-    const { left, width } = event.currentTarget.getBoundingClientRect();
+  const getValueAtPointer = (clientX: number) => {
+    const root = rootRef.current;
+    if (!root) return selectedValue;
 
-    if (width <= 0) return index * VALUE_PER_STAR;
+    const stars = Array.from(
+      root.querySelectorAll<HTMLButtonElement>("button"),
+    );
+    const nearestStar = stars.reduce(
+      (nearest, star) => {
+        const rect = star.getBoundingClientRect();
+        const distance =
+          clientX < rect.left
+            ? rect.left - clientX
+            : clientX > rect.right
+              ? clientX - rect.right
+              : 0;
 
-    const position = Math.max(0, Math.min(1, (event.clientX - left) / width));
+        return distance < nearest.distance ? { rect, star, distance } : nearest;
+      },
+      {
+        star: stars[0],
+        distance: Number.POSITIVE_INFINITY,
+        rect: stars[0]?.getBoundingClientRect(),
+      },
+    );
+
+    if (!nearestStar.star || !nearestStar.rect) return 0;
+
+    const index = stars.indexOf(nearestStar.star);
+    const position = Math.max(
+      0,
+      Math.min(1, (clientX - nearestStar.rect.left) / nearestStar.rect.width),
+    );
 
     return normalizeValue(
       Math.min(ratingMax, index * VALUE_PER_STAR + position * VALUE_PER_STAR),
@@ -88,17 +117,71 @@ export function Rating({
     );
   };
 
-  const handlePointerMove = (
-    event: PointerEvent<HTMLButtonElement>,
-    index: number,
-  ) => {
-    if (event.pointerType !== "mouse") return;
-
-    const nextValue = getValueAtPointer(event, index);
-
+  const updateHoveredValue = (clientX: number) => {
+    const nextValue = getValueAtPointer(clientX);
     setHoveredValue((currentValue) =>
       currentValue === nextValue ? currentValue : nextValue,
     );
+    onValuePreview?.(nextValue);
+    return nextValue;
+  };
+
+  const handlePointerDown = (event: PointerEvent<HTMLDivElement>) => {
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+
+    activePointerId.current = event.pointerId;
+    pointerStartX.current = event.clientX;
+    isDragging.current = false;
+    updateHoveredValue(event.clientX);
+    event.currentTarget.setPointerCapture(event.pointerId);
+  };
+
+  const handlePointerMove = (event: PointerEvent<HTMLDivElement>) => {
+    if (activePointerId.current === event.pointerId) {
+      if (Math.abs(event.clientX - pointerStartX.current) > 3) {
+        isDragging.current = true;
+      }
+
+      if (isDragging.current) updateHoveredValue(event.clientX);
+      return;
+    }
+
+    if (event.pointerType === "mouse") updateHoveredValue(event.clientX);
+  };
+
+  const handlePointerUp = (event: PointerEvent<HTMLDivElement>) => {
+    if (activePointerId.current !== event.pointerId) return;
+
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const releasedInside =
+      event.clientX >= bounds.left &&
+      event.clientX <= bounds.right &&
+      event.clientY >= bounds.top &&
+      event.clientY <= bounds.bottom;
+
+    if (releasedInside) {
+      selectValue(updateHoveredValue(event.clientX));
+    } else {
+      setHoveredValue(null);
+      onValuePreview?.(null);
+    }
+
+    suppressClick.current = true;
+    window.setTimeout(() => {
+      suppressClick.current = false;
+    }, 0);
+
+    activePointerId.current = null;
+    isDragging.current = false;
+  };
+
+  const handlePointerCancel = (event: PointerEvent<HTMLDivElement>) => {
+    if (activePointerId.current !== event.pointerId) return;
+
+    activePointerId.current = null;
+    isDragging.current = false;
+    setHoveredValue(null);
+    onValuePreview?.(null);
   };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
@@ -128,15 +211,34 @@ export function Rating({
   };
 
   const handleClick = (event: MouseEvent<HTMLButtonElement>, index: number) => {
-    selectValue(getValueAtPointer(event, index));
+    if (suppressClick.current) {
+      event.preventDefault();
+      event.stopPropagation();
+      suppressClick.current = false;
+      return;
+    }
+
+    selectValue(
+      event.detail === 0
+        ? Math.min((index + 1) * VALUE_PER_STAR, ratingMax)
+        : getValueAtPointer(event.clientX),
+    );
   };
 
   return (
     <div
       {...props}
+      ref={rootRef}
+      onPointerUp={handlePointerUp}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerCancel={handlePointerCancel}
       className={clsx(styles.root, styles.size[size], className)}
       onPointerLeave={(event) => {
-        setHoveredValue(null);
+        if (activePointerId.current === null) {
+          setHoveredValue(null);
+          onValuePreview?.(null);
+        }
         onPointerLeave?.(event);
       }}
     >
@@ -153,7 +255,6 @@ export function Rating({
             onKeyDown={handleKeyDown}
             className={styles.starFrame}
             onClick={(event) => handleClick(event, index)}
-            onPointerMove={(event) => handlePointerMove(event, index)}
           >
             <span className={styles.starHitArea} />
             <span className={styles.starVisual}>

@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { useSearchParams } from "react-router";
 
 import { useAdultContent } from "@/features/toggle-adult-content";
 import { MediaCardContextMenu } from "@/features/manage-media-list";
@@ -62,9 +63,21 @@ function ListRecommendationsContent({
 }: ListRecommendationsContentProps) {
   const { t } = useTranslation(["common"]);
   const { mode: contentMode } = useAdultContent();
-  const [sort, setSort] = useState<MediaRecommendationSort>(DEFAULT_SORT);
-  const [random, setRandom] = useState(false);
-  const [randomSeed, setRandomSeed] = useState(() => Math.random());
+  const [searchParams, setSearchParams] = useSearchParams();
+  const sortParameter = searchParams.get("sort");
+  const sort: MediaRecommendationSort = RECOMMENDATION_SORTS.includes(
+    sortParameter as MediaRecommendationSort,
+  )
+    ? (sortParameter as MediaRecommendationSort)
+    : DEFAULT_SORT;
+  const randomSeedParameter = searchParams.get("randomSeed");
+  const parsedRandomSeed = randomSeedParameter
+    ? Number(randomSeedParameter)
+    : null;
+  const hasRandomSeed =
+    parsedRandomSeed !== null && Number.isSafeInteger(parsedRandomSeed);
+  const random = searchParams.get("random") === "1" && hasRandomSeed;
+  const randomSeed = random ? (parsedRandomSeed as number) : 0;
   const { items, listQuery, sourceAnime, recommendationsQuery } =
     useListRecommendations({
       sort,
@@ -75,11 +88,34 @@ function ListRecommendationsContent({
     });
   const { isFetching, hasNextPage, fetchNextPage, isFetchingNextPage } =
     recommendationsQuery;
-  const handleSortChange = (value: string) =>
-    setSort(value as MediaRecommendationSort);
+  const handleSortChange = (value: string) => {
+    setSearchParams(
+      (currentParams) => {
+        const nextParams = new URLSearchParams(currentParams);
+        nextParams.set("sort", value);
+        return nextParams;
+      },
+      { replace: true, preventScrollReset: true },
+    );
+  };
   const handleRandomChange = (checked: boolean) => {
-    setRandom(checked);
-    if (checked) setRandomSeed(Math.random());
+    setSearchParams(
+      (currentParams) => {
+        const nextParams = new URLSearchParams(currentParams);
+        if (checked) {
+          nextParams.set("random", "1");
+          nextParams.set(
+            "randomSeed",
+            String(Math.floor(Math.random() * 0x1_0000_0000)),
+          );
+        } else {
+          nextParams.delete("random");
+          nextParams.delete("randomSeed");
+        }
+        return nextParams;
+      },
+      { replace: true, preventScrollReset: true },
+    );
   };
 
   useEffect(() => {
@@ -101,15 +137,6 @@ function ListRecommendationsContent({
     </div>
   ) : null;
 
-  if (isLoading) {
-    return (
-      <GridList
-        data={SKELETON_ITEMS}
-        renderItem={() => <MediaCardSkeleton size="l" />}
-      />
-    );
-  }
-
   return (
     <Column gap="m" className={styles.resultsContainer}>
       <Row
@@ -129,13 +156,19 @@ function ListRecommendationsContent({
           }))}
         />
         <LabeledCheckbox
+          size="s"
           checked={random}
           className={styles.randomToggle}
           label={t("common:listRecommendations.random")}
           onCheckedChange={(checked) => handleRandomChange(checked === true)}
         />
       </Row>
-      {showNoCompletedAnime ? (
+      {isLoading ? (
+        <GridList
+          data={SKELETON_ITEMS}
+          renderItem={() => <MediaCardSkeleton size="l" />}
+        />
+      ) : showNoCompletedAnime ? (
         <Row alignItem="center" justifyContent="center">
           <BlockStatusBase
             icon={<NoContentIcon />}

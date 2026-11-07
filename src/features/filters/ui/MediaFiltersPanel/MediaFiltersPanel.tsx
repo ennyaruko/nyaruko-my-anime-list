@@ -50,6 +50,7 @@ export type MediaFiltersPanelProps = {
   optionsLoading?: boolean;
   filters: MediaFiltersState;
   hasUnsavedChanges: boolean;
+  showFavoriteFilter?: boolean;
   contentMode?: MediaContentMode;
   savedFilters: MediaFiltersState;
   sortOptions: readonly MediaSortKey[];
@@ -143,6 +144,7 @@ export function MediaFiltersPanel({
   contentMode = "safe",
   open: controlledOpen,
   optionsLoading = false,
+  showFavoriteFilter = false,
 }: MediaFiltersPanelProps) {
   const { t } = useTranslation(["common"]);
   const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
@@ -251,6 +253,19 @@ export function MediaFiltersPanel({
         <ScrollArea>
           <Container>
             <Column gap="m" className={styles.drawerContent}>
+              {showFavoriteFilter && (
+                <FilterSection title={t("common:ui.filters.favorites")}>
+                  <LabeledCheckbox
+                    size="l"
+                    checked={filters.favoriteOnly}
+                    label={t("common:ui.filters.onlyFavorites")}
+                    onCheckedChange={(checked) =>
+                      onChange({ favoriteOnly: checked === true })
+                    }
+                  />
+                </FilterSection>
+              )}
+
               <FilterSection title={t("common:list.genres")}>
                 <MultiSelect
                   cleanable

@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 import type { CSSProperties } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 import clsx from "clsx";
@@ -49,6 +50,7 @@ export type MediaDetailHeroProps = {
 
 export function MediaDetailHero({ media, userId }: MediaDetailHeroProps) {
   const { t } = useTranslation(["common"]);
+  const [previewScore, setPreviewScore] = useState<null | number>(null);
 
   const actions = useMediaListActions(userId);
   const coverUrl = media.coverImage?.large ?? media.coverImage?.preview;
@@ -81,6 +83,10 @@ export function MediaDetailHero({ media, userId }: MediaDetailHeroProps) {
   const canContinue =
     (media.status === "CURRENT" || media.status === "REPEATING") &&
     (media.progress ?? 0) > 0;
+
+  useEffect(() => {
+    setPreviewScore(null);
+  }, [media.id, media.score]);
 
   return (
     <Column gap="xs">
@@ -136,12 +142,13 @@ export function MediaDetailHero({ media, userId }: MediaDetailHeroProps) {
                     userId={userId}
                     triggerMode="click"
                   >
-                    <Button round>
+                    <Button round className={styles.actionBtn}>
                       <ListIcon className={styles.actionIcon} />
                     </Button>
                   </MediaListContextMenu>
                   <Button
                     round
+                    className={styles.actionBtn}
                     onClick={handleFavoriteToggle}
                     disabled={!actions.canManageList || actions.isPending}
                   >
@@ -156,7 +163,11 @@ export function MediaDetailHero({ media, userId }: MediaDetailHeroProps) {
                       <HeartIcon className={styles.actionIcon} />
                     )}
                   </Button>
-                  <Button round onClick={handleCopyLink}>
+                  <Button
+                    round
+                    onClick={handleCopyLink}
+                    className={styles.actionBtn}
+                  >
                     <CopyIcon className={styles.actionIcon} />
                   </Button>
                 </div>
@@ -177,24 +188,24 @@ export function MediaDetailHero({ media, userId }: MediaDetailHeroProps) {
                   size="s"
                   value={media.score ?? 0}
                   onChange={handleScoreChange}
+                  onValuePreview={setPreviewScore}
                   className={clsx(actions.isPending && styles.ratingDisabled)}
                 />
                 <div className={styles.ratingValue}>
-                  {(media.score ?? 0).toFixed(1)}
+                  {(previewScore ?? media.score ?? 0).toFixed(1)}
                 </div>
               </Row>
-              {(media.status === "CURRENT" || media.status === "REPEATING") &&
-                media.progress !== null && (
-                  <Progress
-                    size="l"
-                    value={media.progress}
-                    max={media.episodes ?? 12}
-                    className={styles.progress}
-                    disabled={actions.isPending}
-                    editable={actions.canManageList}
-                    onValueChange={handleProgressChange}
-                  />
-                )}
+              {media.progress !== null && (
+                <Progress
+                  size="l"
+                  value={media.progress}
+                  max={media.episodes ?? 12}
+                  className={styles.progress}
+                  disabled={actions.isPending}
+                  editable={actions.canManageList}
+                  onValueChange={handleProgressChange}
+                />
+              )}
             </Row>
           </Row>
         </div>

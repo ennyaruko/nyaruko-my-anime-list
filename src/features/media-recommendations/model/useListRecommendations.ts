@@ -67,11 +67,13 @@ function sortCompletedAnime(entries: MyListEntry[]): MyListEntry[] {
   });
 }
 
-function shuffleEntries(entries: MyListEntry[]): MyListEntry[] {
+function shuffleEntries(entries: MyListEntry[], seed: number): MyListEntry[] {
   const shuffledEntries = [...entries];
+  let randomState = seed >>> 0;
 
   for (let index = shuffledEntries.length - 1; index > 0; index -= 1) {
-    const swapIndex = Math.floor(Math.random() * (index + 1));
+    randomState = (Math.imul(randomState, 1664525) + 1013904223) >>> 0;
+    const swapIndex = Math.floor((randomState / 0x1_0000_0000) * (index + 1));
     [shuffledEntries[index], shuffledEntries[swapIndex]] = [
       shuffledEntries[swapIndex],
       shuffledEntries[index],
@@ -116,7 +118,7 @@ export function useListRecommendations({
     const visibleEntries = filterMediaForContentMode(entries, contentMode);
 
     return random
-      ? shuffleEntries(getCompletedAnime(visibleEntries))
+      ? shuffleEntries(getCompletedAnime(visibleEntries), randomSeed)
       : sortCompletedAnime(visibleEntries);
   }, [contentMode, listQuery.data, random, randomSeed]);
 

@@ -266,7 +266,7 @@ export const queryCacheConfig = {
         [userId, parameters] as const,
       {
         userIdIndex: 1,
-        staleTimeMs: 24 * HOUR_MS,
+        staleTimeMs: 12 * HOUR_MS,
         persistForMs: 90 * DAY_MS,
         keyConstraints: [{ index: 1, type: "non-empty-string" }],
       },

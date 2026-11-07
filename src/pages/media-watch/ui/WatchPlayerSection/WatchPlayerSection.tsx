@@ -4,7 +4,14 @@ import clsx from "clsx";
 
 import { ContentLanguageControls } from "@/features/translate-content";
 
-import { Button, Heading, Combobox, EmbedFrame, ScrollArea } from "@/shared/ui";
+import {
+  Row,
+  Heading,
+  Spinner,
+  Combobox,
+  EmbedFrame,
+  ScrollArea,
+} from "@/shared/ui";
 
 import type { WatchPlaybackModel } from "../../model/useWatchPlayback";
 
@@ -22,7 +29,6 @@ export function WatchPlayerSection({
     src,
     embed,
     track,
-    total,
     player,
     saving,
     catalog,
@@ -54,7 +60,14 @@ export function WatchPlayerSection({
         {t("common:watch.players")}
       </Heading>
       {loading ? (
-        <p role="status">{t("common:loading")}</p>
+        <Row
+          wide
+          role="status"
+          justifyContent="center"
+          aria-label={t("common:loading")}
+        >
+          <Spinner size={32} />
+        </Row>
       ) : (
         <>
           {primaryRu && player && track ? (
@@ -170,19 +183,6 @@ export function WatchPlayerSection({
                   : "common:watch.unavailable",
               )}
             </div>
-          )}
-          {canSelectEpisodes && (total === null || selectedEpisode < total) && (
-            <Button
-              variant="secondary"
-              onClick={() => void playback.selectEpisode(selectedEpisode + 1)}
-              disabled={
-                saving ||
-                !src ||
-                (primaryRu && !episodes.includes(selectedEpisode + 1))
-              }
-            >
-              {t("common:watch.nextEpisode")}
-            </Button>
           )}
         </>
       )}

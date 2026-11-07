@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 
 import { Dialog } from "radix-ui";
 
-import { Button } from "@/shared/ui";
+import { Row, Button, Column, ScrollArea } from "@/shared/ui";
 
 import { useDebugConsole } from "../model";
 
@@ -46,7 +46,7 @@ export function DebugConsoleDialog() {
           <Dialog.Description className={styles.count}>
             {t("common:debugConsole.description")}
           </Dialog.Description>
-          <div className={styles.actions}>
+          <Row wide gap="xxs" justifyContent="space-between">
             <Button
               variant="flat"
               onClick={handleCopy}
@@ -54,36 +54,48 @@ export function DebugConsoleDialog() {
             >
               {t("common:debugConsole.copy")}
             </Button>
-            <Button
-              variant="flat"
-              onClick={clearEntries}
-              disabled={!entries.length}
-            >
-              {t("common:debugConsole.clear")}
-            </Button>
-            <Dialog.Close asChild>
-              <Button>{t("common:debugConsole.close")}</Button>
-            </Dialog.Close>
-          </div>
-          <div className={styles.entries}>
+
+            <Row gap="xxs">
+              <Button
+                variant="flat"
+                onClick={clearEntries}
+                disabled={!entries.length}
+              >
+                {t("common:debugConsole.clear")}
+              </Button>
+              <Dialog.Close asChild>
+                <Button>{t("common:debugConsole.close")}</Button>
+              </Dialog.Close>
+            </Row>
+          </Row>
+          <ScrollArea
+            className={styles.entries}
+            viewportClassName={styles.entriesViewport}
+          >
             {entries.length ? (
-              entries
-                .slice()
-                .reverse()
-                .map(({ id, level, message, timestamp }) => (
-                  <div key={id} className={styles.entry}>
-                    <span className={styles.timestamp}>
-                      {formatTimestamp(timestamp)}
-                    </span>
-                    <pre className={`${styles.message} ${styles.level[level]}`}>
-                      {level.toUpperCase()} {message}
-                    </pre>
-                  </div>
-                ))
+              <Column gap="xxxs">
+                {entries
+                  .slice()
+                  .reverse()
+                  .map(({ id, level, message, timestamp }) => (
+                    <div key={id} className={styles.entry}>
+                      <span className={styles.timestamp}>
+                        {formatTimestamp(timestamp)}
+                      </span>
+                      <pre
+                        className={`${styles.message} ${styles.level[level]}`}
+                      >
+                        {level.toUpperCase()} {message}
+                      </pre>
+                    </div>
+                  ))}
+              </Column>
             ) : (
-              <p className={styles.empty}>{t("common:debugConsole.empty")}</p>
+              <Column tall alignItem="center" justifyContent="center">
+                <p className={styles.empty}>{t("common:debugConsole.empty")}</p>
+              </Column>
             )}
-          </div>
+          </ScrollArea>
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>

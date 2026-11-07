@@ -1,6 +1,11 @@
 import { style } from "@vanilla-extract/css";
 
-import { colors, primitives, typography } from "@/shared/styles";
+import {
+  colors,
+  primitives,
+  typography,
+  fixedToContainerLeft,
+} from "@/shared/styles";
 
 export const overlay = style({
   inset: 0,
@@ -15,7 +20,7 @@ export const content = style({
   outline: "none",
   position: "fixed",
   flexDirection: "column",
-  gap: primitives.spacing.xs,
+  gap: primitives.spacing.m,
   color: colors.text.primary,
   padding: primitives.spacing.xs,
   zIndex: primitives.zIndex.modal,
@@ -52,12 +57,6 @@ export const count = style({
   color: colors.text.tertiary,
 });
 
-export const actions = style({
-  display: "flex",
-  flexWrap: "wrap",
-  gap: primitives.spacing.xxs,
-});
-
 export const selected = style({
   display: "flex",
   flexDirection: "column",
@@ -76,12 +75,15 @@ export const list = style({
   minHeight: 0,
   display: "flex",
   flex: "1 1 auto",
-  overflowY: "auto",
+  borderRadius: primitives.radii.s,
+  background: colors.background.elevation1,
+});
+
+export const listViewport = style({
+  display: "flex",
   flexDirection: "column",
   gap: primitives.spacing.xxs,
   padding: primitives.spacing.xxs,
-  borderRadius: primitives.radii.s,
-  background: colors.background.elevation1,
 });
 
 export const item = style({
@@ -97,43 +99,17 @@ export const item = style({
   },
 });
 
-export const mediaLink = style({
+export const queueCard = style({
   minWidth: 0,
-  display: "flex",
   flex: "1 1 auto",
-  color: "inherit",
-  alignItems: "center",
-  textDecoration: "none",
-  gap: primitives.spacing.xxs,
-});
-
-export const cover = style({
-  width: "42px",
-  height: "60px",
-  flex: "0 0 42px",
-  overflow: "hidden",
-  position: "relative",
-  background: colors.background.neutral2,
-});
-
-export const image = style({
-  width: "100%",
-  height: "100%",
-  objectFit: "cover",
-});
-
-export const mediaTitle = style({
-  ...typography.body.s,
-  minWidth: 0,
-  overflow: "hidden",
-  WebkitLineClamp: 2,
-  display: "-webkit-box",
-  overflowWrap: "anywhere",
-  WebkitBoxOrient: "vertical",
 });
 
 export const removeButton = style({
   flex: "0 0 auto",
+  selectors: {
+    "&:focus-visible": { color: colors.text.negative },
+    "&:not(:disabled):hover": { color: colors.text.negative },
+  },
 });
 
 export const removeIcon = style({
@@ -141,22 +117,24 @@ export const removeIcon = style({
   height: "18px",
 });
 
-export const floatingButton = style({
-  padding: 0,
-  width: "44px",
-  height: "44px",
-  position: "fixed",
-  minHeight: "44px",
-  overflow: "visible",
-  borderRadius: "50%",
-  left: primitives.spacing.xs,
-  zIndex: primitives.zIndex.sticky,
-  boxShadow: primitives.shadow.small,
-  selectors: {
-    "&&": { overflow: "visible" },
+export const floatingButton = style([
+  fixedToContainerLeft,
+  {
+    padding: 0,
+    width: "44px",
+    height: "44px",
+    position: "fixed",
+    minHeight: "44px",
+    overflow: "visible",
+    borderRadius: "50%",
+    boxShadow: primitives.shadow.xs,
+    zIndex: primitives.zIndex.sticky,
+    selectors: {
+      "&&": { overflow: "visible" },
+    },
+    bottom: `calc(55px + env(safe-area-inset-bottom) + ${primitives.spacing.xs})`,
   },
-  bottom: `calc(55px + env(safe-area-inset-bottom) + ${primitives.spacing.xs})`,
-});
+]);
 
 export const floatingIcon = style({
   width: "22px",

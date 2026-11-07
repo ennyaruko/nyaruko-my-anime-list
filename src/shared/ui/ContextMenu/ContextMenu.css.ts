@@ -65,8 +65,8 @@ export const separator = style({
   width: "100%",
   height: "1px",
   flexShrink: 0,
+  backgroundColor: colors.border.normal,
   margin: `${primitives.spacing.tiny} 0`,
-  backgroundColor: colors.background.elevation1,
 });
 
 export const subTrigger = style({

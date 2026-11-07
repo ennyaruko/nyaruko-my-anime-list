@@ -68,6 +68,7 @@ export function MyListFilters({
     <MediaFiltersPanel
       filters={filters}
       options={options}
+      showFavoriteFilter
       onSave={saveFilters}
       onReset={resetFilters}
       onChange={updateFilters}

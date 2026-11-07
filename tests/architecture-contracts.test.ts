@@ -78,7 +78,7 @@ describe("application architecture contracts", () => {
       expect(accountPolicy.staleTimeMs).toBe(24 * 60 * 60 * 1_000);
       expect(shouldPersistQuery(accountKey, now - 1_000, now)).toBe(true);
       expect(userListPolicy.persistForMs).toBe(90 * 24 * 60 * 60 * 1_000);
-      expect(userListPolicy.staleTimeMs).toBe(24 * 60 * 60 * 1_000);
+      expect(userListPolicy.staleTimeMs).toBe(12 * 60 * 60 * 1_000);
       expect(
         resolveQueryCachePolicy(["reference", "arbitrary"]).persistForMs,
       ).toBeNull();

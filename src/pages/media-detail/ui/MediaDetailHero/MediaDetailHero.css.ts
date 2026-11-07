@@ -201,6 +201,10 @@ export const actions = style({
   gap: primitives.spacing.xxxs,
 });
 
+export const actionBtn = style({
+  boxShadow: primitives.shadow.xs,
+});
+
 export const actionIcon = style({
   width: "16px",
   height: "16px",

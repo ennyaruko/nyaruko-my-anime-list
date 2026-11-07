@@ -249,7 +249,9 @@ export default {
       exclude: "Exclude",
       include: "Include",
       resetAll: "Reset all",
+      favorites: "Favorites",
       ageRating: "Age rating",
+      onlyFavorites: "Favorites only",
       applied_one: "Applied ({{count}})",
       applied_other: "Applied ({{count}})",
       mediaStatus: {

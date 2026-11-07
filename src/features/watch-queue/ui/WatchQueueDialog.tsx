@@ -2,11 +2,10 @@ import { useTranslation } from "react-i18next";
 
 import { Dialog } from "radix-ui";
 
-import type { Media } from "@/entities/media";
-import { MediaDetailLink } from "@/entities/media";
+import { type Media, CompactCard } from "@/entities/media";
 
-import { Image, Button } from "@/shared/ui";
-import { DeleteIcon, PlanningIcon } from "@/shared/icons";
+import { Row, Button, Column, ScrollArea } from "@/shared/ui";
+import { DeleteIcon, RepeatIcon, PlanningIcon } from "@/shared/icons";
 
 import * as styles from "./WatchQueueDialog.css";
 
@@ -63,82 +62,57 @@ export function WatchQueueDialog({
               <span className={styles.selectedLabel}>
                 {t("common:watchQueue.selected")}
               </span>
-              <WatchQueueItem selected media={selectedMedia} />
+              <CompactCard media={selectedMedia} className={styles.queueCard} />
             </section>
           )}
-          <div className={styles.actions}>
+          <Row wide gap="xxs" justifyContent="space-between">
             <Button
               variant="secondary"
               disabled={!hasItems}
               onClick={onPickRandom}
-              leftIcon={<PlanningIcon />}
+              leftIcon={<RepeatIcon />}
             >
               {t("common:watchQueue.random")}
             </Button>
-            <Button variant="flat" onClick={onClear} disabled={!hasItems}>
-              {t("common:watchQueue.clear")}
-            </Button>
-            <Dialog.Close asChild>
-              <Button>{t("common:debugConsole.close")}</Button>
-            </Dialog.Close>
-          </div>
-          <div className={styles.list}>
+            <Row gap="xxs">
+              <Button variant="flat" onClick={onClear} disabled={!hasItems}>
+                {t("common:watchQueue.clear")}
+              </Button>
+              <Dialog.Close asChild>
+                <Button>{t("common:debugConsole.close")}</Button>
+              </Dialog.Close>
+            </Row>
+          </Row>
+          <ScrollArea
+            className={styles.list}
+            viewportClassName={styles.listViewport}
+          >
             {hasItems ? (
-              items.map((media) => (
-                <div
-                  key={media.id}
-                  className={styles.item}
-                  data-selected={selectedMedia?.id === media.id}
-                >
-                  <WatchQueueItem media={media} />
-                  <Button
-                    size="l"
-                    variant="flat"
-                    className={styles.removeButton}
-                    onClick={() => onRemove(media.id)}
-                    title={t("common:watchQueue.remove")}
-                    leftIcon={<DeleteIcon className={styles.removeIcon} />}
-                  />
-                </div>
-              ))
+              <Column gap="xxs">
+                {items.map((media) => (
+                  <div
+                    key={media.id}
+                    className={styles.item}
+                    data-selected={selectedMedia?.id === media.id}
+                  >
+                    <CompactCard media={media} className={styles.queueCard} />
+                    <Button
+                      size="l"
+                      variant="flat"
+                      className={styles.removeButton}
+                      onClick={() => onRemove(media.id)}
+                      title={t("common:watchQueue.remove")}
+                      leftIcon={<DeleteIcon className={styles.removeIcon} />}
+                    />
+                  </div>
+                ))}
+              </Column>
             ) : (
               <p className={styles.empty}>{t("common:watchQueue.empty")}</p>
             )}
-          </div>
+          </ScrollArea>
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
-  );
-}
-
-type WatchQueueItemProps = {
-  media: Media;
-  selected?: boolean;
-};
-
-function WatchQueueItem({ media, selected = false }: WatchQueueItemProps) {
-  const { t } = useTranslation(["common"]);
-  const coverUrl = media.coverImage?.large ?? media.coverImage?.preview;
-
-  return (
-    <MediaDetailLink
-      media={media}
-      className={styles.mediaLink}
-      title={selected ? t("common:watchQueue.openSelectedAnime") : undefined}
-    >
-      <div className={styles.cover}>
-        <Image
-          loading="lazy"
-          imageClassName={styles.image}
-          alt={coverUrl ? media.title : ""}
-          image={{
-            url:
-              coverUrl ??
-              `${import.meta.env.BASE_URL}images/media-no-image.png`,
-          }}
-        />
-      </div>
-      <span className={styles.mediaTitle}>{media.title}</span>
-    </MediaDetailLink>
   );
 }

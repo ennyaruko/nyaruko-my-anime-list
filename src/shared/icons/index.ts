@@ -35,5 +35,4 @@ export { ReactComponent as HeartFilledIcon } from "./heart-filled.svg";
 export { ReactComponent as StarDuotoneIcon } from "./star-duotone.svg";
 export { ReactComponent as ExternalLinkIcon } from "./external-link.svg";
 export { ReactComponent as FilterCheckedIcon } from "./filter-checked.svg";
-
 export { ReactComponent as AdultContentIcon } from "./adult-content-hot.svg";

@@ -75,7 +75,9 @@ export function CompactCard({
       <div className={styles.content}>
         <div className={styles.titleBlock}>
           <div className={styles.header}>
-            <span className={styles.relationName}>{relationLabel}</span>
+            {relationLabel && (
+              <span className={styles.relationName}>{relationLabel}</span>
+            )}
             {media.averageScore !== null && (
               <Score size="s" shadow={false} value={media.averageScore / 10} />
             )}

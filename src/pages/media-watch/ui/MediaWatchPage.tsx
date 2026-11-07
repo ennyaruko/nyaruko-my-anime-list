@@ -14,6 +14,7 @@ import {
   Button,
   Column,
   Header,
+  Spinner,
   BackLink,
   Container,
   BlockStatusNotFound,
@@ -77,7 +78,14 @@ export function MediaWatchPage({ userId, mediaId }: MediaWatchPageProps) {
             </Button>
           </div>
         ) : (
-          <p role="status">{t("common:loading")}</p>
+          <Row
+            wide
+            role="status"
+            justifyContent="center"
+            aria-label={t("common:loading")}
+          >
+            <Spinner size={32} />
+          </Row>
         )}
       </Column>
     </Container>

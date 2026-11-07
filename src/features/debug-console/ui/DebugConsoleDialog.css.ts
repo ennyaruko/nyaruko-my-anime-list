@@ -15,7 +15,7 @@ export const content = style({
   outline: "none",
   position: "fixed",
   flexDirection: "column",
-  gap: primitives.spacing.xs,
+  gap: primitives.spacing.m,
   color: colors.text.primary,
   padding: primitives.spacing.xs,
   zIndex: primitives.zIndex.modal,
@@ -52,22 +52,16 @@ export const count = style({
   color: colors.text.tertiary,
 });
 
-export const actions = style({
-  display: "flex",
-  flexWrap: "wrap",
-  gap: primitives.spacing.xxs,
-});
-
 export const entries = style({
   minHeight: 0,
   display: "flex",
   flex: "1 1 auto",
-  overflowY: "auto",
-  flexDirection: "column",
-  gap: primitives.spacing.xxxs,
-  padding: primitives.spacing.xxs,
   borderRadius: primitives.radii.s,
   background: colors.background.elevation1,
+});
+
+export const entriesViewport = style({
+  padding: primitives.spacing.xxs,
 });
 
 export const entry = style({

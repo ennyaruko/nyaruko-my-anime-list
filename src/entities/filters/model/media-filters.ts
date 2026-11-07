@@ -50,6 +50,8 @@ export type MediaFiltersState = {
   genres: string[];
   /** Selected ordering. */
   sort: MediaSortKey;
+  /** Show only entries marked as favorites. */
+  favoriteOnly: boolean;
   /** Selected AniList formats. */
   formats: MediaFormatFilter[];
   /** Selected source materials. */

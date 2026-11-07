@@ -50,6 +50,7 @@ export function filterMyListEntries(
     (entry) =>
       entry.status === status &&
       isMediaVisibleInContentMode(entry, contentMode) &&
+      (!filters.favoriteOnly || entry.isFavorite) &&
       matchesAnySelection(entry.genres, filters.genres) &&
       matchesAnySelection(entry.tags, filters.tags) &&
       matchesYearRange(entry.startDate?.year ?? null, filters.yearRange) &&

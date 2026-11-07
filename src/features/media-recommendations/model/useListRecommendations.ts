@@ -33,14 +33,18 @@ function compareDescending(
   return second - first;
 }
 
-function sortCompletedAnime(entries: MyListEntry[]): MyListEntry[] {
-  const completedEntries = [
+function getCompletedAnime(entries: MyListEntry[]): MyListEntry[] {
+  return [
     ...new Map(
       entries
         .filter((entry) => entry.status === "COMPLETED")
         .map((entry) => [entry.id, entry] as const),
     ).values(),
   ];
+}
+
+function sortCompletedAnime(entries: MyListEntry[]): MyListEntry[] {
+  const completedEntries = getCompletedAnime(entries);
 
   return completedEntries.sort((first, second) => {
     const favorite =
@@ -63,7 +67,23 @@ function sortCompletedAnime(entries: MyListEntry[]): MyListEntry[] {
   });
 }
 
+function shuffleEntries(entries: MyListEntry[]): MyListEntry[] {
+  const shuffledEntries = [...entries];
+
+  for (let index = shuffledEntries.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(Math.random() * (index + 1));
+    [shuffledEntries[index], shuffledEntries[swapIndex]] = [
+      shuffledEntries[swapIndex],
+      shuffledEntries[index],
+    ];
+  }
+
+  return shuffledEntries;
+}
+
 type UseListRecommendationsParams = {
+  random: boolean;
+  randomSeed: number;
   contentMode: MediaContentMode;
   sort: MediaRecommendationSort;
   account: AccountState["account"];
@@ -71,7 +91,9 @@ type UseListRecommendationsParams = {
 
 export function useListRecommendations({
   sort,
+  random,
   account,
+  randomSeed,
   contentMode,
 }: UseListRecommendationsParams) {
   const { accessToken } = useAuth();
@@ -91,8 +113,12 @@ export function useListRecommendations({
 
   const sourceAnime = useMemo(() => {
     const entries = listQuery.data?.flatMap(({ list }) => list) ?? [];
-    return sortCompletedAnime(filterMediaForContentMode(entries, contentMode));
-  }, [contentMode, listQuery.data]);
+    const visibleEntries = filterMediaForContentMode(entries, contentMode);
+
+    return random
+      ? shuffleEntries(getCompletedAnime(visibleEntries))
+      : sortCompletedAnime(visibleEntries);
+  }, [contentMode, listQuery.data, random, randomSeed]);
 
   const recommendationsFamily = queryCacheConfig.families.listRecommendations;
   const recommendationsQuery = useInfiniteQuery<
@@ -106,7 +132,6 @@ export function useListRecommendations({
     initialPageParam: [],
     gcTime: recommendationsFamily.gcTimeMs,
     staleTime: recommendationsFamily.staleTimeMs,
-    queryKey: recommendationsFamily.key(userId, sort, contentMode),
     enabled: Boolean(
       accessToken &&
       userId &&
@@ -114,6 +139,9 @@ export function useListRecommendations({
       !listQuery.isFetching &&
       sourceAnime.length > 0,
     ),
+    queryKey: random
+      ? [...recommendationsFamily.key(userId, sort, contentMode), randomSeed]
+      : recommendationsFamily.key(userId, sort, contentMode),
     getNextPageParam: (_lastBatch, batches) => {
       const loadedSourceIds = new Set(
         batches.flatMap(({ sourceIds }) => sourceIds ?? []),

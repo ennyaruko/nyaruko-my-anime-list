@@ -9,7 +9,7 @@ import {
   MediaListContextMenu,
 } from "@/features/manage-media-list";
 
-import type { Media } from "@/entities/media";
+import type { Media, MediaListStatus } from "@/entities/media";
 
 import { skeletonAnimation } from "@/shared/styles";
 import {
@@ -32,6 +32,15 @@ import {
 } from "@/shared/ui";
 
 import * as styles from "./MediaDetailHero.css";
+
+const titleMarkerByStatus: Record<MediaListStatus, string> = {
+  PAUSED: styles.titleMarkerPaused,
+  DROPPED: styles.titleMarkerDropped,
+  CURRENT: styles.titleMarkerWatching,
+  PLANNING: styles.titleMarkerPlanning,
+  REPEATING: styles.titleMarkerRepeating,
+  COMPLETED: styles.titleMarkerCompleted,
+};
 
 export type MediaDetailHeroProps = {
   media: Media;
@@ -76,60 +85,84 @@ export function MediaDetailHero({ media, userId }: MediaDetailHeroProps) {
   return (
     <Column gap="xs">
       <Column gap="m">
-        <h1 className={styles.title}>{media.title}</h1>
-        <div style={previewStyle} className={styles.preview}>
-          <div className={styles.hero}>
-            <div className={styles.posterFrame}>
-              <Image
-                loading="eager"
-                className={styles.posterImage}
-                alt={coverUrl ? media.title : ""}
-                imageClassName={coverUrl ? undefined : styles.posterPlaceholder}
-                image={{
-                  url:
-                    coverUrl ??
-                    `${import.meta.env.BASE_URL}images/media-no-image.png`,
-                }}
-              />
-              {!coverUrl && (
-                <Chip
-                  icon={<NoImageIcon />}
-                  className={styles.noImageIcon}
-                  label={t("mediaDetail.noImagelabel")}
-                />
+        <h1 className={styles.title}>
+          {media.status && (
+            <span
+              className={clsx(
+                styles.titleMarker,
+                titleMarkerByStatus[media.status],
               )}
-              <div className={styles.actions}>
-                <MediaListContextMenu
-                  media={media}
-                  userId={userId}
-                  triggerMode="click"
+            />
+          )}
+          <span
+            className={clsx(
+              styles.titleText,
+              media.status && styles.titleTextWithMarker,
+            )}
+          >
+            {media.title}
+          </span>
+        </h1>
+        <div style={previewStyle} className={styles.preview}>
+          <MediaListContextMenu media={media} userId={userId}>
+            <div className={styles.hero}>
+              <div className={styles.posterFrame}>
+                <Image
+                  loading="eager"
+                  className={styles.posterImage}
+                  alt={coverUrl ? media.title : ""}
+                  imageClassName={
+                    coverUrl ? undefined : styles.posterPlaceholder
+                  }
+                  image={{
+                    url:
+                      coverUrl ??
+                      `${import.meta.env.BASE_URL}images/media-no-image.png`,
+                  }}
+                />
+                {!coverUrl && (
+                  <Chip
+                    icon={<NoImageIcon />}
+                    className={styles.noImageIcon}
+                    label={t("mediaDetail.noImagelabel")}
+                  />
+                )}
+                <div
+                  className={styles.actions}
+                  onContextMenu={(event) => event.stopPropagation()}
                 >
-                  <Button round>
-                    <ListIcon className={styles.actionIcon} />
+                  <MediaListContextMenu
+                    media={media}
+                    userId={userId}
+                    triggerMode="click"
+                  >
+                    <Button round>
+                      <ListIcon className={styles.actionIcon} />
+                    </Button>
+                  </MediaListContextMenu>
+                  <Button
+                    round
+                    onClick={handleFavoriteToggle}
+                    disabled={!actions.canManageList || actions.isPending}
+                  >
+                    {media.isFavorite ? (
+                      <HeartFilledIcon
+                        className={clsx(
+                          styles.actionIcon,
+                          styles.actionIconFavorite,
+                        )}
+                      />
+                    ) : (
+                      <HeartIcon className={styles.actionIcon} />
+                    )}
                   </Button>
-                </MediaListContextMenu>
-                <Button
-                  round
-                  onClick={handleFavoriteToggle}
-                  disabled={!actions.canManageList || actions.isPending}
-                >
-                  {media.isFavorite ? (
-                    <HeartFilledIcon
-                      className={clsx(
-                        styles.actionIcon,
-                        styles.actionIconFavorite,
-                      )}
-                    />
-                  ) : (
-                    <HeartIcon className={styles.actionIcon} />
-                  )}
-                </Button>
-                <Button round onClick={handleCopyLink}>
-                  <CopyIcon className={styles.actionIcon} />
-                </Button>
+                  <Button round onClick={handleCopyLink}>
+                    <CopyIcon className={styles.actionIcon} />
+                  </Button>
+                </div>
               </div>
             </div>
-          </div>
+          </MediaListContextMenu>
           <Row wide alignItem="center" className={styles.ratingBar}>
             <Row
               wide

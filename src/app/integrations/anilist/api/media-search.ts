@@ -66,6 +66,14 @@ export async function searchAniListMedia(
       statusIn: parameters.statusFilterEnabled
         ? (parameters.statuses as MediaStatus[])
         : undefined,
+      startDateGreater: parameters.yearRange?.fromYear
+        ? parameters.yearRange.fromYear * 10000
+        : undefined,
+      startDateLesser:
+        parameters.yearRange?.toYear !== null &&
+        parameters.yearRange?.toYear !== undefined
+          ? (parameters.yearRange.toYear + 1) * 10000
+          : undefined,
     },
   });
 

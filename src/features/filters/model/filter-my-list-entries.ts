@@ -27,6 +27,18 @@ function matchesAnySelection(
   );
 }
 
+function matchesYearRange(
+  year: null | number,
+  range: MediaFiltersState["yearRange"],
+): boolean {
+  if (!range) return true;
+  if (year === null) return false;
+  return (
+    (range.fromYear === null || year >= range.fromYear) &&
+    (range.toYear === null || year <= range.toYear)
+  );
+}
+
 /** Applies the user's saved and temporary filters to one list status. */
 export function filterMyListEntries(
   entries: readonly MyListEntry[],
@@ -40,6 +52,7 @@ export function filterMyListEntries(
       isMediaVisibleInContentMode(entry, contentMode) &&
       matchesAnySelection(entry.genres, filters.genres) &&
       matchesAnySelection(entry.tags, filters.tags) &&
+      matchesYearRange(entry.startDate?.year ?? null, filters.yearRange) &&
       matchesFacet(entry.format, filters.formats, filters.formatMode) &&
       matchesFacet(entry.source, filters.sources, filters.sourceMode) &&
       matchesFacet(entry.releaseStatus, filters.statuses, filters.statusMode),

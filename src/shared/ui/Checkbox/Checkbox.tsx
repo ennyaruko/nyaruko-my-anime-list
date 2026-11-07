@@ -52,6 +52,7 @@ export type LabeledCheckboxProps = {
   disabled?: boolean;
   description?: ReactNode;
   defaultChecked?: boolean;
+  controlClassName?: string;
   variant?: CheckboxVariant;
   onCheckedChange?: (checked: boolean | "indeterminate") => void;
 };
@@ -65,6 +66,7 @@ export function LabeledCheckbox({
   defaultChecked,
   onCheckedChange,
   disabled = false,
+  controlClassName,
   variant = "default",
 }: LabeledCheckboxProps) {
   const [uncontrolledChecked, setUncontrolledChecked] = useState(
@@ -91,8 +93,8 @@ export function LabeledCheckbox({
         checked={active}
         variant={variant}
         disabled={disabled}
-        className={styles.labeledControl}
         onCheckedChange={handleCheckedChange}
+        className={clsx(styles.labeledControl, controlClassName)}
       />
       <span
         className={clsx(styles.label, styles.labelSizes[size], {

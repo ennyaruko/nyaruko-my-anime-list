@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { MyListFilters } from "@/features/filters";
 
 import type { FilterOptions } from "@/entities/filters";
-import type { MyListEntry, MediaContentMode } from "@/entities/media";
+import type { Media, MyListEntry, MediaContentMode } from "@/entities/media";
 
 import { Row, Heading } from "@/shared/ui";
 import { DeleteIcon } from "@/shared/icons";
@@ -31,6 +31,7 @@ type MyListContentProps = {
   userId: string | undefined;
   contentMode: MediaContentMode;
   options: undefined | FilterOptions;
+  onAddToWatch: (media: Media) => void;
 };
 
 export function MyListContent({
@@ -38,6 +39,7 @@ export function MyListContent({
   entries,
   options,
   contentMode,
+  onAddToWatch,
   isListPending,
   optionsLoading,
 }: MyListContentProps) {
@@ -110,6 +112,7 @@ export function MyListContent({
               userId={userId}
               entries={filteredEntries}
               isPending={isListPending}
+              onAddToWatch={onAddToWatch}
             />
           </>
         )}

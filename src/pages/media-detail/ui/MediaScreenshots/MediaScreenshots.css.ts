@@ -60,7 +60,9 @@ export const thumbnail = style({
 });
 
 export const skeletonTrack = style({
+  minWidth: 0,
   display: "flex",
+  overflow: "hidden",
   gap: primitives.spacing.xs,
 });
 

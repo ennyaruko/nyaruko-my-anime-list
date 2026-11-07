@@ -29,6 +29,7 @@ export function getMediaSearchParameters(
     contentMode,
     tags: filters.tags,
     genres: filters.genres,
+    yearRange: filters.yearRange,
     formats: appliedValues.formats,
     sources: appliedValues.sources,
     statuses: appliedValues.statuses,

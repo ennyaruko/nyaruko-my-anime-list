@@ -1,3 +1,5 @@
+import type { CalendarYearRange } from "@/shared/model";
+
 /** Sort modes available to media list and search surfaces. */
 export type MediaSortKey =
   | "score"
@@ -60,4 +62,6 @@ export type MediaFiltersState = {
   formatMode: FilterSelectionMode;
   /** Include or exclude behavior for source selections. */
   sourceMode: FilterSelectionMode;
+  /** Selected calendar-year range. */
+  yearRange: null | CalendarYearRange;
 };

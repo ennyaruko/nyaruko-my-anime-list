@@ -38,11 +38,17 @@ export const resultsContainer = style({
 });
 
 export const toolbar = style({
-  display: "flex",
-  justifyContent: "flex-end",
+  flexWrap: "nowrap",
+});
+
+export const randomToggle = style({
+  width: "auto",
+  flex: "0 0 auto",
+  whiteSpace: "nowrap",
 });
 
 export const sort = style({
+  minWidth: 0,
   width: "auto",
-  minWidth: "220px",
+  flex: "1 1 auto",
 });

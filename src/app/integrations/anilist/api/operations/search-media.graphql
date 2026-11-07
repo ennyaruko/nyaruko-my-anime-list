@@ -7,6 +7,8 @@ query SearchMedia(
   $statusIn: [MediaStatus]
   $formatIn: [MediaFormat]
   $sourceIn: [MediaSource]
+  $startDateGreater: FuzzyDateInt
+  $startDateLesser: FuzzyDateInt
   $isAdult: Boolean
   $sort: [MediaSort]
 ) {
@@ -24,6 +26,8 @@ query SearchMedia(
       status_in: $statusIn
       format_in: $formatIn
       source_in: $sourceIn
+      startDate_greater: $startDateGreater
+      startDate_lesser: $startDateLesser
       isAdult: $isAdult
       sort: $sort
     ) {

@@ -1,4 +1,5 @@
 import { useAdultContent } from "@/features/toggle-adult-content";
+import { useWatchQueue, WatchQueueDialog } from "@/features/watch-queue";
 
 import type { AccountState } from "@/entities/account";
 
@@ -23,9 +24,21 @@ export function MyListPage(accountState: AccountState) {
   const { mode: contentMode } = useAdultContent();
   const { userId, entries, refreshList, isListPending, filterOptionsQuery } =
     useMyListPageData(accountState, contentMode);
+  const watchQueue = useWatchQueue();
+
   return (
     <Container as="main" className={styles.page}>
       <ScrollToTopButton />
+      <WatchQueueDialog
+        items={watchQueue.items}
+        isOpen={watchQueue.isOpen}
+        onOpen={watchQueue.openDialog}
+        onClear={watchQueue.clearQueue}
+        onClose={watchQueue.closeDialog}
+        onRemove={watchQueue.removeMedia}
+        selectedMedia={watchQueue.selectedMedia}
+        onPickRandom={watchQueue.pickRandomMedia}
+      />
       <Column gap="m">
         <Breadcrumbs
           items={[{ to: "/", label: "Аниме" }, { label: "Моё аниме" }]}
@@ -46,6 +59,7 @@ export function MyListPage(accountState: AccountState) {
                 contentMode={contentMode}
                 isListPending={isListPending}
                 options={filterOptionsQuery.data}
+                onAddToWatch={watchQueue.addMedia}
                 optionsLoading={filterOptionsQuery.isPending}
               />
             </ComponentErrorBoundary>

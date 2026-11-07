@@ -1,3 +1,4 @@
+import { useSearchParams } from "react-router";
 import { useState, useEffect, type ReactNode } from "react";
 
 import {
@@ -8,6 +9,7 @@ import {
 
 const maxEntries = 300;
 const consoleLevels: DebugLogLevel[] = ["log", "info", "warn", "error"];
+const debugConsoleSearchParam = "debug-console";
 
 function formatValue(value: unknown) {
   if (typeof value === "string") return value;
@@ -40,7 +42,8 @@ export type DebugConsoleProviderProps = {
 
 export function DebugConsoleProvider({ children }: DebugConsoleProviderProps) {
   const [entries, setEntries] = useState<DebugLogEntry[]>([]);
-  const [isOpen, setIsOpen] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const isOpen = searchParams.get(debugConsoleSearchParam) === "1";
 
   useEffect(() => {
     let nextId = 0;
@@ -98,8 +101,26 @@ export function DebugConsoleProvider({ children }: DebugConsoleProviderProps) {
     isOpen,
     entries,
     clearEntries: () => setEntries([]),
-    openConsole: () => setIsOpen(true),
-    closeConsole: () => setIsOpen(false),
+    openConsole: () => {
+      setSearchParams(
+        (current) => {
+          const next = new URLSearchParams(current);
+          next.set(debugConsoleSearchParam, "1");
+          return next;
+        },
+        { preventScrollReset: true },
+      );
+    },
+    closeConsole: () => {
+      setSearchParams(
+        (current) => {
+          const next = new URLSearchParams(current);
+          next.delete(debugConsoleSearchParam);
+          return next;
+        },
+        { replace: true, preventScrollReset: true },
+      );
+    },
   };
 
   return (

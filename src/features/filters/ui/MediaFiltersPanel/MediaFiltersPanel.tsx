@@ -25,6 +25,7 @@ import {
   Container,
   ScrollArea,
   MultiSelect,
+  LabeledRadio,
   ModeControls,
   LabeledCheckbox,
   LabeledCombobox,
@@ -36,6 +37,7 @@ import {
   formatFilterOptions,
   sourceFilterOptions,
   statusFilterOptions,
+  getYearFilterOptions,
 } from "../../model/media-filter-options";
 
 import * as styles from "./MediaFiltersPanel.css";
@@ -149,7 +151,8 @@ export function MediaFiltersPanel({
     if (controlledOpen === undefined) setUncontrolledOpen(nextOpen);
     onOpenChange?.(nextOpen);
   };
-  const count = countSelectedValues(filters);
+  const count =
+    countSelectedValues(filters) + Number(filters.yearRange !== null);
   const filterIcon = hasUnsavedChanges ? (
     <FilterCheckedIcon className={styles.checkedFilterIcon} />
   ) : (
@@ -190,6 +193,9 @@ export function MediaFiltersPanel({
     onChange({ sort: value as MediaSortKey });
   const handleSourceModeChange = (mode: FilterSelectionMode) =>
     onChange({ sourceMode: mode });
+  const yearOptions = getYearFilterOptions(new Date().getFullYear(), (key) =>
+    t(`common:ui.filters.yearOptions.${key}`),
+  );
   const handleGenreRemove = (value: string) =>
     onChange({ genres: filters.genres.filter((genre) => genre !== value) });
   const handleTagRemove = (value: string) =>
@@ -359,6 +365,25 @@ export function MediaFiltersPanel({
                       savedFilters.sources.includes(value)
                         ? t("common:ui.filters.default")
                         : undefined
+                    }
+                  />
+                ))}
+              </FilterSection>
+
+              <FilterSection title={t("common:ui.filters.year")}>
+                {yearOptions.map(({ value, label, range }) => (
+                  <LabeledRadio
+                    size="l"
+                    key={value}
+                    label={label}
+                    checked={
+                      filters.yearRange?.fromYear === range.fromYear &&
+                      filters.yearRange?.toYear === range.toYear
+                    }
+                    onCheckedChange={(checked) =>
+                      onChange({
+                        yearRange: checked === true ? range : null,
+                      })
                     }
                   />
                 ))}

@@ -5,6 +5,7 @@ export * from "./Title";
 export * from "./Input";
 export * from "./Image";
 export * from "./Table";
+export * from "./Radio";
 export * from "./Layout";
 export * from "./Status";
 export * from "./Rating";

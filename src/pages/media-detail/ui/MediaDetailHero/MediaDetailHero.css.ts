@@ -110,8 +110,34 @@ export const watchArrow = style({
 
 export const title = style({
   ...typography.heading["2xl"],
+  position: "relative",
   color: colors.text.primary,
 });
+
+export const titleText = style({ display: "block" });
+
+export const titleTextWithMarker = style({ textIndent: "18px" });
+
+export const titleMarker = style({
+  left: 0,
+  top: "7px",
+  width: "10px",
+  height: "10px",
+  borderRadius: "50%",
+  position: "absolute",
+});
+
+export const titleMarkerWatching = style({ background: colors.text.info });
+
+export const titleMarkerPaused = style({ background: colors.text.tertiary });
+
+export const titleMarkerPlanning = style({ background: colors.text.warning });
+
+export const titleMarkerDropped = style({ background: colors.text.negative });
+
+export const titleMarkerRepeating = style({ background: colors.text.feature });
+
+export const titleMarkerCompleted = style({ background: colors.text.positive });
 
 export const titleSkeleton = style({
   width: "88%",

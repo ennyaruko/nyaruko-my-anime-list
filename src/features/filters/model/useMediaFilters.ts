@@ -27,6 +27,7 @@ const DEFAULT_FILTERS: MediaFiltersState = {
   formats: [],
   sources: [],
   statuses: [],
+  yearRange: null,
   sort: "releaseDate",
   statusMode: "include",
   formatMode: "include",
@@ -154,6 +155,17 @@ function readSavedFilters(key: string): MediaFiltersState {
       statusMode: saved.statusMode === "exclude" ? "exclude" : "include",
       formatMode: saved.formatMode === "exclude" ? "exclude" : "include",
       sourceMode: saved.sourceMode === "exclude" ? "exclude" : "include",
+      yearRange:
+        isObject(saved.yearRange) &&
+        (saved.yearRange.fromYear === null ||
+          typeof saved.yearRange.fromYear === "number") &&
+        (saved.yearRange.toYear === null ||
+          typeof saved.yearRange.toYear === "number")
+          ? {
+              toYear: saved.yearRange.toYear as null | number,
+              fromYear: saved.yearRange.fromYear as null | number,
+            }
+          : null,
     };
   } catch {
     return DEFAULT_FILTERS;

@@ -101,12 +101,14 @@ export type MediaListContextMenuProps = {
   children: ReactNode;
   userId: string | undefined;
   triggerMode?: "click" | "context";
+  onAddToWatch?: (media: Media) => void;
 };
 
 export type MediaCardContextMenuProps = {
   media: Media;
   size?: "l" | "s";
   userId: string | undefined;
+  onAddToWatch?: (media: Media) => void;
 };
 
 /** Context actions shared by media presentations on list, search, and detail. */
@@ -114,6 +116,7 @@ export function MediaListContextMenu({
   media,
   userId,
   children,
+  onAddToWatch,
   triggerMode = "context",
 }: MediaListContextMenuProps) {
   const { t } = useTranslation(["common"]);
@@ -207,6 +210,12 @@ export function MediaListContextMenu({
               </ContextMenuItem>
             ))}
             <ContextMenuSeparator />
+            {onAddToWatch && (
+              <ContextMenuItem onSelect={() => onAddToWatch(media)}>
+                <PlanningIcon className={styles.icon} />
+                <span>{t("common:contextMenu.addToWatch")}</span>
+              </ContextMenuItem>
+            )}
             <ContextMenuItem
               className={styles.mobileInfoItem}
               onSelect={(event) => {
@@ -263,11 +272,16 @@ export function MediaCardContextMenu({
   media,
   userId,
   size = "l",
+  onAddToWatch,
 }: MediaCardContextMenuProps) {
   const actions = useMediaListActions(userId);
 
   return (
-    <MediaListContextMenu media={media} userId={userId}>
+    <MediaListContextMenu
+      media={media}
+      userId={userId}
+      onAddToWatch={onAddToWatch}
+    >
       <div className={styles.cardSurface}>
         <MediaDetailLink
           media={media}

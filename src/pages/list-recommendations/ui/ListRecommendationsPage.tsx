@@ -18,6 +18,7 @@ import {
   Container,
   Breadcrumbs,
   BlockStatusBase,
+  LabeledCheckbox,
   LabeledCombobox,
   ScrollToTopButton,
   QueryErrorBoundary,
@@ -62,9 +63,13 @@ function ListRecommendationsContent({
   const { t } = useTranslation(["common"]);
   const { mode: contentMode } = useAdultContent();
   const [sort, setSort] = useState<MediaRecommendationSort>(DEFAULT_SORT);
+  const [random, setRandom] = useState(false);
+  const [randomSeed, setRandomSeed] = useState(() => Math.random());
   const { items, listQuery, sourceAnime, recommendationsQuery } =
     useListRecommendations({
       sort,
+      random,
+      randomSeed,
       contentMode,
       account: accountState.account,
     });
@@ -72,6 +77,10 @@ function ListRecommendationsContent({
     recommendationsQuery;
   const handleSortChange = (value: string) =>
     setSort(value as MediaRecommendationSort);
+  const handleRandomChange = (checked: boolean) => {
+    setRandom(checked);
+    if (checked) setRandomSeed(Math.random());
+  };
 
   useEffect(() => {
     if (items.length === 0 && hasNextPage && !isFetching) {
@@ -103,7 +112,12 @@ function ListRecommendationsContent({
 
   return (
     <Column gap="m" className={styles.resultsContainer}>
-      <div className={styles.toolbar}>
+      <Row
+        gap="m"
+        alignItem="center"
+        justifyContent="end"
+        className={styles.toolbar}
+      >
         <LabeledCombobox
           value={sort}
           className={styles.sort}
@@ -114,7 +128,13 @@ function ListRecommendationsContent({
             label: t(`common:recommendationSort.${value}`),
           }))}
         />
-      </div>
+        <LabeledCheckbox
+          checked={random}
+          className={styles.randomToggle}
+          label={t("common:listRecommendations.random")}
+          onCheckedChange={(checked) => handleRandomChange(checked === true)}
+        />
+      </Row>
       {showNoCompletedAnime ? (
         <Row alignItem="center" justifyContent="center">
           <BlockStatusBase

@@ -1,3 +1,5 @@
+import type { CalendarYearRange } from "@/shared/model";
+
 import type { Media } from "./media";
 import type { MediaContentMode } from "./media-visibility";
 
@@ -33,6 +35,8 @@ export type MediaSearchParameters = {
   statusFilterEnabled: boolean;
   /** Content category requested from the provider. */
   contentMode: MediaContentMode;
+  /** Optional calendar-year range. */
+  yearRange?: null | CalendarYearRange;
 };
 
 /** A page of media returned by a search provider. */

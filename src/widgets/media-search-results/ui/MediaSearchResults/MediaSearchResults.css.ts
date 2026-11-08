@@ -6,6 +6,10 @@ export const empty = style({
   margin: "auto",
   alignSelf: "center",
 });
+export const returnButton = style({
+  alignSelf: "flex-start",
+  marginBottom: primitives.spacing.m,
+});
 export const resultsContainer = style({
   minHeight: 0,
   display: "flex",

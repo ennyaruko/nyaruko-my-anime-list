@@ -89,10 +89,18 @@ export const recommendationMetaSkeleton = style({
 });
 
 export const allRecommendationsLink = style({
+  display: "flex",
+  alignItems: "center",
   ...typography.caption["2xs"],
   textDecoration: "none",
   color: colors.text.action,
   selectors: {
     "&:hover": { textDecoration: "underline" },
   },
+});
+
+export const allRecommendationsArrow = style({
+  width: 16,
+  height: 16,
+  transform: "rotate(180deg)",
 });

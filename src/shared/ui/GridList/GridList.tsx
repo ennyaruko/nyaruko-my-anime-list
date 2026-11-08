@@ -38,6 +38,8 @@ export type GridListProps<T> = Omit<
   footer?: ReactNode;
   virtualize?: boolean;
   endReached?: VoidFunction;
+  initialTopMostItemIndex?: number;
+  restoreVirtualizedState?: boolean;
   getKey?: (item: T, index: number) => Key;
   renderItem: (item: T, index: number) => ReactNode;
 };
@@ -50,6 +52,8 @@ export function GridList<T>({
   renderItem,
   endReached,
   virtualize = false,
+  initialTopMostItemIndex,
+  restoreVirtualizedState = true,
   ...props
 }: GridListProps<T>) {
   if (virtualize) {
@@ -61,6 +65,8 @@ export function GridList<T>({
         className={className}
         renderItem={renderItem}
         endReached={endReached}
+        initialTopMostItemIndex={initialTopMostItemIndex}
+        restoreVirtualizedState={restoreVirtualizedState}
         {...props}
       />
     );
@@ -85,6 +91,8 @@ type VirtualizedGridListProps<T> = Omit<
   footer?: ReactNode;
   className?: string;
   endReached?: VoidFunction;
+  initialTopMostItemIndex?: number;
+  restoreVirtualizedState?: boolean;
   getKey?: (item: T, index: number) => Key;
   renderItem: (item: T, index: number) => ReactNode;
 };
@@ -96,6 +104,8 @@ function VirtualizedGridList<T>({
   className,
   renderItem,
   endReached,
+  initialTopMostItemIndex,
+  restoreVirtualizedState = true,
   ...props
 }: VirtualizedGridListProps<T>) {
   const location = useLocation();
@@ -118,10 +128,17 @@ function VirtualizedGridList<T>({
       components={gridComponents}
       itemClassName={styles.virtualizedItem}
       listClassName={styles.virtualizedList}
-      restoreStateFrom={gridStates.get(snapshotKey)}
+      initialTopMostItemIndex={initialTopMostItemIndex}
       itemContent={(index, item) => renderItem(item, index)}
-      stateChanged={(state) => saveGridState(snapshotKey, state)}
       computeItemKey={(index, item) => getKey?.(item, index) ?? index}
+      restoreStateFrom={
+        restoreVirtualizedState ? gridStates.get(snapshotKey) : undefined
+      }
+      stateChanged={
+        restoreVirtualizedState
+          ? (state) => saveGridState(snapshotKey, state)
+          : undefined
+      }
     />
   );
 }

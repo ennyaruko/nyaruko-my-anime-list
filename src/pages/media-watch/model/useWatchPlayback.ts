@@ -2,7 +2,9 @@ import { useRef, useState, useEffect } from "react";
 
 import { useQuery } from "@tanstack/react-query";
 
+import { useAdultContent } from "@/features/toggle-adult-content";
 import { useMediaListActions } from "@/features/manage-media-list";
+import { useWatchContinuation } from "@/features/watch-continuation";
 
 import {
   type MediaDetail,
@@ -23,6 +25,9 @@ export function useWatchPlayback(
   userId: string | undefined,
 ) {
   const { media } = detail;
+  const { mode: contentMode } = useAdultContent();
+  const { continuation, saveContinuation, clearContinuation } =
+    useWatchContinuation(userId);
   const service = useAppService(mediaPlaybackServiceToken);
   const actions = useMediaListActions(userId);
   const catalogQuery = useQuery({
@@ -58,6 +63,7 @@ export function useWatchPlayback(
     progress: media.progress ?? 0,
   });
   const [saving, setSaving] = useState(false);
+  const [restoredMediaId, setRestoredMediaId] = useState<null | number>(null);
   const progressPending = useRef(false);
 
   const progress = Math.max(media.progress ?? 0, savedEntry.progress);
@@ -129,9 +135,186 @@ export function useWatchPlayback(
   const src = primaryRu
     ? track?.episodes.find((item) => item.number === selectedEpisode)?.url
     : embed?.urlTemplate.replaceAll(":episode", String(selectedEpisode));
+  const waitingForContinuation = Boolean(
+    continuation?.mediaId === media.id &&
+    continuation.userId === userId &&
+    restoredMediaId !== media.id,
+  );
   const loading =
     (!forceFallback && catalogQuery.isPending) ||
-    (!primaryRu && embedsQuery.isPending);
+    (!primaryRu && embedsQuery.isPending) ||
+    waitingForContinuation;
+
+  useEffect(() => {
+    if (
+      !userId ||
+      !continuation ||
+      continuation.mediaId !== media.id ||
+      continuation.userId !== userId ||
+      restoredMediaId === media.id
+    )
+      return;
+
+    if (continuation.source === "yummyani") {
+      if (catalogQuery.isPending) return;
+
+      const savedTrack = allTracks.find(
+        (item) => item.id === continuation.trackId,
+      );
+      const savedPlayer = catalog?.players.find(
+        (item) =>
+          item.id === continuation.playerId &&
+          item.tracks.some((candidate) => candidate.id === savedTrack?.id),
+      );
+      const matchingPlayer =
+        savedPlayer ??
+        catalog?.players.find((item) =>
+          item.tracks.some((candidate) => candidate.id === savedTrack?.id),
+        );
+
+      if (savedTrack && matchingPlayer) {
+        const fallbackEpisode = initialPlaybackEpisode(
+          progress,
+          media.episodes || catalog?.episodes || null,
+        );
+        const availableEpisodes = savedTrack.episodes.map(
+          (item) => item.number,
+        );
+        const restoredEpisode = availableEpisodes.includes(continuation.episode)
+          ? continuation.episode
+          : (availableEpisodes.find((number) => number >= fallbackEpisode) ??
+            availableEpisodes.at(-1) ??
+            fallbackEpisode);
+
+        setLanguage("ru");
+        setForceFallback(false);
+        setTrackId(savedTrack.id);
+        setPlayerId(matchingPlayer.id);
+        setEpisode(restoredEpisode);
+      }
+
+      setRestoredMediaId(media.id);
+      return;
+    }
+
+    if (continuation.source === "embed") {
+      if (embedsQuery.isPending) return;
+
+      const savedEmbed = embedsQuery.data?.find(
+        (item) =>
+          item.id === continuation.embedId &&
+          item.language === "en" &&
+          item.supportsEpisodes,
+      );
+
+      if (savedEmbed) {
+        const total = media.episodes || catalogQuery.data?.episodes || null;
+        setLanguage("en");
+        setForceFallback(false);
+        setEmbedId(savedEmbed.id);
+        setEpisode(Math.min(continuation.episode, total ?? Infinity));
+      }
+
+      setRestoredMediaId(media.id);
+      return;
+    }
+
+    if (embedsQuery.isPending) return;
+
+    const kodik = embedsQuery.data?.find(
+      (item) => item.id === continuation.embedId && item.language === "ru",
+    );
+    if (kodik) {
+      setLanguage("ru");
+      setForceFallback(true);
+      setEmbedId(kodik.id);
+    }
+    setRestoredMediaId(media.id);
+  }, [
+    allTracks,
+    catalog,
+    catalogQuery.data,
+    catalogQuery.isPending,
+    continuation,
+    embedsQuery.data,
+    embedsQuery.isPending,
+    media.episodes,
+    media.id,
+    progress,
+    restoredMediaId,
+    userId,
+  ]);
+
+  useEffect(() => {
+    if (
+      !userId ||
+      contentMode === "hentai" ||
+      loading ||
+      primaryRu ||
+      language !== "ru" ||
+      embed?.id !== "playerKodikRu" ||
+      !src
+    )
+      return;
+
+    saveContinuation({
+      userId,
+      contentMode,
+      source: "kodik",
+      mediaId: media.id,
+      embedId: "playerKodikRu",
+    });
+  }, [
+    contentMode,
+    embed?.id,
+    language,
+    loading,
+    media.id,
+    primaryRu,
+    saveContinuation,
+    src,
+    userId,
+  ]);
+
+  function saveSelectedPlayback(nextEpisode: number) {
+    if (!userId || contentMode === "hentai" || !src) return;
+
+    if (!primaryRu && language === "ru" && embed?.id === "playerKodikRu") {
+      saveContinuation({
+        userId,
+        contentMode,
+        source: "kodik",
+        mediaId: media.id,
+        embedId: "playerKodikRu",
+      });
+      return;
+    }
+
+    if (primaryRu && player && track) {
+      saveContinuation({
+        userId,
+        contentMode,
+        mediaId: media.id,
+        trackId: track.id,
+        source: "yummyani",
+        playerId: player.id,
+        episode: nextEpisode,
+      });
+      return;
+    }
+
+    if (language === "en" && embed?.supportsEpisodes) {
+      saveContinuation({
+        userId,
+        contentMode,
+        language: "en",
+        source: "embed",
+        mediaId: media.id,
+        embedId: embed.id,
+        episode: nextEpisode,
+      });
+    }
+  }
 
   useWatchPageExit(() => {
     if (!src || loading || progressPending.current || !actions.canManageList)
@@ -141,11 +324,29 @@ export function useWatchPlayback(
       selectedEpisode,
       total,
     );
-    if (nextProgress === progress) return;
+    const returnsToDetails = window.location.pathname === `/media/${media.id}`;
+    if (nextProgress === progress) {
+      if (
+        total !== null &&
+        progress >= total &&
+        continuation?.mediaId === media.id &&
+        returnsToDetails
+      )
+        clearContinuation();
+      return;
+    }
+    const completesAnime =
+      total !== null &&
+      nextProgress >= total &&
+      continuation?.mediaId === media.id &&
+      returnsToDetails;
     void actions
       .updateProgressAsync(media.id, nextProgress, {
         keepalive: true,
         status: statusAfterPlaybackProgress(status, nextProgress, total),
+      })
+      .then(() => {
+        if (completesAnime) clearContinuation();
       })
       .catch(() => undefined);
   });
@@ -176,6 +377,7 @@ export function useWatchPlayback(
       }
     }
     setEpisode(next);
+    saveSelectedPlayback(next);
   }
 
   function selectTrack(id: string) {

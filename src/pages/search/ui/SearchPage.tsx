@@ -37,6 +37,7 @@ export function SearchPage() {
     searchTerm,
     initialFilters,
     updateSearchTerm,
+    restoreSearchTerm,
     debouncedSearchTerm,
     clearInitialFilters,
   } = useSearchPageParams();
@@ -72,8 +73,15 @@ export function SearchPage() {
             onResetInitialFilters={clearInitialFilters}
             optionsLoading={filterOptionsQuery.isPending}
           >
-            {(parameters) => (
-              <MediaSearchResults account={account} parameters={parameters} />
+            {(parameters, filters, updateFilters) => (
+              <MediaSearchResults
+                account={account}
+                filters={filters}
+                parameters={parameters}
+                contentMode={contentMode}
+                updateFilters={updateFilters}
+                updateSearch={restoreSearchTerm}
+              />
             )}
           </MediaSearchFilters>
         </QueryErrorBoundary>

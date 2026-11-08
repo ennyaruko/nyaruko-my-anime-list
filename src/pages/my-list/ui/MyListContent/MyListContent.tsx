@@ -7,7 +7,7 @@ import type { FilterOptions } from "@/entities/filters";
 import type { Media, MyListEntry, MediaContentMode } from "@/entities/media";
 
 import { Row, Heading } from "@/shared/ui";
-import { DeleteIcon } from "@/shared/icons";
+import { DeleteIcon, ArrowDownIcon } from "@/shared/icons";
 
 import { MyListResults } from "../MyListResults";
 import { StatusNavigation } from "../StatusNavigation";
@@ -58,6 +58,7 @@ export function MyListContent({
             className={styles.recommendationsLink}
           >
             {t("common:list.recommendations")}
+            <ArrowDownIcon className={styles.recommendationsArrow} />
           </Link>
         }
       >

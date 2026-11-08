@@ -18,15 +18,19 @@ const STORAGE_KEYS: Record<TranslationContentKind, string> = {
 };
 const DEFAULT_PREFERENCES: AutoTranslationPreferences = {
   reviews: false,
-  description: false,
+  description: true,
 };
 
 function readPreferences(): AutoTranslationPreferences {
   try {
-    return {
+    const preferences = {
       reviews: localStorage.getItem(STORAGE_KEYS.reviews) === "true",
       description: localStorage.getItem(STORAGE_KEYS.description) === "true",
     };
+
+    return preferences.reviews || preferences.description
+      ? preferences
+      : DEFAULT_PREFERENCES;
   } catch {
     return DEFAULT_PREFERENCES;
   }

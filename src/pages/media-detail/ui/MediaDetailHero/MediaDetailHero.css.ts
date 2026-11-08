@@ -101,10 +101,12 @@ export const watchEpisodes = style({
 });
 
 export const watchArrow = style({
-  ...typography.heading["xl-medium"],
   zIndex: 1,
+  width: 20,
+  height: 20,
   marginLeft: "auto",
   position: "relative",
+  transform: "rotate(180deg)",
   color: colors.text.primaryOnLight,
 });
 

@@ -22,7 +22,11 @@ type MediaSearchFiltersProps = {
   contentMode: MediaContentMode;
   onResetInitialFilters?: VoidFunction;
   initialFilters?: Partial<MediaFiltersState>;
-  children: (parameters: MediaSearchParameters) => ReactNode;
+  children: (
+    parameters: MediaSearchParameters,
+    filters: MediaFiltersState,
+    updateFilters: (updates: Partial<MediaFiltersState>) => void,
+  ) => ReactNode;
 };
 
 /** Owns search filter settings and supplies effective API parameters. */
@@ -84,7 +88,7 @@ export function MediaSearchFilters({
         hasUnsavedChanges={hasUnsavedChanges}
         onOpenChange={filterDrawer.onOpenChange}
       />
-      {children(parameters)}
+      {children(parameters, filters, updateFilters)}
     </>
   );
 }

@@ -1,10 +1,14 @@
 import { useState } from "react";
+import { useNavigate } from "react-router";
 import { useTranslation } from "react-i18next";
 
 import clsx from "clsx";
 import { Popover } from "radix-ui";
 
 import { resetMediaFilterDrafts } from "@/features/filters";
+import { useSearchPosition } from "@/features/search-position";
+import { useWatchContinuation } from "@/features/watch-continuation";
+import { SEARCH_POSITION_RESTORE_STATE_KEY } from "@/features/search-position";
 import {
   useAdultContent,
   useEnableAdultContent,
@@ -18,6 +22,7 @@ import { ListIcon, UserIcon, SearchIcon } from "@/shared/icons";
 
 import { ProfileMenu } from "./ProfileMenu";
 import { NavigationItem } from "./NavigationItem";
+import { QuickActionsMenu } from "./QuickActionsMenu";
 
 import * as styles from "./BottomNavigation.css";
 import * as navigationItemStyles from "./NavigationItem.css";
@@ -31,7 +36,15 @@ export function BottomNavigation({ account }: BottomNavigationProps) {
   const [profileOpen, setProfileOpen] = useState(false);
   const [requestedContentMode, setRequestedContentMode] =
     useState<null | MediaContentMode>(null);
-  const { setMode: setContentMode } = useAdultContent();
+  const { mode: contentMode, setMode: setContentMode } = useAdultContent();
+  const { savedPosition, isLoaded: isSearchPositionLoaded } = useSearchPosition(
+    {
+      contentMode,
+      userId: account?.id,
+    },
+  );
+  const { continuation } = useWatchContinuation(account?.id);
+  const navigate = useNavigate();
   const enableAdultContent = useEnableAdultContent();
 
   const handleProfileClose = () => {
@@ -41,6 +54,22 @@ export function BottomNavigation({ account }: BottomNavigationProps) {
   const handleAdultContentEnableRequest = (mode: MediaContentMode) => {
     setProfileOpen(false);
     setRequestedContentMode(mode);
+  };
+
+  const handleContinueSearch = () => {
+    if (!savedPosition) return;
+
+    resetMediaFilterDrafts("search");
+    navigate("/search", {
+      state: { [SEARCH_POSITION_RESTORE_STATE_KEY]: true },
+    });
+  };
+
+  const handleContinueWatching = () => {
+    if (!continuation) return;
+
+    setContentMode(continuation.contentMode);
+    navigate(`/media/${continuation.mediaId}/watch`);
   };
 
   const handleAdultContentConfirm = async () => {
@@ -76,6 +105,19 @@ export function BottomNavigation({ account }: BottomNavigationProps) {
               onClick={() => {
                 resetMediaFilterDrafts("search");
               }}
+            />
+            <QuickActionsMenu
+              onContinueSearch={handleContinueSearch}
+              onContinueWatching={handleContinueWatching}
+              showContinueWatching={contentMode !== "hentai"}
+              canContinueSearch={
+                isSearchPositionLoaded && savedPosition !== null
+              }
+              canContinueWatching={Boolean(
+                continuation &&
+                (continuation.contentMode !== "ecchi" ||
+                  account?.adultContentEnabled),
+              )}
             />
             <Popover.Trigger
               type="button"

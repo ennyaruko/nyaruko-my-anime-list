@@ -35,11 +35,6 @@ export default {
     scrollToTop: "Scroll to top",
     clearSelection: "Clear selection",
   },
-  navigation: {
-    search: "Search",
-    profile: "Profile",
-    myAnime: "My Anime",
-  },
   contextMenu: {
     mediaInfo: "Anime information",
     addToWatch: "Add to watch queue",
@@ -52,6 +47,17 @@ export default {
   recommendationSort: {
     rating: "Lower rating first",
     ratingDesc: "Higher rating first",
+  },
+  navigation: {
+    search: "Search",
+    profile: "Profile",
+    actions: "Actions",
+    myAnime: "My Anime",
+  },
+  quickActions: {
+    sectionTitle: "Quick actions",
+    continueSearch: "Continue search",
+    continueWatching: "Continue watching",
   },
   validation: {
     loginRequired: "Username is required",
@@ -79,6 +85,7 @@ export default {
     description: "Something went wrong. Try reloading the page.",
   },
   translation: {
+    auto: "Auto translate",
     retry: "Retry translation",
     reviews: "Translate reviews",
     description: "Translate description",
@@ -155,6 +162,23 @@ export default {
     adultContentConfirmCancel: "Cancel",
     adultContentConfirmTitle: "Enable adult content?",
     adultContentConfirmDescription: "If you press “OK” there’s no God anymore.",
+  },
+  searchPosition: {
+    stay: "Stay",
+    restore: "Return",
+    save: "Save position",
+    open: "Search position",
+    savedLabel: "Saved position",
+    clear: "Clear saved position",
+    saveAndLeave: "Save and leave",
+    notSaved: "No position saved yet",
+    saved: "Page {{page}}, anime {{anime}}",
+    exitTitle: "Save your search position?",
+    leaveWithoutSaving: "Leave without saving",
+    saveFailed: "Could not save the search position",
+    returnToStart: "Return to the beginning of search",
+    exitDescription:
+      "You have browsed far through the results. Save your current position before leaving?",
   },
   notify: {
     mediaScoreChanged: "Score saved",

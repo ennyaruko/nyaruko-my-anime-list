@@ -18,6 +18,7 @@ import {
   ListIcon,
   HeartIcon,
   NoImageIcon,
+  ArrowDownIcon,
   HeartFilledIcon,
 } from "@/shared/icons";
 import {
@@ -232,7 +233,9 @@ export function MediaDetailHero({ media, userId }: MediaDetailHeroProps) {
             </span>
           )}
         </span>
-        <span className={styles.watchArrow}>→</span>
+        <span className={styles.watchArrow}>
+          <ArrowDownIcon />
+        </span>
       </Link>
     </Column>
   );

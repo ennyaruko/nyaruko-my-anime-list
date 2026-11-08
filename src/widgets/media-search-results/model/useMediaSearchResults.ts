@@ -16,6 +16,7 @@ import type {
 import { useAppService, queryCacheConfig } from "@/shared/lib";
 
 type UseSearchResultsParams = {
+  initialPage?: number;
   account: AccountState["account"];
   parameters: MediaSearchParameters;
 };
@@ -23,11 +24,15 @@ type UseSearchResultsParams = {
 export function useMediaSearchResults({
   account,
   parameters,
+  initialPage = 1,
 }: UseSearchResultsParams) {
   const { accessToken } = useAuth();
   const searchService = useAppService(mediaSearchServiceToken);
   const myListService = useAppService(myListServiceToken);
-  const queryKey = queryCacheConfig.families.mediaSearch.key(parameters);
+  const queryKey = queryCacheConfig.families.mediaSearch.key({
+    ...parameters,
+    initialPage,
+  });
 
   const searchQuery = useInfiniteQuery<
     MediaSearchResult,
@@ -37,11 +42,11 @@ export function useMediaSearchResults({
     number
   >({
     queryKey,
-    initialPageParam: 1,
+    initialPageParam: initialPage,
     gcTime: queryCacheConfig.families.mediaSearch.gcTimeMs,
     staleTime: queryCacheConfig.families.mediaSearch.staleTimeMs,
-    getNextPageParam: (lastPage, pages) =>
-      lastPage.hasNextPage ? pages.length + 1 : undefined,
+    getNextPageParam: (lastPage, _pages, lastPageParam) =>
+      lastPage.hasNextPage ? lastPageParam + 1 : undefined,
     queryFn: ({ signal, pageParam }) =>
       searchService.searchMedia(
         {
@@ -69,29 +74,31 @@ export function useMediaSearchResults({
     [myListQuery.data],
   );
 
-  const results = useMemo(
+  const pages = useMemo(
     () =>
-      searchQuery.data?.pages
-        .flatMap(({ items }) => items)
-        .filter((media) =>
-          isMediaVisibleInContentMode(media, parameters.contentMode),
-        )
-        .map((media): Media => {
-          const listEntry = listEntriesByMediaId.get(media.id);
+      searchQuery.data?.pages.map(({ items }, pageIndex) => ({
+        page: searchQuery.data!.pageParams[pageIndex] as number,
+        items: items
+          .filter((media) =>
+            isMediaVisibleInContentMode(media, parameters.contentMode),
+          )
+          .map((media): Media => {
+            const listEntry = listEntriesByMediaId.get(media.id);
 
-          return {
-            ...media,
-            score: listEntry?.score ?? null,
-            status: listEntry?.status ?? null,
-            listEntryId: listEntry?.listEntryId ?? null,
-            progress:
-              listEntry?.progress ??
-              (listEntry?.status === "CURRENT" ||
-              listEntry?.status === "REPEATING"
-                ? 0
-                : null),
-          };
-        }) ?? [],
+            return {
+              ...media,
+              score: listEntry?.score ?? null,
+              status: listEntry?.status ?? null,
+              listEntryId: listEntry?.listEntryId ?? null,
+              progress:
+                listEntry?.progress ??
+                (listEntry?.status === "CURRENT" ||
+                listEntry?.status === "REPEATING"
+                  ? 0
+                  : null),
+            };
+          }),
+      })) ?? [],
     [listEntriesByMediaId, parameters.contentMode, searchQuery.data],
   );
   const loadMore = () => {
@@ -101,9 +108,10 @@ export function useMediaSearchResults({
   };
 
   return {
-    results,
+    pages,
     loadMore,
     isPending: searchQuery.isPending,
+    results: pages.flatMap(({ items }) => items),
     isFetchingNextPage: searchQuery.isFetchingNextPage,
   };
 }

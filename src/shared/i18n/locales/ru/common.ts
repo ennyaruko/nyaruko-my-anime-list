@@ -31,11 +31,6 @@ export default {
     add: "Добавить в список",
     remove: "Удалить из списка",
   },
-  navigation: {
-    search: "Поиск",
-    profile: "Профиль",
-    myAnime: "Моё аниме",
-  },
   mediaStatus: {
     released: "Вышел",
     announced: "Анонс",
@@ -52,6 +47,17 @@ export default {
   recommendationSort: {
     rating: "По низкому рейтингу",
     ratingDesc: "По высокому рейтингу",
+  },
+  navigation: {
+    search: "Поиск",
+    profile: "Профиль",
+    actions: "Действия",
+    myAnime: "Моё аниме",
+  },
+  quickActions: {
+    sectionTitle: "Быстрые действия",
+    continueSearch: "Продолжить поиск",
+    continueWatching: "Продолжить просмотр",
   },
   validation: {
     passwordRequired: "Введите пароль",
@@ -72,6 +78,7 @@ export default {
     description: "Что-то пошло не так. Попробуйте перезагрузить страницу.",
   },
   translation: {
+    auto: "Авто перевод",
     reviews: "Перевод отзывов",
     retry: "Повторить перевод",
     description: "Перевод описания",
@@ -162,6 +169,23 @@ export default {
     adultContentConfirmCancel: "Отмена",
     adultContentConfirmTitle: "Включить 18+ контент?",
     adultContentConfirmDescription: "Если нажать OK - дальше бога нет.",
+  },
+  searchPosition: {
+    stay: "Остаться",
+    restore: "Вернуться",
+    open: "Место в поиске",
+    save: "Сохранить место",
+    saveAndLeave: "Сохранить и уйти",
+    savedLabel: "Сохранённая позиция",
+    clear: "Сбросить сохранённое место",
+    notSaved: "Место пока не сохранено",
+    exitTitle: "Сохранить место в поиске?",
+    leaveWithoutSaving: "Уйти без сохранения",
+    returnToStart: "Вернуться в начало поиска",
+    saved: "Страница {{page}}, аниме {{anime}}",
+    saveFailed: "Не удалось сохранить место в поиске",
+    exitDescription:
+      "Вы далеко продвинулись по результатам. Сохранить текущую позицию перед выходом?",
   },
   notify: {
     saveFilters: "Фильтры сохранены",

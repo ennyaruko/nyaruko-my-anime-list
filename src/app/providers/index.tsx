@@ -2,6 +2,7 @@ import { PropsWithChildren } from "react";
 
 import { ThemeProvider } from "@/features/change-theme";
 import { AdultContentProvider } from "@/features/toggle-adult-content";
+import { WatchContinuationProvider } from "@/features/watch-continuation";
 import { TranslationPreferencesProvider } from "@/features/translate-content";
 import {
   DebugConsoleDialog,
@@ -18,16 +19,18 @@ export function Providers({ children }: PropsWithChildren) {
     <ThemeProvider>
       <TranslationPreferencesProvider>
         <AdultContentProvider>
-          <DebugConsoleProvider>
-            <AppDiagnosticsProvider>
-              <QueryProvider>
-                <AppServicesProvider>
-                  <AppAuthProvider>{children}</AppAuthProvider>
-                </AppServicesProvider>
-              </QueryProvider>
-            </AppDiagnosticsProvider>
-            <DebugConsoleDialog />
-          </DebugConsoleProvider>
+          <WatchContinuationProvider>
+            <DebugConsoleProvider>
+              <AppDiagnosticsProvider>
+                <QueryProvider>
+                  <AppServicesProvider>
+                    <AppAuthProvider>{children}</AppAuthProvider>
+                  </AppServicesProvider>
+                </QueryProvider>
+              </AppDiagnosticsProvider>
+              <DebugConsoleDialog />
+            </DebugConsoleProvider>
+          </WatchContinuationProvider>
         </AdultContentProvider>
       </TranslationPreferencesProvider>
     </ThemeProvider>

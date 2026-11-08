@@ -17,8 +17,8 @@ import type { AccountProfile } from "@/entities/account";
 import type { MediaContentMode } from "@/entities/media";
 import type { Media, MediaListStatus } from "@/entities/media";
 
-import { NoImageIcon } from "@/shared/icons";
 import { skeletonAnimation } from "@/shared/styles";
+import { NoImageIcon, ArrowDownIcon } from "@/shared/icons";
 import { Image, Score, Title, Progress, type TitleState } from "@/shared/ui";
 
 import { formatLabelKey } from "../media-detail-labels";
@@ -105,6 +105,7 @@ export function MediaRecommendations({
           className={styles.allRecommendationsLink}
         >
           {t("common:mediaDetail.allRecommendations")}
+          <ArrowDownIcon className={styles.allRecommendationsArrow} />
         </Link>
       }
     />

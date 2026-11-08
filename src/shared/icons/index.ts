@@ -1,6 +1,7 @@
 export { ReactComponent as HotIcon } from "./hot.svg";
 export { ReactComponent as SunIcon } from "./sun.svg";
 export { ReactComponent as CopyIcon } from "./copy.svg";
+export { ReactComponent as SaveIcon } from "./save.svg";
 export { ReactComponent as ViewIcon } from "./view.svg";
 export { ReactComponent as ExitIcon } from "./exit.svg";
 export { ReactComponent as ListIcon } from "./list.svg";
@@ -31,6 +32,7 @@ export { ReactComponent as NoContentIcon } from "./no-content.svg";
 export { ReactComponent as ArrowDownIcon } from "./arrow-down.svg";
 export { ReactComponent as MinusWideIcon } from "./minus-wide.svg";
 export { ReactComponent as TranslationIcon } from "./translation.svg";
+export { ReactComponent as QuickActionIcon } from "./quick-action.svg";
 export { ReactComponent as HeartFilledIcon } from "./heart-filled.svg";
 export { ReactComponent as StarDuotoneIcon } from "./star-duotone.svg";
 export { ReactComponent as ExternalLinkIcon } from "./external-link.svg";

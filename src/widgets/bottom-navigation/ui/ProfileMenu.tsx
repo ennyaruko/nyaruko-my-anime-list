@@ -78,6 +78,17 @@ export function ProfileMenu({
     hentai: t("common:profileMenu.hentaiContentMode"),
   };
   const contentModePosition = contentModes.indexOf(contentMode) as 0 | 1 | 2;
+  const translationModePosition = autoTranslation.description
+    ? autoTranslation.reviews
+      ? 2
+      : 0
+    : 1;
+  const translationModeLabels = [
+    t("common:translation.description"),
+    t("common:translation.reviews"),
+    t("common:translation.auto"),
+  ] as const;
+  const translationModeLabel = translationModeLabels[translationModePosition];
 
   const handleContentModeChange = (position: 0 | 1 | 2) => {
     const nextMode = contentModes[position];
@@ -92,6 +103,11 @@ export function ProfileMenu({
     }
 
     onAdultContentEnableRequest(nextMode);
+  };
+
+  const handleTranslationModeChange = (position: 0 | 1 | 2) => {
+    setAutoTranslation("description", position !== 1);
+    setAutoTranslation("reviews", position !== 0);
   };
 
   const summary = (
@@ -153,36 +169,13 @@ export function ProfileMenu({
             </button>
           ))}
         </div>
-        <ProfileSetting label={t("common:translation.description")}>
+        <ProfileSetting label={translationModeLabel}>
           <Switch
-            checked={autoTranslation.description}
-            onCheckedChange={(checked) =>
-              setAutoTranslation("description", checked)
-            }
+            label={translationModeLabel}
+            position={translationModePosition}
+            onPositionChange={handleTranslationModeChange}
           >
-            <TranslationIcon
-              className={
-                autoTranslation.description
-                  ? styles.translationIcon.enabled
-                  : styles.translationIcon.disabled
-              }
-            />
-          </Switch>
-        </ProfileSetting>
-        <ProfileSetting label={t("common:translation.reviews")}>
-          <Switch
-            checked={autoTranslation.reviews}
-            onCheckedChange={(checked) =>
-              setAutoTranslation("reviews", checked)
-            }
-          >
-            <TranslationIcon
-              className={
-                autoTranslation.reviews
-                  ? styles.translationIcon.enabled
-                  : styles.translationIcon.disabled
-              }
-            />
+            <TranslationIcon className={styles.translationIcon.enabled} />
           </Switch>
         </ProfileSetting>
       </ProfileMenuSection>

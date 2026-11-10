@@ -116,6 +116,9 @@ function VirtualizedGridList<T>({
     }),
   );
   const snapshotKey = `${location.key}:${dataKey}`;
+  const restoredState = restoreVirtualizedState
+    ? gridStates.get(snapshotKey)
+    : undefined;
 
   return (
     <VirtuosoGrid
@@ -126,13 +129,13 @@ function VirtualizedGridList<T>({
       className={className}
       endReached={endReached}
       components={gridComponents}
+      restoreStateFrom={restoredState}
       itemClassName={styles.virtualizedItem}
       listClassName={styles.virtualizedList}
-      initialTopMostItemIndex={initialTopMostItemIndex}
       itemContent={(index, item) => renderItem(item, index)}
       computeItemKey={(index, item) => getKey?.(item, index) ?? index}
-      restoreStateFrom={
-        restoreVirtualizedState ? gridStates.get(snapshotKey) : undefined
+      initialTopMostItemIndex={
+        restoredState ? undefined : initialTopMostItemIndex
       }
       stateChanged={
         restoreVirtualizedState

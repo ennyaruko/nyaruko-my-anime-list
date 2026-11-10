@@ -4,6 +4,7 @@ import type { MediaFiltersState } from "@/entities/filters";
 import type { MediaContentMode, MediaSearchParameters } from "@/entities/media";
 
 export const SEARCH_POSITION_RESTORE_STATE_KEY = "restoreSearchPosition";
+export const SEARCH_POSITION_RESUME_STATE_KEY = "searchPositionResume";
 export const SEARCH_POSITION_CHANGE_EVENT = "search-position:change";
 
 export type SearchPosition = {

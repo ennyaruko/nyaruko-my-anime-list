@@ -37,7 +37,6 @@ export function SearchPage() {
     searchTerm,
     initialFilters,
     updateSearchTerm,
-    restoreSearchTerm,
     debouncedSearchTerm,
     clearInitialFilters,
   } = useSearchPageParams();
@@ -80,7 +79,6 @@ export function SearchPage() {
                 parameters={parameters}
                 contentMode={contentMode}
                 updateFilters={updateFilters}
-                updateSearch={restoreSearchTerm}
               />
             )}
           </MediaSearchFilters>

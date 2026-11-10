@@ -1,6 +1,5 @@
+import { useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { useLocation, useNavigate } from "react-router";
-import { useRef, useState, useEffect, useCallback } from "react";
 
 import { hashKey } from "@tanstack/react-query";
 
@@ -9,8 +8,8 @@ import { MediaCardContextMenu } from "@/features/manage-media-list";
 import {
   useSearchPosition,
   SearchPositionMenu,
-  SearchPositionExitDialog,
-  SEARCH_POSITION_RESTORE_STATE_KEY,
+  useSearchPositionResume,
+  useSearchPositionQuickRestore,
 } from "@/features/search-position";
 
 import { MediaCardSkeleton } from "@/entities/media";
@@ -18,16 +17,10 @@ import type { AccountState } from "@/entities/account";
 import type { MediaFiltersState } from "@/entities/filters";
 import type { MediaContentMode, MediaSearchParameters } from "@/entities/media";
 
-import {
-  Button,
-  GridList,
-  BlockStatusEmpty,
-  showNotification,
-} from "@/shared/ui";
+import { Button, GridList, BlockStatusEmpty } from "@/shared/ui";
 
 import { useMediaSearchResults } from "../../model/useMediaSearchResults";
 import { useVisibleSearchPosition } from "../../model/useVisibleSearchPosition";
-import { useSearchPositionExitGuard } from "../../model/useSearchPositionExitGuard";
 
 import * as styles from "./MediaSearchResults.css";
 
@@ -36,7 +29,6 @@ export type MediaSearchResultsProps = {
   contentMode: MediaContentMode;
   account: AccountState["account"];
   parameters: MediaSearchParameters;
-  updateSearch: (search: string) => void;
   updateFilters: (updates: Partial<MediaFiltersState>) => void;
 };
 
@@ -54,84 +46,31 @@ function SearchResults({
   filters,
   parameters,
   contentMode,
-  updateSearch,
   updateFilters,
 }: MediaSearchResultsProps) {
-  const { t } = useTranslation(["common"]);
-  const location = useLocation();
-  const navigate = useNavigate();
   const listRef = useRef<HTMLDivElement>(null);
-  const [resume, setResume] = useState<null | SearchPosition>(null);
-  const [restoring, setRestoring] = useState(false);
   const { isLoaded, savePosition, clearPosition, savedPosition } =
     useSearchPosition({
       contentMode,
       userId: account?.id,
     });
-  const locationState = location.state as null | Record<string, unknown>;
-  const restoreFromQuickActions =
-    locationState?.[SEARCH_POSITION_RESTORE_STATE_KEY] === true;
-  const matchesResume =
-    resume !== null && hashKey([parameters]) === hashKey([resume.parameters]);
-  const activeResume = matchesResume ? resume : null;
-  const { captureAnchor, furthestVisiblePage } = useVisibleSearchPosition({
-    containerRef: listRef,
-    resetKey: hashKey([filters, parameters]),
-    baselinePage: activeResume?.lastPage ?? 1,
-  });
-  const exitGuard = useSearchPositionExitGuard({
-    filters,
+  const {
+    restoring,
+    activeResume,
+    matchesResume,
+    returnToStart,
+    restorePosition,
+    getInitialIndex,
+  } = useSearchPositionResume({
     parameters,
-    contentMode,
-    savePosition,
-    captureAnchor,
-    savedPosition,
-    furthestVisiblePage,
-    baselinePage: activeResume?.lastPage ?? 1,
+    updateFilters,
   });
-  useEffect(() => {
-    if (matchesResume) setRestoring(false);
-  }, [matchesResume]);
-
-  const handleRestore = useCallback(
-    (position: SearchPosition) => {
-      setResume(position);
-      setRestoring(true);
-      updateFilters(position.filters);
-      updateSearch(position.parameters.search);
-    },
-    [updateFilters, updateSearch],
-  );
-
-  useEffect(() => {
-    if (!restoreFromQuickActions || !isLoaded) return;
-
-    navigate(`${location.pathname}${location.search}${location.hash}`, {
-      state: null,
-      replace: true,
-      preventScrollReset: true,
-    });
-    if (savedPosition) handleRestore(savedPosition);
-  }, [
-    handleRestore,
+  useSearchPositionQuickRestore({
     isLoaded,
-    location.hash,
-    location.pathname,
-    location.search,
-    navigate,
-    restoreFromQuickActions,
     savedPosition,
-  ]);
-  const handleReturnToStart = () => {
-    setResume(null);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-  const handleSaveAndLeave = () => {
-    if (!exitGuard.handleSaveAndLeave()) {
-      showNotification(t("common:searchPosition.saveFailed"), "error");
-    }
-  };
-
+    onRestore: restorePosition,
+  });
+  const { captureAnchor } = useVisibleSearchPosition({ containerRef: listRef });
   return (
     <div ref={listRef} className={styles.resultsContainer}>
       <SearchPositionMenu
@@ -141,14 +80,8 @@ function SearchResults({
         parameters={parameters}
         capture={captureAnchor}
         contentMode={contentMode}
-        onRestore={handleRestore}
+        onRestore={restorePosition}
         savedPosition={savedPosition}
-      />
-      <SearchPositionExitDialog
-        onStay={exitGuard.handleStay}
-        open={exitGuard.isPromptOpen}
-        onLeave={exitGuard.handleLeave}
-        onSaveAndLeave={handleSaveAndLeave}
       />
       {restoring && !matchesResume ? (
         <SearchSkeletons />
@@ -157,7 +90,8 @@ function SearchResults({
           account={account}
           resume={activeResume}
           parameters={parameters}
-          onReturnToStart={activeResume ? handleReturnToStart : undefined}
+          getInitialIndex={getInitialIndex}
+          onReturnToStart={activeResume ? returnToStart : undefined}
           key={hashKey([
             parameters,
             activeResume?.lastPage ?? 1,
@@ -183,12 +117,14 @@ type ResultsProps = {
   onReturnToStart?: VoidFunction;
   account: AccountState["account"];
   parameters: MediaSearchParameters;
+  getInitialIndex: (animeIds: readonly number[]) => number | undefined;
 };
 
 function Results({
   resume,
   account,
   parameters,
+  getInitialIndex,
   onReturnToStart,
 }: ResultsProps) {
   const { t } = useTranslation(["common"]);
@@ -200,12 +136,7 @@ function Results({
   const results = query.pages.flatMap(({ page, items }) =>
     items.map((media, index) => ({ page, media, index })),
   );
-  const initialIndex = resume
-    ? Math.max(
-        0,
-        results.findIndex(({ media }) => media.id === resume.lastAnime),
-      )
-    : undefined;
+  const initialIndex = getInitialIndex(results.map(({ media }) => media.id));
   const hasNoResults = results.length === 0 && !query.isPending;
   const skeletons = query.isFetchingNextPage ? (
     <div className={styles.skeletonGrid}>
@@ -237,7 +168,6 @@ function Results({
           footer={skeletons}
           endReached={query.loadMore}
           getKey={({ media }) => media.id}
-          restoreVirtualizedState={!resume}
           initialTopMostItemIndex={initialIndex}
           renderItem={({ page, media }) => (
             <div data-search-page={page} data-search-anime={media.id}>

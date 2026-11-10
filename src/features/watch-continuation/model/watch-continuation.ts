@@ -5,6 +5,7 @@ import type { MediaContentMode } from "@/entities/media";
 type WatchContinuationBase = {
   userId: string;
   mediaId: number;
+  progress?: number;
   contentMode: Exclude<MediaContentMode, "hentai">;
 };
 

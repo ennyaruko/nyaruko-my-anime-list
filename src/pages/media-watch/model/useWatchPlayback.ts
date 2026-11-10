@@ -180,8 +180,12 @@ export function useWatchPlayback(
         const availableEpisodes = savedTrack.episodes.map(
           (item) => item.number,
         );
-        const restoredEpisode = availableEpisodes.includes(continuation.episode)
+        const progressUnchanged = continuation.progress === progress;
+        const episodeToRestore = progressUnchanged
           ? continuation.episode
+          : fallbackEpisode;
+        const restoredEpisode = availableEpisodes.includes(episodeToRestore)
+          ? episodeToRestore
           : (availableEpisodes.find((number) => number >= fallbackEpisode) ??
             availableEpisodes.at(-1) ??
             fallbackEpisode);
@@ -191,6 +195,15 @@ export function useWatchPlayback(
         setTrackId(savedTrack.id);
         setPlayerId(matchingPlayer.id);
         setEpisode(restoredEpisode);
+        if (!progressUnchanged) {
+          saveContinuation({
+            ...continuation,
+            progress,
+            trackId: savedTrack.id,
+            episode: restoredEpisode,
+            playerId: matchingPlayer.id,
+          });
+        }
       }
 
       setRestoredMediaId(media.id);
@@ -209,10 +222,23 @@ export function useWatchPlayback(
 
       if (savedEmbed) {
         const total = media.episodes || catalogQuery.data?.episodes || null;
+        const fallbackEpisode = initialPlaybackEpisode(progress, total);
+        const progressUnchanged = continuation.progress === progress;
+        const episodeToRestore = progressUnchanged
+          ? continuation.episode
+          : fallbackEpisode;
+        const restoredEpisode = Math.min(episodeToRestore, total ?? Infinity);
         setLanguage("en");
         setForceFallback(false);
         setEmbedId(savedEmbed.id);
-        setEpisode(Math.min(continuation.episode, total ?? Infinity));
+        setEpisode(restoredEpisode);
+        if (!progressUnchanged) {
+          saveContinuation({
+            ...continuation,
+            progress,
+            episode: restoredEpisode,
+          });
+        }
       }
 
       setRestoredMediaId(media.id);
@@ -242,6 +268,7 @@ export function useWatchPlayback(
     media.id,
     progress,
     restoredMediaId,
+    saveContinuation,
     userId,
   ]);
 
@@ -259,6 +286,7 @@ export function useWatchPlayback(
 
     saveContinuation({
       userId,
+      progress,
       contentMode,
       source: "kodik",
       mediaId: media.id,
@@ -271,12 +299,13 @@ export function useWatchPlayback(
     loading,
     media.id,
     primaryRu,
+    progress,
     saveContinuation,
     src,
     userId,
   ]);
 
-  function saveSelectedPlayback(nextEpisode: number) {
+  function saveSelectedPlayback(nextEpisode: number, nextProgress: number) {
     if (!userId || contentMode === "hentai" || !src) return;
 
     if (!primaryRu && language === "ru" && embed?.id === "playerKodikRu") {
@@ -285,6 +314,7 @@ export function useWatchPlayback(
         contentMode,
         source: "kodik",
         mediaId: media.id,
+        progress: nextProgress,
         embedId: "playerKodikRu",
       });
       return;
@@ -299,6 +329,7 @@ export function useWatchPlayback(
         source: "yummyani",
         playerId: player.id,
         episode: nextEpisode,
+        progress: nextProgress,
       });
       return;
     }
@@ -312,6 +343,7 @@ export function useWatchPlayback(
         mediaId: media.id,
         embedId: embed.id,
         episode: nextEpisode,
+        progress: nextProgress,
       });
     }
   }
@@ -324,29 +356,21 @@ export function useWatchPlayback(
       selectedEpisode,
       total,
     );
-    const returnsToDetails = window.location.pathname === `/media/${media.id}`;
-    if (nextProgress === progress) {
-      if (
-        total !== null &&
-        progress >= total &&
-        continuation?.mediaId === media.id &&
-        returnsToDetails
-      )
-        clearContinuation();
-      return;
-    }
-    const completesAnime =
+    const completesContinuation =
       total !== null &&
       nextProgress >= total &&
-      continuation?.mediaId === media.id &&
-      returnsToDetails;
+      continuation?.mediaId === media.id;
+    if (nextProgress === progress) {
+      if (completesContinuation) clearContinuation();
+      return;
+    }
     void actions
       .updateProgressAsync(media.id, nextProgress, {
         keepalive: true,
         status: statusAfterPlaybackProgress(status, nextProgress, total),
       })
       .then(() => {
-        if (completesAnime) clearContinuation();
+        if (completesContinuation) clearContinuation();
       })
       .catch(() => undefined);
   });
@@ -377,7 +401,7 @@ export function useWatchPlayback(
       }
     }
     setEpisode(next);
-    saveSelectedPlayback(next);
+    saveSelectedPlayback(next, nextProgress);
   }
 
   function selectTrack(id: string) {

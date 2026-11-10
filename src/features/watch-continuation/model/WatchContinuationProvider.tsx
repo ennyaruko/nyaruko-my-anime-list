@@ -20,6 +20,9 @@ function isWatchContinuation(value: unknown): value is WatchContinuation {
     typeof continuation.mediaId !== "number" ||
     !Number.isSafeInteger(continuation.mediaId) ||
     continuation.mediaId <= 0 ||
+    (continuation.progress !== undefined &&
+      (!Number.isSafeInteger(continuation.progress) ||
+        continuation.progress < 0)) ||
     (continuation.contentMode !== "safe" &&
       continuation.contentMode !== "ecchi")
   )

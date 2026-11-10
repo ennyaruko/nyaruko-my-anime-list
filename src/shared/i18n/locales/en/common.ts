@@ -100,6 +100,16 @@ export default {
     authFailed:
       "AniList authorization could not be completed. Please try again.",
   },
+  searchPosition: {
+    restore: "Return",
+    save: "Save position",
+    open: "Search position",
+    savedLabel: "Saved position",
+    clear: "Clear saved position",
+    notSaved: "No position saved yet",
+    saved: "Page {{page}}, anime {{anime}}",
+    returnToStart: "Return to the beginning of search",
+  },
   debugConsole: {
     copy: "Copy",
     clear: "Clear",
@@ -162,23 +172,6 @@ export default {
     adultContentConfirmCancel: "Cancel",
     adultContentConfirmTitle: "Enable adult content?",
     adultContentConfirmDescription: "If you press “OK” there’s no God anymore.",
-  },
-  searchPosition: {
-    stay: "Stay",
-    restore: "Return",
-    save: "Save position",
-    open: "Search position",
-    savedLabel: "Saved position",
-    clear: "Clear saved position",
-    saveAndLeave: "Save and leave",
-    notSaved: "No position saved yet",
-    saved: "Page {{page}}, anime {{anime}}",
-    exitTitle: "Save your search position?",
-    leaveWithoutSaving: "Leave without saving",
-    saveFailed: "Could not save the search position",
-    returnToStart: "Return to the beginning of search",
-    exitDescription:
-      "You have browsed far through the results. Save your current position before leaving?",
   },
   notify: {
     mediaScoreChanged: "Score saved",

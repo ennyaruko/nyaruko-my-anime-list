@@ -57,27 +57,10 @@ export function useSearchPageParams() {
     );
   }, [setSearchParams]);
 
-  const restoreSearchTerm = useCallback(
-    (value: string) => {
-      setDebouncedSearchTerm(value.trim());
-      setSearchParams(
-        (current) => {
-          const next = new URLSearchParams(current);
-          if (value) next.set("search", value);
-          else next.delete("search");
-          return next;
-        },
-        { replace: true, preventScrollReset: true },
-      );
-    },
-    [setSearchParams],
-  );
-
   return {
     searchTerm,
     initialFilters,
     updateSearchTerm,
-    restoreSearchTerm,
     debouncedSearchTerm,
     clearInitialFilters,
   };

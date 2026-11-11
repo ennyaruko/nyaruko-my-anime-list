@@ -30,9 +30,11 @@ const DEFAULT_FILTERS: MediaFiltersState = {
   yearRange: null,
   sort: "releaseDate",
   favoriteOnly: false,
+  tagsMode: "include",
   statusMode: "include",
   formatMode: "include",
   sourceMode: "include",
+  genresMode: "include",
 };
 const EMPTY_INITIAL_FILTERS: Partial<MediaFiltersState> = {};
 const MAX_FILTER_DRAFTS = 40;
@@ -154,9 +156,11 @@ function readSavedFilters(key: string): MediaFiltersState {
       formats: filterValues(saved.formats, allFormatValues),
       sources: filterValues(saved.sources, allSourceValues),
       statuses: filterValues(saved.statuses, allStatusValues),
+      tagsMode: saved.tagsMode === "exclude" ? "exclude" : "include",
       statusMode: saved.statusMode === "exclude" ? "exclude" : "include",
       formatMode: saved.formatMode === "exclude" ? "exclude" : "include",
       sourceMode: saved.sourceMode === "exclude" ? "exclude" : "include",
+      genresMode: saved.genresMode === "exclude" ? "exclude" : "include",
       yearRange:
         isObject(saved.yearRange) &&
         (saved.yearRange.fromYear === null ||

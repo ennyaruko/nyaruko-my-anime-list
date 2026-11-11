@@ -38,14 +38,19 @@ export async function searchAniListMedia(
   { signal }: { signal?: AbortSignal } = {},
 ): Promise<MediaSearchResult> {
   const client = createAniListGraphQLClient();
+  const requiredGenre = requiredGenreByContentMode[parameters.contentMode];
   const genres = [
     ...new Set(
       [
-        ...parameters.genres,
-        requiredGenreByContentMode[parameters.contentMode],
+        ...(parameters.genresMode === "include" ? parameters.genres : []),
+        requiredGenre,
       ].filter((genre): genre is string => Boolean(genre)),
     ),
   ];
+  const excludedGenres =
+    parameters.genresMode === "exclude"
+      ? parameters.genres.filter((genre) => genre !== requiredGenre)
+      : [];
   const response = await client.request({
     signal,
     document: SearchMediaDocument,
@@ -56,7 +61,7 @@ export async function searchAniListMedia(
       search: parameters.search || undefined,
       isAdult: parameters.contentMode !== "safe",
       genreIn: genres.length > 0 ? genres : undefined,
-      tagIn: parameters.tags.length > 0 ? parameters.tags : undefined,
+      genreNotIn: excludedGenres.length > 0 ? excludedGenres : undefined,
       formatIn: parameters.formatFilterEnabled
         ? (parameters.formats as MediaFormat[])
         : undefined,
@@ -69,6 +74,14 @@ export async function searchAniListMedia(
       startDateGreater: parameters.yearRange?.fromYear
         ? parameters.yearRange.fromYear * 10000
         : undefined,
+      tagIn:
+        parameters.tagsMode === "include" && parameters.tags.length > 0
+          ? parameters.tags
+          : undefined,
+      tagNotIn:
+        parameters.tagsMode === "exclude" && parameters.tags.length > 0
+          ? parameters.tags
+          : undefined,
       startDateLesser:
         parameters.yearRange?.toYear !== null &&
         parameters.yearRange?.toYear !== undefined

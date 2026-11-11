@@ -186,7 +186,7 @@ export const queryCacheConfig = {
   defaultStaleTimeMs: 5 * MINUTE_MS,
   snapshot: {
     maxAgeMs: 24 * DAY_MS,
-    buster: "my-anime-list-v4",
+    buster: "my-anime-list-v5",
   },
   families: {
     playbackReplies: defineQueryFamily(

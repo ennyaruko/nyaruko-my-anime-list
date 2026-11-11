@@ -224,6 +224,7 @@ export default {
     zoomInScreenshot: "Увеличить кадр",
     addFavorite: "Добавить в избранное",
     zoomOutScreenshot: "Уменьшить кадр",
+    goToShikimori: "Перейти на Shikimori",
     previousScreenshot: "Предыдущий кадр",
     removeFavorite: "Убрать из избранного",
     releaseRange: "с {{start}} по {{end}}",

@@ -216,6 +216,7 @@ export default {
     allRecommendations: "See all",
     zoomOutScreenshot: "Zoom out",
     addFavorite: "Add to favorites",
+    goToShikimori: "Go to Shikimori",
     nextScreenshot: "Next screenshot",
     closeScreenshots: "Close screenshots",
     openListActions: "Change anime status",

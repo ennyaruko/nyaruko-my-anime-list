@@ -35,6 +35,10 @@ export type MediaSearchParameters = {
   statusFilterEnabled: boolean;
   /** Content category requested from the provider. */
   contentMode: MediaContentMode;
+  /** Include or exclude behavior for tag selections. */
+  tagsMode: "include" | "exclude";
+  /** Include or exclude behavior for genre selections. */
+  genresMode: "include" | "exclude";
   /** Optional calendar-year range. */
   yearRange?: null | CalendarYearRange;
 };

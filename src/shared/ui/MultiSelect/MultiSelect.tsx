@@ -9,6 +9,7 @@ import { Popover } from "radix-ui";
 import { Spinner } from "../Spinner";
 import { ScrollArea } from "../ScrollArea";
 import { LabeledCheckbox } from "../Checkbox";
+import type { CheckboxVariant } from "../Checkbox";
 import { CloseIcon, ArrowDownIcon } from "../../icons";
 
 import * as styles from "./MultiSelect.css";
@@ -31,6 +32,7 @@ export type MultiSelectProps = {
   placeholder?: string;
   expandInFlow?: boolean;
   defaultValue?: string[];
+  variant?: CheckboxVariant;
   options: MultiSelectOption[];
   onValueChange?: (value: string[]) => void;
 };
@@ -43,6 +45,7 @@ export type LabeledMultiSelectProps = Omit<MultiSelectProps, "className"> & {
 type VirtualizedOptionsProps = {
   disabled: boolean;
   scrollResetKey: string;
+  variant: CheckboxVariant;
   options: MultiSelectOption[];
   selectedValues: ReadonlySet<string>;
   onToggleOption: (value: string, checked: boolean | "indeterminate") => void;
@@ -50,6 +53,7 @@ type VirtualizedOptionsProps = {
 
 function VirtualizedOptions({
   options,
+  variant,
   disabled,
   selectedValues,
   scrollResetKey,
@@ -95,6 +99,7 @@ function VirtualizedOptions({
                   <LabeledCheckbox
                     size="l"
                     checked={checked}
+                    variant={variant}
                     disabled={disabled}
                     label={option.label}
                     onCheckedChange={(nextChecked) =>
@@ -130,6 +135,7 @@ export function MultiSelect({
   cleanable = false,
   searchable = false,
   virtualize = false,
+  variant = "default",
   expandInFlow = false,
 }: MultiSelectProps) {
   const { t } = useTranslation(["common"]);
@@ -253,6 +259,7 @@ export function MultiSelect({
 
   const optionsContent = virtualize ? (
     <VirtualizedOptions
+      variant={variant}
       disabled={disabled}
       scrollResetKey={query}
       options={filteredOptions}
@@ -269,6 +276,7 @@ export function MultiSelect({
             <LabeledCheckbox
               size="l"
               checked={checked}
+              variant={variant}
               key={option.value}
               disabled={disabled}
               label={option.label}

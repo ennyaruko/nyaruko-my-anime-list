@@ -21,10 +21,11 @@ function matchesFacet(
 function matchesAnySelection(
   values: readonly string[],
   selected: readonly string[],
+  mode: "include" | "exclude",
 ): boolean {
-  return (
-    selected.length === 0 || values.some((value) => selected.includes(value))
-  );
+  if (selected.length === 0) return true;
+  const matchesSelected = values.some((value) => selected.includes(value));
+  return mode === "include" ? matchesSelected : !matchesSelected;
 }
 
 function matchesYearRange(
@@ -51,8 +52,8 @@ export function filterMyListEntries(
       entry.status === status &&
       isMediaVisibleInContentMode(entry, contentMode) &&
       (!filters.favoriteOnly || entry.isFavorite) &&
-      matchesAnySelection(entry.genres, filters.genres) &&
-      matchesAnySelection(entry.tags, filters.tags) &&
+      matchesAnySelection(entry.genres, filters.genres, filters.genresMode) &&
+      matchesAnySelection(entry.tags, filters.tags, filters.tagsMode) &&
       matchesYearRange(entry.startDate?.year ?? null, filters.yearRange) &&
       matchesFacet(entry.format, filters.formats, filters.formatMode) &&
       matchesFacet(entry.source, filters.sources, filters.sourceMode) &&

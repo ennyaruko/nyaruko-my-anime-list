@@ -10,6 +10,7 @@ import {
   getMediaReleaseStatusInfo,
 } from "@/entities/media";
 
+import { ArrowDownIcon } from "@/shared/icons";
 import { skeletonAnimation } from "@/shared/styles";
 import { Row, Score, Column, Heading } from "@/shared/ui";
 
@@ -38,15 +39,36 @@ const sourceLabelKey = {
 
 type MediaInformationProps = {
   language: string;
+  malId?: null | number;
   media: Media | undefined;
 };
 
-export function MediaInformation({ media, language }: MediaInformationProps) {
+export function MediaInformation({
+  media,
+  malId,
+  language,
+}: MediaInformationProps) {
   const { t } = useTranslation(["common"]);
 
   return (
     <section className={pageStyles.section}>
-      <Heading size="m" variant="neutral">
+      <Heading
+        size="m"
+        variant="neutral"
+        action={
+          malId && malId > 0 ? (
+            <Link
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.shikimoriLink}
+              to={`https://shikimori.io/animes/${malId}`}
+            >
+              {t("common:mediaDetail.goToShikimori")}
+              <ArrowDownIcon className={styles.shikimoriLinkArrow} />
+            </Link>
+          ) : null
+        }
+      >
         {t("common:mediaDetail.info")}
       </Heading>
       {media ? (

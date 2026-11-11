@@ -106,8 +106,15 @@ function isSearchPosition(
       filters.statuses,
     ].every(isStringArray) &&
     validMediaSorts.includes(String(filters.sort)) &&
-    [filters.statusMode, filters.formatMode, filters.sourceMode].every((item) =>
-      validSelectionModes.includes(String(item)),
+    [
+      filters.statusMode,
+      filters.formatMode,
+      filters.sourceMode,
+      filters.genresMode,
+      filters.tagsMode,
+    ].every(
+      (item) =>
+        item === undefined || validSelectionModes.includes(String(item)),
     ) &&
     isYearRange(filters.yearRange) &&
     typeof parameters.search === "string" &&
@@ -128,6 +135,10 @@ function isSearchPosition(
       parameters.statuses,
     ].every(isStringArray) &&
     validSearchSorts.includes(String(parameters.sort)) &&
+    [parameters.genresMode, parameters.tagsMode].every(
+      (item) =>
+        item === undefined || validSelectionModes.includes(String(item)),
+    ) &&
     parameters.contentMode === mode &&
     [
       parameters.formatFilterEnabled,
@@ -151,7 +162,20 @@ export function readSearchPosition(
 ): null | SearchPosition {
   try {
     const value: unknown = JSON.parse(localStorage.getItem(key) ?? "null");
-    return isSearchPosition(value, mode) ? value : null;
+    if (!isSearchPosition(value, mode)) return null;
+    return {
+      ...value,
+      filters: {
+        ...value.filters,
+        tagsMode: value.filters.tagsMode ?? "include",
+        genresMode: value.filters.genresMode ?? "include",
+      },
+      parameters: {
+        ...value.parameters,
+        tagsMode: value.parameters.tagsMode ?? "include",
+        genresMode: value.parameters.genresMode ?? "include",
+      },
+    };
   } catch {
     return null;
   }

@@ -3,7 +3,9 @@ query SearchMedia(
   $perPage: Int!
   $search: String
   $genreIn: [String]
+  $genreNotIn: [String]
   $tagIn: [String]
+  $tagNotIn: [String]
   $statusIn: [MediaStatus]
   $formatIn: [MediaFormat]
   $sourceIn: [MediaSource]
@@ -22,7 +24,9 @@ query SearchMedia(
       type: ANIME
       search: $search
       genre_in: $genreIn
+      genre_not_in: $genreNotIn
       tag_in: $tagIn
+      tag_not_in: $tagNotIn
       status_in: $statusIn
       format_in: $formatIn
       source_in: $sourceIn

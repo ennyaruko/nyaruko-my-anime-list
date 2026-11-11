@@ -195,6 +195,16 @@ export function MediaFiltersPanel({
     onChange({ sort: value as MediaSortKey });
   const handleSourceModeChange = (mode: FilterSelectionMode) =>
     onChange({ sourceMode: mode });
+  const handleGenreModeChange = (mode: FilterSelectionMode) =>
+    onChange({ genresMode: mode });
+  const handleTagModeChange = (mode: FilterSelectionMode) =>
+    onChange({ tagsMode: mode });
+  const selectionModeOptions = (["include", "exclude"] as const).map(
+    (mode) => ({
+      value: mode,
+      label: t(`common:ui.filters.${mode}`),
+    }),
+  );
   const yearOptions = getYearFilterOptions(new Date().getFullYear(), (key) =>
     t(`common:ui.filters.yearOptions.${key}`),
   );
@@ -266,7 +276,16 @@ export function MediaFiltersPanel({
                 </FilterSection>
               )}
 
-              <FilterSection title={t("common:list.genres")}>
+              <FilterSection
+                title={t("common:list.genres")}
+                actions={
+                  <ModeControls
+                    value={filters.genresMode}
+                    options={selectionModeOptions}
+                    onChange={handleGenreModeChange}
+                  />
+                }
+              >
                 <MultiSelect
                   cleanable
                   searchable
@@ -276,6 +295,9 @@ export function MediaFiltersPanel({
                   id="media-filter-genres"
                   loading={optionsLoading}
                   onValueChange={handleGenresChange}
+                  variant={
+                    filters.genresMode === "exclude" ? "minus" : "default"
+                  }
                   footer={
                     <SelectedValues
                       options={genreOptions}
@@ -286,7 +308,16 @@ export function MediaFiltersPanel({
                 />
               </FilterSection>
 
-              <FilterSection title={t("common:list.tags")}>
+              <FilterSection
+                title={t("common:list.tags")}
+                actions={
+                  <ModeControls
+                    value={filters.tagsMode}
+                    onChange={handleTagModeChange}
+                    options={selectionModeOptions}
+                  />
+                }
+              >
                 <MultiSelect
                   cleanable
                   searchable
@@ -297,6 +328,7 @@ export function MediaFiltersPanel({
                   id="media-filter-tags"
                   loading={optionsLoading}
                   onValueChange={handleTagsChange}
+                  variant={filters.tagsMode === "exclude" ? "minus" : "default"}
                   footer={
                     <SelectedValues
                       options={tagOptions}

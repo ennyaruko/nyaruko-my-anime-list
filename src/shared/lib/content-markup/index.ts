@@ -77,11 +77,6 @@ function normalizeInlineMarkdown(content: string) {
             const imageIndex = links.push(match) - 1;
             return `\u0000LINK${imageIndex}\u0000`;
           }
-          const safeLabel = label
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;");
-
           const safeUrl = url
             .replace(/&/g, "&amp;")
             .replace(/"/g, "&quot;")
@@ -89,7 +84,9 @@ function normalizeInlineMarkdown(content: string) {
             .replace(/>/g, "&gt;");
 
           const linkIndex =
-            links.push(`<a href="${safeUrl}">${safeLabel}</a>`) - 1;
+            // Preserve inline markup in the label; rehype-sanitize runs after
+            // rehype-raw and removes unsupported or unsafe elements.
+            links.push(`<a href="${safeUrl}">${label}</a>`) - 1;
 
           return `\u0000LINK${linkIndex}\u0000`;
         },

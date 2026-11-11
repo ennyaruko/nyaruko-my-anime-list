@@ -27,6 +27,8 @@ const trendingParameters: Omit<MediaSearchParameters, "page" | "contentMode"> =
     sources: [],
     statuses: [],
     sort: "trending",
+    tagsMode: "include",
+    genresMode: "include",
     formatFilterEnabled: false,
     sourceFilterEnabled: false,
     statusFilterEnabled: false,

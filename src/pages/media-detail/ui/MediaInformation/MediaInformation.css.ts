@@ -39,6 +39,23 @@ export const genreLink = style({
   },
 });
 
+export const shikimoriLink = style({
+  display: "flex",
+  alignItems: "center",
+  ...typography.caption["2xs"],
+  textDecoration: "none",
+  color: colors.text.action,
+  selectors: {
+    "&:hover": { textDecoration: "underline" },
+  },
+});
+
+export const shikimoriLinkArrow = style({
+  width: 16,
+  height: 16,
+  transform: "rotate(180deg)",
+});
+
 export const skeletonLines = style({
   display: "flex",
   flexDirection: "column",

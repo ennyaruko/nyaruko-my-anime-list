@@ -58,12 +58,16 @@ export type MediaFiltersState = {
   sources: MediaSourceFilter[];
   /** Selected AniList release statuses. */
   statuses: MediaStatusFilter[];
+  /** Include or exclude behavior for tag selections. */
+  tagsMode: FilterSelectionMode;
   /** Include or exclude behavior for release status selections. */
   statusMode: FilterSelectionMode;
   /** Include or exclude behavior for format selections. */
   formatMode: FilterSelectionMode;
   /** Include or exclude behavior for source selections. */
   sourceMode: FilterSelectionMode;
+  /** Include or exclude behavior for genre selections. */
+  genresMode: FilterSelectionMode;
   /** Selected calendar-year range. */
   yearRange: null | CalendarYearRange;
 };

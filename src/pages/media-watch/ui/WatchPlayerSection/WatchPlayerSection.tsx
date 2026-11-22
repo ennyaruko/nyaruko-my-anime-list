@@ -30,7 +30,6 @@ export function WatchPlayerSection({
     embed,
     track,
     player,
-    saving,
     catalog,
     loading,
     episodes,
@@ -153,7 +152,6 @@ export function WatchPlayerSection({
                   <button
                     key={number}
                     type="button"
-                    disabled={saving}
                     aria-pressed={number === selectedEpisode}
                     aria-label={t("common:watch.episode", { number })}
                     onClick={() => void playback.selectEpisode(number)}

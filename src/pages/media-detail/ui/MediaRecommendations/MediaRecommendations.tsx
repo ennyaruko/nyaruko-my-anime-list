@@ -10,6 +10,7 @@ import { useMediaRecommendations } from "@/features/media-recommendations";
 import {
   useMediaListActions,
   MediaListContextMenu,
+  MediaListValueContextMenu,
 } from "@/features/manage-media-list";
 
 import { MediaDetailLink } from "@/entities/media";
@@ -155,17 +156,26 @@ function LinkedMediaCard({
         {!imageUrl && <NoImageIcon className={styles.noImageIcon} />}
         {(media.status === "CURRENT" || media.status === "REPEATING") &&
           media.progress !== null && (
-            <Progress
-              size="s"
+            <MediaListValueContextMenu
+              field="progress"
               value={media.progress}
               max={media.episodes ?? 12}
-              disabled={actions.isPending}
+              isSaving={actions.isPending}
               editable={actions.canManageList}
-              className={styles.recommendationProgress}
-              onValueChange={(progress) =>
-                actions.updateProgress(media.id, progress)
-              }
-            />
+              onSave={(progress) => actions.updateProgress(media.id, progress)}
+            >
+              <Progress
+                size="s"
+                value={media.progress}
+                max={media.episodes ?? 12}
+                disabled={actions.isPending}
+                editable={actions.canManageList}
+                className={styles.recommendationProgress}
+                onValueChange={(progress) =>
+                  actions.updateProgress(media.id, progress)
+                }
+              />
+            </MediaListValueContextMenu>
           )}
       </div>
       <Title

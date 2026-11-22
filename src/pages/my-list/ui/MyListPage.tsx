@@ -1,3 +1,4 @@
+import { MyListFilters } from "@/features/filters";
 import { useAdultContent } from "@/features/toggle-adult-content";
 import { useWatchQueue, WatchQueueDialog } from "@/features/watch-queue";
 
@@ -13,6 +14,7 @@ import {
   ComponentErrorBoundary,
 } from "@/shared/ui";
 
+import { useMyListStatus } from "../model/useMyListStatus";
 import { useMyListPageData } from "../model/useMyListPageData";
 
 import { MyListGenres } from "./MyListGenres";
@@ -24,6 +26,7 @@ export function MyListPage(accountState: AccountState) {
   const { mode: contentMode } = useAdultContent();
   const { userId, entries, refreshList, isListPending, filterOptionsQuery } =
     useMyListPageData(accountState, contentMode);
+  const { selectStatus, selectedStatus } = useMyListStatus();
   const watchQueue = useWatchQueue();
 
   return (
@@ -49,20 +52,46 @@ export function MyListPage(accountState: AccountState) {
           refreshingContent={<Spinner />}
         >
           <Column gap="m">
-            <ComponentErrorBoundary>
-              <MyListGenres entries={entries} isPending={isListPending} />
-            </ComponentErrorBoundary>
-            <ComponentErrorBoundary>
-              <MyListContent
-                userId={userId}
-                entries={entries}
-                contentMode={contentMode}
-                isListPending={isListPending}
-                options={filterOptionsQuery.data}
-                onAddToWatch={watchQueue.addMedia}
-                optionsLoading={filterOptionsQuery.isPending}
-              />
-            </ComponentErrorBoundary>
+            <MyListFilters
+              userId={userId}
+              entries={entries}
+              status={selectedStatus}
+              contentMode={contentMode}
+              options={filterOptionsQuery.data}
+              optionsLoading={filterOptionsQuery.isPending}
+            >
+              {(
+                filteredEntries,
+                resetFilters,
+                hasUnsavedChanges,
+                filtersPanel,
+                filterByGenre,
+              ) => (
+                <>
+                  <ComponentErrorBoundary>
+                    <MyListGenres
+                      entries={entries}
+                      isPending={isListPending}
+                      onGenreClick={filterByGenre}
+                    />
+                  </ComponentErrorBoundary>
+                  <ComponentErrorBoundary>
+                    <MyListContent
+                      userId={userId}
+                      entries={entries}
+                      selectStatus={selectStatus}
+                      resetFilters={resetFilters}
+                      filtersPanel={filtersPanel}
+                      isListPending={isListPending}
+                      selectedStatus={selectedStatus}
+                      filteredEntries={filteredEntries}
+                      onAddToWatch={watchQueue.addMedia}
+                      hasUnsavedChanges={hasUnsavedChanges}
+                    />
+                  </ComponentErrorBoundary>
+                </>
+              )}
+            </MyListFilters>
           </Column>
         </PullToRefresh>
       </Column>

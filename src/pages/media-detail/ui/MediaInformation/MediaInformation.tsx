@@ -5,6 +5,7 @@ import { Fragment, type ReactNode } from "react";
 import clsx from "clsx";
 
 import type { Media } from "@/entities/media";
+import type { MediaDetail, ShikimoriAgeRating } from "@/entities/media";
 import {
   MediaReleaseStatus,
   getMediaReleaseStatusInfo,
@@ -15,6 +16,7 @@ import { skeletonAnimation } from "@/shared/styles";
 import { Row, Score, Column, Heading } from "@/shared/ui";
 
 import { formatLabelKey } from "../media-detail-labels";
+import { useShikimoriMediaInfo } from "../../model/useShikimoriMediaInfo";
 
 import * as styles from "./MediaInformation.css";
 import * as pageStyles from "../MediaDetailPage.css";
@@ -39,6 +41,7 @@ const sourceLabelKey = {
 
 type MediaInformationProps = {
   language: string;
+  detail?: MediaDetail;
   malId?: null | number;
   media: Media | undefined;
 };
@@ -46,9 +49,11 @@ type MediaInformationProps = {
 export function MediaInformation({
   media,
   malId,
+  detail,
   language,
 }: MediaInformationProps) {
   const { t } = useTranslation(["common"]);
+  const shikimoriInfoQuery = useShikimoriMediaInfo({ detail });
 
   return (
     <section className={pageStyles.section}>
@@ -72,7 +77,12 @@ export function MediaInformation({
         {t("common:mediaDetail.info")}
       </Heading>
       {media ? (
-        <MediaInformationContent media={media} language={language} />
+        <MediaInformationContent
+          media={media}
+          language={language}
+          ageRating={shikimoriInfoQuery.data?.ageRating ?? null}
+          russianTitle={shikimoriInfoQuery.data?.russianTitle ?? null}
+        />
       ) : (
         <MediaInformationSkeleton />
       )}
@@ -83,9 +93,13 @@ export function MediaInformation({
 function MediaInformationContent({
   media,
   language,
+  ageRating,
+  russianTitle,
 }: {
   media: Media;
   language: string;
+  russianTitle: null | string;
+  ageRating: null | ShikimoriAgeRating;
 }) {
   const { t } = useTranslation(["common"]);
   const releaseStatus = getMediaReleaseStatusInfo(media.releaseStatus);
@@ -149,6 +163,9 @@ function MediaInformationContent({
           <span>—</span>
         )}
       </InfoRow>
+      <InfoRow label={t("common:mediaDetail.ageRating")}>
+        {ageRating ? t(`common:mediaDetail.ageRatings.${ageRating}`) : "—"}
+      </InfoRow>
       <InfoRow label={t("common:mediaDetail.format")}>
         {formatKey ? t(formatKey) : (media.format ?? "—")}
       </InfoRow>
@@ -163,6 +180,9 @@ function MediaInformationContent({
       </InfoRow>
       <InfoRow label={t("common:mediaDetail.source")}>
         {sourceKey ? t(sourceKey) : (media.source ?? "—")}
+      </InfoRow>
+      <InfoRow label={t("common:mediaDetail.otherTitles")}>
+        {russianTitle ?? "—"}
       </InfoRow>
     </Column>
   );

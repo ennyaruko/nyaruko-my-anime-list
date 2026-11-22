@@ -1,10 +1,11 @@
 import { yummyApiConfig } from "@/app/config/yummy-api";
 import { remoteEndpoints } from "@/app/config/remote-endpoints";
 import { createMediaPlaybackService } from "@/app/integrations/playback/service";
+import { createYummyMediaInfoService } from "@/app/integrations/yummyani/media-info-service";
+import { createShikimoriMediaInfoService } from "@/app/integrations/shikimori/media-info-service";
 import { createMyMemoryTranslationService } from "@/app/integrations/mymemory/translation-service";
 import { createYummyMediaScreenshotsService } from "@/app/integrations/yummyani/screenshots-service";
 import { createGoogleTranslationService } from "@/app/integrations/google-translate/translation-service";
-import { createFallbackMediaScreenshotsService } from "@/app/integrations/fallback-media-screenshots-service";
 import { createFallbackTranslationService } from "@/app/integrations/translation/fallback-translation-service";
 import { createHentaiTvAdultAnimeVideosService } from "@/app/integrations/hentai-tv/adult-anime-videos-service";
 import { createAnimeApiMediaExternalIdResolver } from "@/app/integrations/anime-api/media-external-id-resolver";
@@ -39,12 +40,16 @@ import { adultAnimeVideosServiceToken } from "@/entities/adult-anime";
 import {
   mediaExternalIdResolverToken,
   mediaScreenshotsServiceToken,
+  mediaShikimoriInfoServiceToken,
 } from "@/entities/media";
 
 import { createServiceRegistry } from "@/shared/lib";
 
 const mediaExternalIdResolver =
   createAnimeApiMediaExternalIdResolver(remoteEndpoints);
+const yummyMediaInfoService = createYummyMediaInfoService(yummyApiConfig);
+const yummyMediaScreenshotsService =
+  createYummyMediaScreenshotsService(yummyApiConfig);
 
 /** Composition root: concrete adapters are registered here and nowhere else. */
 export const appServices = createServiceRegistry()
@@ -78,13 +83,20 @@ export const appServices = createServiceRegistry()
   )
   .register(mediaExternalIdResolverToken, mediaExternalIdResolver)
   .register(
+    mediaShikimoriInfoServiceToken,
+    createShikimoriMediaInfoService(
+      remoteEndpoints,
+      mediaExternalIdResolver,
+      yummyMediaInfoService,
+    ),
+  )
+  .register(
     mediaScreenshotsServiceToken,
-    createFallbackMediaScreenshotsService(
-      createShikimoriMediaScreenshotsService(
-        remoteEndpoints,
-        mediaExternalIdResolver,
-      ),
-      createYummyMediaScreenshotsService(yummyApiConfig),
+    createShikimoriMediaScreenshotsService(
+      remoteEndpoints,
+      mediaExternalIdResolver,
+      fetch,
+      yummyMediaScreenshotsService,
     ),
   )
   .build();

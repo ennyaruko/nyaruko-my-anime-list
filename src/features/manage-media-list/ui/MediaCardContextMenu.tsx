@@ -38,6 +38,8 @@ import {
 
 import { useMediaListActions } from "../model/useMediaListActions";
 
+import { MediaListValueContextMenu } from "./MediaListValueContextMenu";
+
 import * as styles from "./MediaCardContextMenu.css";
 
 type StatusIcon = ComponentType<SVGProps<SVGSVGElement>>;
@@ -299,6 +301,18 @@ export function MediaCardContextMenu({
             (media.status === "CURRENT" || media.status === "REPEATING") &&
             actions.canManageList
           }
+          renderProgress={(progress) => (
+            <MediaListValueContextMenu
+              field="progress"
+              max={media.episodes ?? 12}
+              value={media.progress ?? 0}
+              isSaving={actions.isPending}
+              editable={actions.canManageList}
+              onSave={(progress) => actions.updateProgress(media.id, progress)}
+            >
+              {progress}
+            </MediaListValueContextMenu>
+          )}
         />
       </div>
     </MediaListContextMenu>

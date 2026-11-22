@@ -1,17 +1,14 @@
 import { Link } from "react-router";
+import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 
-import { MyListFilters } from "@/features/filters";
-
-import type { FilterOptions } from "@/entities/filters";
-import type { Media, MyListEntry, MediaContentMode } from "@/entities/media";
+import type { Media, MyListEntry, MyListStatus } from "@/entities/media";
 
 import { Row, Heading } from "@/shared/ui";
 import { DeleteIcon, ArrowDownIcon } from "@/shared/icons";
 
 import { MyListResults } from "../MyListResults";
 import { StatusNavigation } from "../StatusNavigation";
-import { useMyListStatus } from "../../model/useMyListStatus";
 
 import * as styles from "./MyListContent.css";
 
@@ -27,24 +24,29 @@ const statusSections = [
 type MyListContentProps = {
   entries: MyListEntry[];
   isListPending: boolean;
-  optionsLoading: boolean;
+  filtersPanel: ReactNode;
+  resetFilters: VoidFunction;
+  hasUnsavedChanges: boolean;
   userId: string | undefined;
-  contentMode: MediaContentMode;
-  options: undefined | FilterOptions;
+  selectedStatus: MyListStatus;
+  filteredEntries: MyListEntry[];
   onAddToWatch: (media: Media) => void;
+  selectStatus: (status: MyListStatus) => void;
 };
 
 export function MyListContent({
   userId,
   entries,
-  options,
-  contentMode,
+  selectStatus,
+  resetFilters,
+  filtersPanel,
   onAddToWatch,
   isListPending,
-  optionsLoading,
+  selectedStatus,
+  filteredEntries,
+  hasUnsavedChanges,
 }: MyListContentProps) {
   const { t } = useTranslation(["common"]);
-  const { selectStatus, selectedStatus } = useMyListStatus();
   const selectedSection = statusSections.find(
     (section) => section.key === selectedStatus,
   )!;
@@ -73,51 +75,35 @@ export function MyListContent({
           count: entries.filter((entry) => entry.status === key).length,
         }))}
       />
-      <MyListFilters
-        userId={userId}
-        entries={entries}
-        options={options}
-        status={selectedStatus}
-        contentMode={contentMode}
-        optionsLoading={optionsLoading}
+      <Heading
+        id={selectedSection.key}
+        variant={selectedSection.variant}
+        action={
+          hasUnsavedChanges ? (
+            <Row gap="xxs" alignItem="center">
+              <span className={styles.foundResult}>
+                {isListPending
+                  ? "—"
+                  : t("common:list.filteredResults", {
+                      count: filteredEntries.length,
+                    })}
+              </span>
+              <button onClick={resetFilters} className={styles.resetFilters}>
+                <DeleteIcon />
+              </button>
+            </Row>
+          ) : undefined
+        }
       >
-        {(filteredEntries, resetFilters, hasUnsavedChanges, filtersPanel) => (
-          <>
-            <Heading
-              id={selectedSection.key}
-              variant={selectedSection.variant}
-              action={
-                hasUnsavedChanges ? (
-                  <Row gap="xxs" alignItem="center">
-                    <span className={styles.foundResult}>
-                      {isListPending
-                        ? "—"
-                        : t("common:list.filteredResults", {
-                            count: filteredEntries.length,
-                          })}
-                    </span>
-                    <button
-                      onClick={resetFilters}
-                      className={styles.resetFilters}
-                    >
-                      <DeleteIcon />
-                    </button>
-                  </Row>
-                ) : undefined
-              }
-            >
-              {t(`common:ui.watchStatus.${selectedSection.label}`)}
-            </Heading>
-            {filtersPanel}
-            <MyListResults
-              userId={userId}
-              entries={filteredEntries}
-              isPending={isListPending}
-              onAddToWatch={onAddToWatch}
-            />
-          </>
-        )}
-      </MyListFilters>
+        {t(`common:ui.watchStatus.${selectedSection.label}`)}
+      </Heading>
+      {filtersPanel}
+      <MyListResults
+        userId={userId}
+        entries={filteredEntries}
+        isPending={isListPending}
+        onAddToWatch={onAddToWatch}
+      />
     </>
   );
 }

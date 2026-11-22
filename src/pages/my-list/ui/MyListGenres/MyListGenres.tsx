@@ -5,8 +5,16 @@ import type { MyListEntry } from "@/entities/media";
 
 import { Table, Heading, TableSkeleton } from "@/shared/ui";
 
-type MyListGenresProps = { isPending: boolean; entries: MyListEntry[] };
-export function MyListGenres({ entries, isPending }: MyListGenresProps) {
+type MyListGenresProps = {
+  isPending: boolean;
+  entries: MyListEntry[];
+  onGenreClick: (genre: string) => void;
+};
+export function MyListGenres({
+  entries,
+  isPending,
+  onGenreClick,
+}: MyListGenresProps) {
   const { t } = useTranslation(["common"]);
   const genres = useMemo(
     () =>
@@ -29,7 +37,12 @@ export function MyListGenres({ entries, isPending }: MyListGenresProps) {
       {isPending ? (
         <TableSkeleton values={[82, 64, 50]} />
       ) : (
-        <Table numericList items={genres} initialVisibleCount={3} />
+        <Table
+          numericList
+          items={genres}
+          initialVisibleCount={3}
+          onItemClick={({ label }) => onGenreClick(label)}
+        />
       )}
     </>
   );

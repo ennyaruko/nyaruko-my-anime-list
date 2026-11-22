@@ -145,6 +145,7 @@ export function MediaDetailPage({ userId, mediaId }: MediaDetailPageProps) {
           <ComponentErrorBoundary resetKeys={[mediaId]}>
             <MediaInformation
               media={media}
+              detail={detail}
               malId={detail?.malId}
               language={i18n.language}
             />

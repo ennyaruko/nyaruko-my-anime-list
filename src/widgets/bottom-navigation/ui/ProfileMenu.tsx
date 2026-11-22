@@ -21,6 +21,7 @@ import {
   ExitIcon,
   UserIcon,
   InfoIcon,
+  RepeatIcon,
   ThemeSunIcon,
   ThemeAutoIcon,
   ThemeMoonIcon,
@@ -222,6 +223,17 @@ export function ProfileMenu({
         >
           <InfoIcon className={styles.debugConsoleIcon} />
           <span>{t("common:debugConsole.open")}</span>
+        </button>
+        <button
+          type="button"
+          className={styles.debugConsoleButton}
+          onClick={() => {
+            onClose();
+            window.location.reload();
+          }}
+        >
+          <RepeatIcon className={styles.debugConsoleIcon} />
+          <span>{t("common:debugConsole.reloadApp")}</span>
         </button>
       </ProfileMenuSection>
 

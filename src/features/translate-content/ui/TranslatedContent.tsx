@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { Button } from "@/shared/ui";
 import { useAppService, queryCacheConfig } from "@/shared/lib";
@@ -30,21 +30,23 @@ export function TranslatedContent({
 }: TranslatedContentProps) {
   const { t } = useTranslation(["common"]);
   const service = useAppService(translationServiceToken);
+  const queryClient = useQueryClient();
   const hasContent = Boolean(
     content.trim() || extraTexts.some((text) => text.trim()),
   );
+  const queryKey = queryCacheConfig.families.contentTranslation.key(
+    content,
+    variant,
+    extraTexts,
+  );
   const query = useQuery({
+    queryKey,
     retry: false,
     staleTime: Infinity,
     gcTime: 30 * 60_000,
     throwOnError: false,
     enabled: hasContent,
     refetchOnWindowFocus: false,
-    queryKey: queryCacheConfig.families.contentTranslation.key(
-      content,
-      variant,
-      extraTexts,
-    ),
     queryFn: async ({ signal }) => {
       const { getContentTexts } = await import("@/shared/lib/content-markup");
       signal.throwIfAborted();
@@ -67,7 +69,9 @@ export function TranslatedContent({
             <Button
               size="s"
               variant="flat"
-              onClick={() => void query.refetch()}
+              onClick={() =>
+                void queryClient.resetQueries({ queryKey, exact: true })
+              }
             >
               {t("common:translation.retry")}
             </Button>

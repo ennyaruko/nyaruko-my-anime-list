@@ -24,6 +24,7 @@ type MyListFiltersProps = {
     resetFilters: VoidFunction,
     hasUnsavedChanges: boolean,
     filtersPanel: ReactNode,
+    filterByGenre: (genre: string) => void,
   ) => ReactNode;
 };
 
@@ -60,6 +61,8 @@ export function MyListFilters({
       ),
     [contentMode, entries, filters, options, status],
   );
+  const filterByGenre = (genre: string) =>
+    updateFilters({ genres: [genre], genresMode: "include" });
 
   return children(
     filteredEntries,
@@ -80,5 +83,6 @@ export function MyListFilters({
       hasUnsavedChanges={hasUnsavedChanges}
       onOpenChange={filterDrawer.onOpenChange}
     />,
+    filterByGenre,
   );
 }

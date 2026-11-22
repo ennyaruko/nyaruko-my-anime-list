@@ -8,29 +8,41 @@ const httpsUrl = z
     return url.protocol === "https:" && !url.username && !url.password;
   }, "Expected an HTTPS URL without credentials");
 
+const fallbackTargetSchema = z.union([
+  z.string().min(1),
+  z.object({ provider: z.literal("yummyani") }),
+]);
+
 const manifestSchema = z.object({
-  version: z.literal(2),
   encoding: z.literal("base64"),
+  // The version is informational; the validated manifest shape defines compatibility.
+  version: z.number().int().positive(),
   endpoints: z.record(
     z.union([
       z.string().min(1),
       z.object({
         default: z.string().min(1).nullable(),
-        fallbacks: z.array(z.string().min(1)).optional(),
+        fallbacks: z.array(fallbackTargetSchema).optional(),
       }),
     ]),
   ),
 });
 
 export type EndpointConfig = {
-  fallbacks?: string[];
   default: null | string;
+  fallbacks?: EndpointFallback[];
 };
+
+export type EndpointFallback = string | { provider: "yummyani" };
+
+export type EndpointTarget =
+  { type: "url"; url: string } | { type: "provider"; provider: "yummyani" };
 
 type DefaultEndpointConfig = EndpointConfig & { fallbacks: string[] };
 
 export type EndpointResolver = {
   resolve: (name: string) => Promise<string>;
+  resolveTargets: (name: string) => Promise<EndpointTarget[]>;
   resolveFallback: (name: string, index?: number) => Promise<string>;
 };
 
@@ -83,7 +95,7 @@ export function createGistEndpointResolver({
       remote = decodedEndpoints;
       refreshAt = now() + ttlMs;
     } catch {
-      // Offline, invalid JSON and unsupported versions retain the last valid URLs.
+      // Offline or invalid manifests retain the last valid URLs.
       refreshAt = now() + Math.min(ttlMs, 30_000);
     }
   }
@@ -119,7 +131,40 @@ export function createGistEndpointResolver({
         throw new Error(
           `Fallback endpoint is not configured: ${name}[${index}]`,
         );
+      if (typeof endpoint !== "string")
+        throw new Error(
+          `Fallback endpoint is a provider target: ${name}[${index}]`,
+        );
       return endpoint;
+    },
+    async resolveTargets(name) {
+      if (gistUrl && now() >= refreshAt) {
+        pending ??= refresh().finally(() => {
+          pending = undefined;
+        });
+        await pending;
+      }
+
+      const config = Object.hasOwn(remote, name)
+        ? remote[name]
+        : Object.hasOwn(fallback, name)
+          ? fallback[name]
+          : undefined;
+      if (!config) throw new Error(`Endpoint is not configured: ${name}`);
+
+      const targets: EndpointTarget[] = [
+        ...(config.default
+          ? [{ url: config.default, type: "url" as const }]
+          : []),
+        ...(config.fallbacks ?? []).map((target) =>
+          typeof target === "string"
+            ? { url: target, type: "url" as const }
+            : { type: "provider" as const, provider: target.provider },
+        ),
+      ];
+      if (targets.length === 0)
+        throw new Error(`Endpoint has no configured targets: ${name}`);
+      return targets;
     },
   };
 }
@@ -146,7 +191,11 @@ function decodeEndpoints(
         {
           default: config.default === null ? null : decodeUrl(config.default),
           ...(config.fallbacks
-            ? { fallbacks: config.fallbacks.map(decodeUrl) }
+            ? {
+                fallbacks: config.fallbacks.map((target) =>
+                  typeof target === "string" ? decodeUrl(target) : target,
+                ),
+              }
             : {}),
         },
       ];

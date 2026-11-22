@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import type { ReactNode, ReactElement } from "react";
 
 import clsx from "clsx";
 
@@ -23,6 +24,7 @@ export type MediaCardProps = {
   editableProgress?: boolean;
   progressUpdating?: boolean;
   onProgressChange?: (progress: number) => void;
+  renderProgress?: (progress: ReactElement) => ReactNode;
 };
 
 export type MediaCardSkeletonProps = { size?: "l" | "s" };
@@ -58,6 +60,7 @@ export function MediaCardSkeleton({ size = "l" }: MediaCardSkeletonProps) {
 export function MediaCard({
   media,
   size = "l",
+  renderProgress,
   onProgressChange,
   editableProgress = false,
   progressUpdating = false,
@@ -67,6 +70,19 @@ export function MediaCard({
   const isPlaceholder = !coverUrl;
   const formatLabel =
     media.format === "TV" ? t("common:tvSeries") : media.format;
+  const progress =
+    (media.status === "CURRENT" || media.status === "REPEATING") &&
+    media.progress !== null ? (
+      <Progress
+        max={media.episodes ?? 12}
+        editable={editableProgress}
+        disabled={progressUpdating}
+        className={styles.progress}
+        value={media.progress ?? 0}
+        size={size === "l" ? "m" : "s"}
+        onValueChange={onProgressChange}
+      />
+    ) : null;
 
   return (
     <article className={styles.root}>
@@ -99,18 +115,7 @@ export function MediaCard({
               />
             )}
             {isPlaceholder && <NoImageIcon className={styles.noImageIcon} />}
-            {(media.status === "CURRENT" || media.status === "REPEATING") &&
-              media.progress !== null && (
-                <Progress
-                  max={media.episodes ?? 12}
-                  editable={editableProgress}
-                  disabled={progressUpdating}
-                  className={styles.progress}
-                  value={media.progress ?? 0}
-                  size={size === "l" ? "m" : "s"}
-                  onValueChange={onProgressChange}
-                />
-              )}
+            {progress && (renderProgress ? renderProgress(progress) : progress)}
           </div>
         </div>
         <Title

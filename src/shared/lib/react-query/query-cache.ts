@@ -236,6 +236,13 @@ export const queryCacheConfig = {
         [mediaId, fallbackMalId] as const,
       { staleTimeMs: 30 * DAY_MS },
     ),
+    /** Shikimori titles and age ratings rarely change. */
+    mediaShikimoriInfo: defineQueryFamily(
+      ["media-shikimori-info"],
+      (mediaId: number, fallbackMalId: null | number) =>
+        [mediaId, fallbackMalId] as const,
+      { staleTimeMs: 30 * DAY_MS },
+    ),
     /** Фильтры считаются свежими 90 дней. */
     filters: defineQueryFamily(
       ["filters"],

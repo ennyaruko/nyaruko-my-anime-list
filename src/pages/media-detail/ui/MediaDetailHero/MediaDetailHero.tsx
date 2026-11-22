@@ -8,6 +8,7 @@ import clsx from "clsx";
 import {
   useMediaListActions,
   MediaListContextMenu,
+  MediaListValueContextMenu,
 } from "@/features/manage-media-list";
 
 import type { Media, MediaListStatus } from "@/entities/media";
@@ -184,28 +185,47 @@ export function MediaDetailHero({ media, userId }: MediaDetailHeroProps) {
               className={styles.ratingBarContent}
             >
               <Row gap="xs" alignItem="center">
-                <Rating
-                  max={10}
-                  size="s"
+                <MediaListValueContextMenu
+                  field="score"
                   value={media.score ?? 0}
-                  onChange={handleScoreChange}
-                  onValuePreview={setPreviewScore}
-                  className={clsx(actions.isPending && styles.ratingDisabled)}
-                />
+                  isSaving={actions.isPending}
+                  editable={actions.canManageList}
+                  onSave={(score) => actions.updateScore(media.id, score)}
+                >
+                  <Rating
+                    max={10}
+                    size="s"
+                    value={media.score ?? 0}
+                    onChange={handleScoreChange}
+                    onValuePreview={setPreviewScore}
+                    className={clsx(actions.isPending && styles.ratingDisabled)}
+                  />
+                </MediaListValueContextMenu>
                 <div className={styles.ratingValue}>
                   {(previewScore ?? media.score ?? 0).toFixed(1)}
                 </div>
               </Row>
               {media.progress !== null && (
-                <Progress
-                  size="l"
+                <MediaListValueContextMenu
+                  field="progress"
                   value={media.progress}
                   max={media.episodes ?? 12}
-                  className={styles.progress}
-                  disabled={actions.isPending}
+                  isSaving={actions.isPending}
                   editable={actions.canManageList}
-                  onValueChange={handleProgressChange}
-                />
+                  onSave={(progress) =>
+                    actions.updateProgress(media.id, progress)
+                  }
+                >
+                  <Progress
+                    size="l"
+                    value={media.progress}
+                    max={media.episodes ?? 12}
+                    className={styles.progress}
+                    disabled={actions.isPending}
+                    editable={actions.canManageList}
+                    onValueChange={handleProgressChange}
+                  />
+                </MediaListValueContextMenu>
               )}
             </Row>
           </Row>

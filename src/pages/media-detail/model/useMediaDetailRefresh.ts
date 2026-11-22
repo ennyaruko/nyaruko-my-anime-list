@@ -37,6 +37,12 @@ export function useMediaDetailRefresh({
         ),
       }),
       queryClient.invalidateQueries({
+        queryKey: queryCacheConfig.families.mediaShikimoriInfo.key(
+          mediaId,
+          malId ?? null,
+        ),
+      }),
+      queryClient.invalidateQueries({
         queryKey: queryCacheConfig.families.mediaReviews.key(
           userId ?? "unknown",
           mediaId,

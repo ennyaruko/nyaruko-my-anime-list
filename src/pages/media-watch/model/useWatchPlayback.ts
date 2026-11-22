@@ -62,9 +62,9 @@ export function useWatchPlayback(
     status: media.status,
     progress: media.progress ?? 0,
   });
-  const [saving, setSaving] = useState(false);
   const [restoredMediaId, setRestoredMediaId] = useState<null | number>(null);
-  const progressPending = useRef(false);
+  const progressPending = useRef(0);
+  const progressWriteQueue = useRef<Promise<void>>(Promise.resolve());
 
   const progress = Math.max(media.progress ?? 0, savedEntry.progress);
   const status =
@@ -376,32 +376,38 @@ export function useWatchPlayback(
   });
 
   async function selectEpisode(next: number) {
-    if (progressPending.current || next === selectedEpisode) return;
+    if (next === selectedEpisode) return;
     const nextProgress = src
       ? progressAfterEpisodeChange(progress, selectedEpisode, next)
       : progress;
+    setEpisode(next);
+    saveSelectedPlayback(next, nextProgress);
+
     if (nextProgress > progress) {
-      progressPending.current = true;
-      setSaving(true);
-      try {
-        const nextStatus = statusAfterPlaybackProgress(
-          status,
-          nextProgress,
-          total,
-        );
+      if (!actions.canManageList) return;
+
+      const nextStatus = statusAfterPlaybackProgress(
+        status,
+        nextProgress,
+        total,
+      );
+      progressPending.current += 1;
+      const update = progressWriteQueue.current.then(async () => {
         await actions.updateProgressAsync(media.id, nextProgress, {
           status: nextStatus,
         });
         setSavedEntry({ status: nextStatus, progress: nextProgress });
-      } catch {
-        return;
-      } finally {
-        progressPending.current = false;
-        setSaving(false);
-      }
+      });
+      progressWriteQueue.current = update.catch(() => undefined);
+      void update.then(
+        () => {
+          progressPending.current -= 1;
+        },
+        () => {
+          progressPending.current -= 1;
+        },
+      );
     }
-    setEpisode(next);
-    saveSelectedPlayback(next, nextProgress);
   }
 
   function selectTrack(id: string) {
@@ -427,7 +433,6 @@ export function useWatchPlayback(
     track,
     total,
     player,
-    saving,
     catalog,
     loading,
     episodes,

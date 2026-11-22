@@ -16,6 +16,10 @@ describe("createShikimoriMediaScreenshotsService", () => {
   it("uses the resolved Shikimori ID and normalizes relative image paths", async () => {
     const endpoints = {
       resolve: vi.fn().mockResolvedValue(endpoint),
+      resolveAll: vi.fn().mockResolvedValue([endpoint]),
+      resolveTargets: vi
+        .fn()
+        .mockResolvedValue([{ type: "url", url: endpoint }]),
     };
     const externalIds = {
       resolve: vi.fn().mockResolvedValue({ malId: 54000, shikimoriId: 54000 }),

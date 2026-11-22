@@ -46,26 +46,50 @@ export function createShikimoriMediaScreenshotsService(
   endpoints: EndpointResolver,
   externalIds: MediaExternalIdResolver,
   fetcher: typeof fetch = fetch,
+  yummyani: MediaScreenshotsService = { getScreenshots: async () => [] },
 ): MediaScreenshotsService {
   return {
     async getScreenshots(detail: MediaDetail, signal) {
-      const ids = await externalIds.resolve(
-        detail.media.id,
-        detail.malId,
-        signal,
-      );
-      if (!ids.shikimoriId) return [];
-
       try {
-        const endpoint = await endpoints.resolve("screenshots");
-        const url = endpoint.replace(":shikimoriId", String(ids.shikimoriId));
-        const response = await fetcher(url, {
-          signal,
-          credentials: "omit",
-        });
-        if (!response.ok) return [];
+        const targets = await endpoints.resolveTargets("screenshots");
+        let shikimoriId: null | number = null;
+        for (const target of targets) {
+          if (target.type === "provider") {
+            try {
+              const screenshots = await yummyani.getScreenshots(detail, signal);
+              if (screenshots.length > 0) return screenshots;
+            } catch (error) {
+              if (signal?.aborted) throw error;
+            }
+            continue;
+          }
 
-        return parseScreenshots(await response.json());
+          if (shikimoriId === null) {
+            try {
+              shikimoriId = (
+                await externalIds.resolve(detail.media.id, detail.malId, signal)
+              ).shikimoriId;
+            } catch (error) {
+              if (signal?.aborted) throw error;
+              continue;
+            }
+            if (!shikimoriId) continue;
+          }
+          try {
+            const url = target.url.replace(":shikimoriId", String(shikimoriId));
+            const response = await fetcher(url, {
+              signal,
+              credentials: "omit",
+            });
+            if (!response.ok) continue;
+
+            const screenshots = parseScreenshots(await response.json());
+            if (screenshots.length > 0) return screenshots;
+          } catch (error) {
+            if (signal?.aborted) throw error;
+          }
+        }
+        return [];
       } catch (error) {
         if (signal?.aborted) throw error;
         return [];

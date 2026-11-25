@@ -2,18 +2,12 @@ import { style } from "@vanilla-extract/css";
 
 import { colors, primitives } from "@/shared/styles";
 export const toggle = style({
-  height: "13px",
-  minHeight: "13px",
-  width: "fit-content",
   alignSelf: "flex-end",
   color: colors.text.action,
   background: "transparent",
   gap: primitives.spacing.tiny,
   selectors: {
     "&&": {
-      padding: 0,
-      height: "13px",
-      minHeight: "13px",
       background: "transparent",
       color: colors.text.action,
     },

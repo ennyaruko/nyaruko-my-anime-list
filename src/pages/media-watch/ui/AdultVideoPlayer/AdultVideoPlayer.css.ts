@@ -9,6 +9,25 @@ export const section = style({
   gap: primitives.spacing.m,
 });
 
+export const providerLink = style({
+  display: "flex",
+  alignItems: "center",
+  padding: primitives.spacing.xxs,
+  margin: `calc(${primitives.spacing.xxs} * -1)`,
+  ...typography.caption["2xs"],
+  textDecoration: "none",
+  color: colors.text.action,
+  selectors: {
+    "&:hover": { textDecoration: "underline" },
+  },
+});
+
+export const providerLinkArrow = style({
+  width: 16,
+  height: 16,
+  transform: "rotate(180deg)",
+});
+
 export const placeholder = style({
   display: "flex",
   minHeight: "220px",

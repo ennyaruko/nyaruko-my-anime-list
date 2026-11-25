@@ -19,6 +19,8 @@ export const item = style({
 const buttonBase = {
   font: "inherit",
   cursor: "pointer",
+  padding: primitives.spacing.xxxs,
+  margin: `calc(${primitives.spacing.xxxs} * -1)`,
   selectors: {
     "&:disabled": { cursor: "not-allowed" },
   },

@@ -34,11 +34,12 @@ export const voteNegative = style({ color: colors.status.negative });
 export const replyLink = style({
   ...typography.caption["2xs"],
   border: 0,
-  padding: 0,
   cursor: "pointer",
   textAlign: "left",
   color: colors.text.action,
   background: "transparent",
+  padding: primitives.spacing.xxs,
+  margin: `calc(${primitives.spacing.xxs} * -1)`,
 });
 
 export const replies = style({

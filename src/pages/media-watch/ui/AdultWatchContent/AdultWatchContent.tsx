@@ -48,7 +48,7 @@ export function AdultWatchContent({ detail }: { detail: MediaDetail }) {
         isLoading={videosQuery.isPending}
         onRetry={() => void videosQuery.refetch()}
       />
-      <AdultVideoPlayer title={title} video={selectedVideo} />
+      <AdultVideoPlayer title={title} source={source} video={selectedVideo} />
       <span role="status" aria-live="polite" className={styles.srOnly}>
         {selectedVideo
           ? t("common:watch.adultSelectedEpisode", {

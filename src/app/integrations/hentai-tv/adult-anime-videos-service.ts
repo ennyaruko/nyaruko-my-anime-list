@@ -49,6 +49,7 @@ function mapVideo(
     embedUrl: video.embedUrl,
     cover: resolveAsset(video.cover, assetOrigin),
     thumbnail: resolveAsset(video.thumb, assetOrigin),
+    pageUrl: `https://hentai.tv/hentai/${encodeURIComponent(video.slug)}`,
   };
 }
 

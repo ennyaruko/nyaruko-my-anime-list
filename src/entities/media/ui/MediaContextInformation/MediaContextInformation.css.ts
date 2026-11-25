@@ -51,6 +51,8 @@ export const genres = style({
 export const genreLink = style({
   textDecoration: "none",
   color: colors.text.action,
+  padding: primitives.spacing.xxxs,
+  margin: `calc(${primitives.spacing.xxxs} * -1)`,
   selectors: {
     "&:hover": { textDecoration: "underline" },
   },

@@ -10,6 +10,7 @@ const adultVideoSchema = z.object({
   id: z.string().min(1),
   censored: z.boolean(),
   year: z.number().int(),
+  slug: z.string().min(1),
   ep: z.number().positive(),
   tags: z.array(z.string()),
   rating: z.number().finite(),

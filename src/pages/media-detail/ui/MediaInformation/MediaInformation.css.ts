@@ -34,6 +34,8 @@ export const genreList = style({
 export const genreLink = style({
   textDecoration: "none",
   color: colors.text.action,
+  padding: primitives.spacing.xxxs,
+  margin: `calc(${primitives.spacing.xxxs} * -1)`,
   selectors: {
     "&:hover": { textDecoration: "underline" },
   },
@@ -42,6 +44,8 @@ export const genreLink = style({
 export const shikimoriLink = style({
   display: "flex",
   alignItems: "center",
+  padding: primitives.spacing.xxs,
+  margin: `calc(${primitives.spacing.xxs} * -1)`,
   ...typography.caption["2xs"],
   textDecoration: "none",
   color: colors.text.action,

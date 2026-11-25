@@ -65,12 +65,6 @@ export default {
     loginRequired: "Введите имя пользователя",
     loginLatinOnly: "Имя пользователя не должно содержать кириллицу",
   },
-  blockStatus: {
-    notFoundDescription:
-      "Возможно, ссылка устарела или в адресе допущена ошибка",
-    emptyDescription:
-      "Попробуйте изменить параметры поиска или добавить новое аниме",
-  },
   errorBoundary: {
     retry: "Повторить",
     reload: "Перезагрузить",
@@ -102,6 +96,14 @@ export default {
     filteredResults_few: "Найдено: {{count}}",
     filteredResults_many: "Найдено: {{count}}",
     filteredResults_other: "Найдено: {{count}}",
+  },
+  blockStatus: {
+    forbiddenTitle: "Страница запрещена",
+    forbiddenDescription: "Попробуйте сменить режим контента в меню профиля",
+    notFoundDescription:
+      "Возможно, ссылка устарела или в адресе допущена ошибка",
+    emptyDescription:
+      "Попробуйте изменить параметры поиска или добавить новое аниме",
   },
   searchPosition: {
     restore: "Вернуться",
@@ -142,7 +144,6 @@ export default {
     title: "Журнал отладки",
     empty: "Записей пока нет",
     sectionTitle: "Приложение",
-    reloadApp: "Перезагрузить",
     entryCount_one: "{{count}} запись",
     entryCount_few: "{{count}} записи",
     entryCount_many: "{{count}} записей",
@@ -373,6 +374,7 @@ export default {
     sorting: "Сортировка комментариев",
     scheduleEpisode: "Серия {{number}}",
     noComments: "Комментариев пока нет",
+    goToHentaiTv: "Перейти на Hentai TV",
     episodeCount_one: "{{count}} эпизод",
     episodeCount_few: "{{count}} эпизода",
     adultChooseEpisode: "Выберите эпизод",
@@ -381,6 +383,7 @@ export default {
     episodeCount_other: "{{count}} эпизода",
     restore: "Вернуться к основным плеерам",
     loadFailed: "Не удалось загрузить аниме",
+    goToMuchoHentai: "Перейти на MuchoHentai",
     replies_one: "Показать ответ ({{count}})",
     replies_few: "Показать ответы ({{count}})",
     replies_many: "Показать ответы ({{count}})",

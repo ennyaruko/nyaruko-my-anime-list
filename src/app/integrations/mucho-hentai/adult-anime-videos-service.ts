@@ -43,6 +43,7 @@ function mapVideo(video: MuchoHentaiVideo): null | AdultVideo {
     embedUrl: video.embedUrl,
     censored: video.censored,
     thumbnail: video.thumbnail,
+    pageUrl: `https://muchohentai.com/avH6Dh/${encodeURIComponent(video.id)}`,
   };
 }
 

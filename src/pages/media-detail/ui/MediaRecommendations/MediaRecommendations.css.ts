@@ -94,6 +94,8 @@ export const allRecommendationsLink = style({
   ...typography.caption["2xs"],
   textDecoration: "none",
   color: colors.text.action,
+  padding: primitives.spacing.xxs,
+  margin: `calc(${primitives.spacing.xxs} * -1)`,
   selectors: {
     "&:hover": { textDecoration: "underline" },
   },

@@ -71,11 +71,12 @@ export const selectedValues = style({
 
 export const selectedValue = style({
   border: 0,
-  padding: 0,
   color: "inherit",
   cursor: "pointer",
   textAlign: "left",
   background: "transparent",
+  padding: primitives.spacing.xxxs,
+  margin: `calc(${primitives.spacing.xxxs} * -1)`,
   selectors: { "&:hover": { textDecoration: "underline" } },
 });
 

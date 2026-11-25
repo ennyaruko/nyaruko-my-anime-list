@@ -87,6 +87,8 @@ export const more = style({
   cursor: "pointer",
   width: "fit-content",
   color: colors.text.action,
+  padding: primitives.spacing.xxxs,
+  margin: `calc(${primitives.spacing.xxxs} * -1)`,
   selectors: {
     "&:disabled": { opacity: 0.5, cursor: "not-allowed" },
   },

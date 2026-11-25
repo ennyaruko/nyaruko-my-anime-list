@@ -31,6 +31,7 @@ export { ReactComponent as ThemeAutoIcon } from "./theme-auto.svg";
 export { ReactComponent as NoContentIcon } from "./no-content.svg";
 export { ReactComponent as ArrowDownIcon } from "./arrow-down.svg";
 export { ReactComponent as MinusWideIcon } from "./minus-wide.svg";
+export { ReactComponent as StrictPageIcon } from "./strict-page.svg";
 export { ReactComponent as TranslationIcon } from "./translation.svg";
 export { ReactComponent as QuickActionIcon } from "./quick-action.svg";
 export { ReactComponent as HeartFilledIcon } from "./heart-filled.svg";

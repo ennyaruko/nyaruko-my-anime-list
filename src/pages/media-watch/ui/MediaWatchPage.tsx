@@ -17,7 +17,7 @@ import {
   Spinner,
   BackLink,
   Container,
-  BlockStatusNotFound,
+  BlockStatusForbidden,
 } from "@/shared/ui";
 
 import { WatchContent } from "./WatchContent";
@@ -56,7 +56,7 @@ export function MediaWatchPage({ userId, mediaId }: MediaWatchPageProps) {
         {query.data ? (
           !isMediaVisibleInContentMode(query.data.media, contentMode) ? (
             <Row wide alignItem="center" justifyContent="center">
-              <BlockStatusNotFound />
+              <BlockStatusForbidden />
             </Row>
           ) : contentMode === "hentai" ? (
             <AdultWatchContent

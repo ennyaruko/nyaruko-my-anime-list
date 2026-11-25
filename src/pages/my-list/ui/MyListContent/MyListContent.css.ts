@@ -1,6 +1,6 @@
 import { style } from "@vanilla-extract/css";
 
-import { colors, typography } from "@/shared/styles";
+import { colors, primitives, typography } from "@/shared/styles";
 
 export const foundResult = style({
   ...typography.caption["2xs"],
@@ -20,6 +20,8 @@ export const recommendationsLink = style({
   ...typography.caption["2xs"],
   textDecoration: "none",
   color: colors.text.action,
+  padding: primitives.spacing.xxs,
+  margin: `calc(${primitives.spacing.xxs} * -1)`,
   selectors: {
     "&:hover": { textDecoration: "underline" },
   },

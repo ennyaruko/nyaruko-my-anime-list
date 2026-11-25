@@ -9,6 +9,8 @@ export const button = style({
   cursor: "pointer",
   color: colors.text.action,
   background: "transparent",
+  padding: primitives.spacing.xxxs,
+  margin: `calc(${primitives.spacing.xxxs} * -1)`,
   selectors: { "&:hover": { textDecoration: "underline" } },
 });
 export const active = style({

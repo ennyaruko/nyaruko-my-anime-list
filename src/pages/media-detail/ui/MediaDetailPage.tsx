@@ -22,6 +22,7 @@ import {
   Container,
   PullToRefresh,
   BlockStatusNotFound,
+  BlockStatusForbidden,
   ComponentErrorBoundary,
 } from "@/shared/ui";
 
@@ -96,7 +97,7 @@ export function MediaDetailPage({ userId, mediaId }: MediaDetailPageProps) {
   if (detail && !isMediaVisibleInContentMode(detail.media, contentMode)) {
     return (
       <Row wide alignItem="center" justifyContent="center">
-        <BlockStatusNotFound />
+        <BlockStatusForbidden />
       </Row>
     );
   }

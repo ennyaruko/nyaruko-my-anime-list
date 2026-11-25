@@ -8,6 +8,7 @@ export type AdultVideo = {
   tags: string[];
   episode: number;
   quality: string;
+  pageUrl: string;
   language: string;
   duration: string;
   embedUrl: string;

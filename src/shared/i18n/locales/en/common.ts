@@ -65,11 +65,6 @@ export default {
     passwordRequired: "Password is required",
     loginLatinOnly: "Username must not contain Cyrillic characters",
   },
-  blockStatus: {
-    emptyDescription: "Try changing your search criteria or adding a new anime",
-    notFoundDescription:
-      "The link may be outdated or the address may contain an error",
-  },
   list: {
     list: "List",
     tags: "Tags",
@@ -111,6 +106,25 @@ export default {
     saved: "Page {{page}}, anime {{anime}}",
     returnToStart: "Return to the beginning of search",
   },
+  blockStatus: {
+    forbiddenTitle: "Page forbidden",
+    forbiddenDescription: "Try changing the content mode in the profile menu",
+    emptyDescription: "Try changing your search criteria or adding a new anime",
+    notFoundDescription:
+      "The link may be outdated or the address may contain an error",
+  },
+  debugConsole: {
+    copy: "Copy",
+    clear: "Clear",
+    close: "Close",
+    open: "Debug log",
+    title: "Debug log",
+    empty: "No entries yet",
+    sectionTitle: "Application",
+    entryCount_one: "{{count}} entry",
+    entryCount_other: "{{count}} entries",
+    description: "Recent app messages and browser errors",
+  },
   sort: {
     score: "By Score",
     title: "By Title",
@@ -131,19 +145,6 @@ export default {
       "No similar titles were found for your completed anime",
     noCompletedAnimeDescription:
       "Add anime with the Completed status to get recommendations",
-  },
-  debugConsole: {
-    copy: "Copy",
-    clear: "Clear",
-    close: "Close",
-    open: "Debug log",
-    title: "Debug log",
-    empty: "No entries yet",
-    sectionTitle: "Application",
-    reloadApp: "Reload application",
-    entryCount_one: "{{count}} entry",
-    entryCount_other: "{{count}} entries",
-    description: "Recent app messages and browser errors",
   },
   watchQueue: {
     clear: "Clear",
@@ -362,8 +363,10 @@ export default {
     noComments: "No comments yet",
     adultUncensored: "Uncensored",
     fallback: "Alternative players",
+    goToHentaiTv: "Go to Hentai TV",
     adultVideoPlayer: "Video player",
     adultEpisode: "Episode {{number}}",
+    goToMuchoHentai: "Go to MuchoHentai",
     restore: "Return to primary players",
     scheduleEpisode: "Episode {{number}}",
     episodeCount_one: "{{count}} episode",

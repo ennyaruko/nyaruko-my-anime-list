@@ -6,8 +6,7 @@ import { showNotification } from "@/shared/ui";
 const SCREEN_ROTATION_STORAGE_KEY = "screen-auto-rotation";
 
 type ScreenOrientationController = {
-  unlock: () => void;
-  lock: (orientation: "portrait") => Promise<void>;
+  lock: (orientation: "any" | "portrait") => Promise<void>;
 };
 
 function getScreenOrientationController(): null | ScreenOrientationController {
@@ -15,10 +14,7 @@ function getScreenOrientationController(): null | ScreenOrientationController {
 
   const orientation = window.screen
     .orientation as unknown as Partial<ScreenOrientationController>;
-  if (
-    typeof orientation.lock !== "function" ||
-    typeof orientation.unlock !== "function"
-  ) {
+  if (typeof orientation.lock !== "function") {
     return null;
   }
 
@@ -28,13 +24,12 @@ function getScreenOrientationController(): null | ScreenOrientationController {
 function isScreenOrientationSupported() {
   if (typeof window === "undefined") return false;
 
-  const isInstalledApp =
-    window.matchMedia("(display-mode: standalone)").matches ||
-    window.matchMedia("(display-mode: fullscreen)").matches ||
-    ("standalone" in window.navigator && window.navigator.standalone === true);
+  const isFullscreenContext =
+    document.fullscreenElement !== null ||
+    window.matchMedia("(display-mode: fullscreen)").matches;
 
   return (
-    isInstalledApp &&
+    isFullscreenContext &&
     window.matchMedia("(pointer: coarse)").matches &&
     getScreenOrientationController() !== null
   );
@@ -54,10 +49,10 @@ export function useScreenRotation() {
   const { t } = useTranslation(["common"]);
   const [autoRotation, setAutoRotationState] = useState(getInitialAutoRotation);
   const [isSupported, setIsSupported] = useState(isScreenOrientationSupported);
-  const initialAutoRotation = useRef(autoRotation);
+  const lastAppliedAutoRotation = useRef(autoRotation);
 
   useEffect(() => {
-    if (initialAutoRotation.current || !isSupported) return;
+    if (!isSupported) return;
 
     const orientation = getScreenOrientationController();
     if (!orientation) {
@@ -65,44 +60,44 @@ export function useScreenRotation() {
       return;
     }
 
-    void orientation.lock("portrait").catch(() => setIsSupported(false));
-  }, [isSupported]);
+    let isCurrentRequest = true;
+    const shouldPersist = autoRotation !== lastAppliedAutoRotation.current;
 
-  const setAutoRotation = useCallback(
-    async (enabled: boolean) => {
-      if (!isSupported) return;
+    void orientation
+      .lock(autoRotation ? "any" : "portrait")
+      .then(() => {
+        if (!isCurrentRequest) return;
+        if (!shouldPersist) return;
 
-      try {
-        const orientation = getScreenOrientationController();
-        if (!orientation) {
-          setIsSupported(false);
-          return;
-        }
-
-        if (enabled) {
-          orientation.unlock();
-        } else {
-          await orientation.lock("portrait");
-        }
-
-        setAutoRotationState(enabled);
+        lastAppliedAutoRotation.current = autoRotation;
         try {
           window.localStorage.setItem(
             SCREEN_ROTATION_STORAGE_KEY,
-            String(enabled),
+            String(autoRotation),
           );
         } catch {
           // Keep the in-memory setting when browser storage is unavailable.
         }
-      } catch {
+      })
+      .catch(() => {
+        if (!isCurrentRequest) return;
+
+        setAutoRotationState(lastAppliedAutoRotation.current);
         setIsSupported(false);
         showNotification(
           t("common:notify.screenRotationChangeFailed"),
           "error",
         );
-      }
-    },
-    [isSupported, t],
+      });
+
+    return () => {
+      isCurrentRequest = false;
+    };
+  }, [autoRotation, isSupported, t]);
+
+  const setAutoRotation = useCallback(
+    (enabled: boolean) => setAutoRotationState(enabled),
+    [],
   );
 
   return { isSupported, autoRotation, setAutoRotation };

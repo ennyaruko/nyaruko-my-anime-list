@@ -196,10 +196,10 @@ export default {
     mediaFavoriteRemoved: "Аниме убрано из избранного. Ожидайте обновления.",
     mediaFavoriteActionFailed:
       "Не удалось изменить избранное. Попробуйте ещё раз.",
+    screenRotationChangeFailed:
+      "Браузер или устройство не разрешило изменить ориентацию экрана.",
     adultContentEnableFailed:
       "Не удалось включить 18+ контент в настройках аккаунта. Попробуйте ещё раз.",
-    screenRotationChangeFailed:
-      "Браузер не разрешил изменить ориентацию экрана. Попробуйте в установленном приложении.",
   },
   ui: {
     watchStatus: {

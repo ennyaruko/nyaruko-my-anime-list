@@ -3,7 +3,7 @@
   "short_name": "MyAnimeList",
   "start_url": "./",
   "scope": "./",
-  "display": "standalone",
+  "display": "fullscreen",
   "theme_color": "#202020",
   "background_color": "#202020",
   "icons": [

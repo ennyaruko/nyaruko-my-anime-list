@@ -190,10 +190,10 @@ export default {
       "Anime removed from favorites. Please wait for the update.",
     mediaFavoriteActionFailed:
       "Could not update the favorite status. Please try again.",
+    screenRotationChangeFailed:
+      "The browser or device could not change the screen orientation.",
     adultContentEnableFailed:
       "Could not enable adult content in your account settings. Please try again.",
-    screenRotationChangeFailed:
-      "The browser could not change the screen orientation. Try in the installed app.",
   },
   ui: {
     watchStatus: {

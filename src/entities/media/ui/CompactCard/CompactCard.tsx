@@ -8,6 +8,7 @@ import { Image, Score, Title } from "@/shared/ui";
 import { skeletonAnimation } from "@/shared/styles";
 
 import type { Media, MediaListStatus } from "../../model/media";
+import { mediaFormatTranslationKey } from "../../model/media-format";
 import { MediaDetailLink } from "../MediaDetailLink/MediaDetailLink";
 import {
   MediaReleaseStatus,
@@ -45,10 +46,12 @@ export function CompactCard({
   const isPlaceholder = !imageUrl;
   const statusInfo = getMediaReleaseStatusInfo(media.releaseStatus);
   const format = media.format
-    ? formatTranslationKey[media.format as keyof typeof formatTranslationKey]
+    ? mediaFormatTranslationKey[
+        media.format as keyof typeof mediaFormatTranslationKey
+      ]
       ? t(
-          formatTranslationKey[
-            media.format as keyof typeof formatTranslationKey
+          mediaFormatTranslationKey[
+            media.format as keyof typeof mediaFormatTranslationKey
           ],
         )
       : media.format
@@ -126,13 +129,3 @@ export function CompactCardSkeleton({ className }: CompactCardSkeletonProps) {
     </div>
   );
 }
-
-const formatTranslationKey = {
-  TV: "common:ui.filters.mediaFormat.tv",
-  OVA: "common:ui.filters.mediaFormat.ova",
-  ONA: "common:ui.filters.mediaFormat.ona",
-  MOVIE: "common:ui.filters.mediaFormat.movie",
-  MUSIC: "common:ui.filters.mediaFormat.music",
-  SPECIAL: "common:ui.filters.mediaFormat.special",
-  TV_SHORT: "common:ui.filters.mediaFormat.tvShort",
-} as const;

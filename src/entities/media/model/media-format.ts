@@ -1,4 +1,4 @@
-export const formatLabelKey = {
+export const mediaFormatTranslationKey = {
   TV: "common:ui.filters.mediaFormat.tv",
   OVA: "common:ui.filters.mediaFormat.ova",
   ONA: "common:ui.filters.mediaFormat.ona",

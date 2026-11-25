@@ -14,7 +14,7 @@ Encode an HTTPS endpoint for the manifest with `npm run encode:endpoint -- "http
 
 - `version`: положительное целое число. Сейчас оно информационное и не блокирует совместимые изменения списка endpoints.
 - `encoding`: всегда `base64` для этой версии.
-- `endpoints`: словарь именованных HTTPS-адресов в Base64. После декодирования резолвер проверяет, что адрес использует HTTPS и не содержит логин или пароль. Ключ `translation` используется переводчиком; `screenshots` — скриншоты; `shikimoriAnime` — русское название и возрастной рейтинг. В `fallbacks` можно указывать закодированные URL или адаптер источника `{ "provider": "yummyani" }`. Например, для Shikimori по умолчанию и YummyAni при пустом/неуспешном ответе:
+- `endpoints`: словарь именованных HTTPS-адресов в Base64. После декодирования резолвер проверяет, что адрес использует HTTPS и не содержит логин или пароль. Ключ `translation` используется переводчиком; `screenshots` — скриншоты; `shikimoriAnime` — русское название и возрастной рейтинг; `muchoHentaiParser` — корневой URL Cloudflare Worker-парсера (приложение добавляет `/search`). В `fallbacks` можно указывать закодированные URL или адаптер источника `{ "provider": "yummyani" }`. Например, для Shikimori по умолчанию и YummyAni при пустом/неуспешном ответе:
 
 ```json
 "screenshots": {

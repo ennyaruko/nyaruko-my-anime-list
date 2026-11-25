@@ -9,6 +9,7 @@ import type { ThemeMode } from "@/features/change-theme";
 import { useLanguage } from "@/features/change-language";
 import { useDebugConsole } from "@/features/debug-console";
 import { useAdultContent } from "@/features/toggle-adult-content";
+import { useScreenRotation } from "@/features/toggle-screen-rotation";
 import { useAutoTranslationPreferences } from "@/features/translate-content";
 
 import { useAuth } from "@/entities/auth";
@@ -55,6 +56,11 @@ export function ProfileMenu({
   const { mode: contentMode, setMode: setContentMode } = useAdultContent();
   const { enabled: autoTranslation, setEnabled: setAutoTranslation } =
     useAutoTranslationPreferences();
+  const {
+    autoRotation,
+    setAutoRotation,
+    isSupported: isScreenRotationSupported,
+  } = useScreenRotation();
   const logout = useLogout();
   const { openConsole } = useDebugConsole();
   const themeLabels: Record<ThemeMode, string> = {
@@ -210,6 +216,18 @@ export function ProfileMenu({
             />
           </Switch>
         </ProfileSetting>
+        {isScreenRotationSupported ? (
+          <ProfileSetting label={t("common:profileMenu.screenAutoRotation")}>
+            <Switch
+              checked={autoRotation}
+              thumbClassName={styles.screenRotationThumb}
+              aria-label={t("common:profileMenu.screenAutoRotation")}
+              onCheckedChange={(enabled) => void setAutoRotation(enabled)}
+            >
+              <RepeatIcon className={styles.screenRotationIcon} />
+            </Switch>
+          </ProfileSetting>
+        ) : null}
       </ProfileMenuSection>
 
       <ProfileMenuSection title={t("common:debugConsole.sectionTitle")}>

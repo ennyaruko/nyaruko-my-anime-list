@@ -7,6 +7,7 @@ export type ShikimoriAgeRating = "g" | "r" | "pg" | "rx" | "pg_13" | "r_plus";
 /** Shikimori metadata used alongside AniList's media detail. */
 export type MediaShikimoriInfo = {
   russianTitle: null | string;
+  shikimoriTitle: null | string;
   ageRating: null | ShikimoriAgeRating;
 };
 

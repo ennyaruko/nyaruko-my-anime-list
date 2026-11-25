@@ -10,6 +10,7 @@ import { createFallbackTranslationService } from "@/app/integrations/translation
 import { createHentaiTvAdultAnimeVideosService } from "@/app/integrations/hentai-tv/adult-anime-videos-service";
 import { createAnimeApiMediaExternalIdResolver } from "@/app/integrations/anime-api/media-external-id-resolver";
 import { createShikimoriMediaScreenshotsService } from "@/app/integrations/shikimori/media-screenshots-service";
+import { createMuchoHentaiAdultAnimeVideosService } from "@/app/integrations/mucho-hentai/adult-anime-videos-service";
 import {
   aniListAccountProvider,
   aniListMediaListService,
@@ -37,6 +38,7 @@ import { mediaListActionsServiceToken } from "@/entities/media";
 import { filterOptionsProviderToken } from "@/entities/filters";
 import { mediaRecommendationsServiceToken } from "@/entities/media";
 import { adultAnimeVideosServiceToken } from "@/entities/adult-anime";
+import { muchoHentaiAdultAnimeVideosServiceToken } from "@/entities/adult-anime";
 import {
   mediaExternalIdResolverToken,
   mediaScreenshotsServiceToken,
@@ -56,6 +58,10 @@ export const appServices = createServiceRegistry()
   .register(
     adultAnimeVideosServiceToken,
     createHentaiTvAdultAnimeVideosService(remoteEndpoints),
+  )
+  .register(
+    muchoHentaiAdultAnimeVideosServiceToken,
+    createMuchoHentaiAdultAnimeVideosService(remoteEndpoints),
   )
   .register(
     mediaPlaybackServiceToken,

@@ -102,16 +102,6 @@ export function createYummyService(
         ),
       );
     },
-    async getMediaInfo(detail: MediaDetail, signal: AbortSignal) {
-      const animeId = await findAnime(detail, signal);
-      if (animeId === null) return { ageRating: null, russianTitle: null };
-      const anime = await getDetail(String(animeId), signal);
-      const russianTitle =
-        [anime.title, ...(anime.other_titles ?? [])]
-          .map((title) => title.trim())
-          .find(Boolean) ?? null;
-      return { russianTitle, ageRating: null };
-    },
     async getComments(
       id: string,
       sort: CommentSort,
@@ -131,6 +121,21 @@ export function createYummyService(
         items: mapComments(payload),
         nextOffset: payload.comments.length === 20 ? offset + 20 : null,
       };
+    },
+    async getMediaInfo(detail: MediaDetail, signal: AbortSignal) {
+      const animeId = await findAnime(detail, signal);
+      if (animeId === null)
+        return {
+          ageRating: null,
+          russianTitle: null,
+          shikimoriTitle: null,
+        };
+      const anime = await getDetail(String(animeId), signal);
+      const russianTitle =
+        [anime.title, ...(anime.other_titles ?? [])]
+          .map((title) => title.trim())
+          .find(Boolean) ?? null;
+      return { russianTitle, ageRating: null, shikimoriTitle: null };
     },
     async getScreenshots(
       detail: MediaDetail,

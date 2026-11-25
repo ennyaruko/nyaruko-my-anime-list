@@ -46,7 +46,9 @@ export function AdultEpisodeCard({
               image={{ url: video.cover }}
               className={styles.coverImage}
             />
-            <Score size="s" value={video.rating} className={styles.score} />
+            {video.rating > 0 && (
+              <Score size="s" value={video.rating} className={styles.score} />
+            )}
           </span>
           <span title={cardTitle} className={styles.title}>
             {cardTitle}

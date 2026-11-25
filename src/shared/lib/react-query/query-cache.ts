@@ -215,14 +215,6 @@ export const queryCacheConfig = {
         staleTimeMs: 10 * MINUTE_MS,
       },
     ),
-    adultAnimeVideos: defineQueryFamily(
-      ["adult-anime-videos"],
-      (title: string) => [title] as const,
-      {
-        gcTimeMs: 30 * MINUTE_MS,
-        staleTimeMs: 10 * MINUTE_MS,
-      },
-    ),
     /** Translated prose is cached in memory only. */
     contentTranslation: defineQueryFamily(
       ["content-translation"],
@@ -238,10 +230,18 @@ export const queryCacheConfig = {
     ),
     /** Shikimori titles and age ratings rarely change. */
     mediaShikimoriInfo: defineQueryFamily(
-      ["media-shikimori-info"],
+      ["media-shikimori-info", "v2"],
       (mediaId: number, fallbackMalId: null | number) =>
         [mediaId, fallbackMalId] as const,
       { staleTimeMs: 30 * DAY_MS },
+    ),
+    adultAnimeVideos: defineQueryFamily(
+      ["adult-anime-videos"],
+      (title: string, source: string) => [title, source] as const,
+      {
+        gcTimeMs: 30 * MINUTE_MS,
+        staleTimeMs: 10 * MINUTE_MS,
+      },
     ),
     /** Фильтры считаются свежими 90 дней. */
     filters: defineQueryFamily(

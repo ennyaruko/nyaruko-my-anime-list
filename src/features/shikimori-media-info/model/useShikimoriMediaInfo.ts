@@ -9,7 +9,7 @@ type UseShikimoriMediaInfoParameters = {
   detail: undefined | MediaDetail;
 };
 
-/** Loads optional Shikimori metadata for the anime information section. */
+/** Loads optional Shikimori metadata for a media detail. */
 export function useShikimoriMediaInfo({
   detail,
 }: UseShikimoriMediaInfoParameters) {

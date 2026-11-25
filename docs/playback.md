@@ -27,6 +27,11 @@ npm run encode:endpoint -- "https://example.com/embed/:anilistId/:episode"
 конкретного плеера задайте ему `default: null` в Gist. Yummy API и его
 токен в Gist не хранятся.
 
+Для поиска adult-видео MuchoHentai добавлен endpoint `muchoHentaiParser`.
+Укажи в Gist корневой HTTPS URL Worker-парсера (без `/search`): приложение
+само вызывает `GET /search?q=...`. Ответ Worker содержит `embedUrl` на его
+страницу плеера `/embed/:id`; этот URL передаётся в общий `EmbedFrame`.
+
 ## Yummyani и сопоставление
 
 [Документация API](https://old.yummyani.me/api/swagger).

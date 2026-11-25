@@ -16,13 +16,12 @@ import {
 import { MediaDetailLink } from "@/entities/media";
 import type { AccountProfile } from "@/entities/account";
 import type { MediaContentMode } from "@/entities/media";
+import { mediaFormatTranslationKey } from "@/entities/media";
 import type { Media, MediaListStatus } from "@/entities/media";
 
 import { skeletonAnimation } from "@/shared/styles";
 import { NoImageIcon, ArrowDownIcon } from "@/shared/icons";
 import { Image, Score, Title, Progress, type TitleState } from "@/shared/ui";
-
-import { formatLabelKey } from "../media-detail-labels";
 
 import * as styles from "./MediaRecommendations.css";
 
@@ -127,7 +126,9 @@ function LinkedMediaCard({
     : "default";
   const imageUrl = media.coverImage?.large ?? media.coverImage?.preview;
   const formatKey = media.format
-    ? formatLabelKey[media.format as keyof typeof formatLabelKey]
+    ? mediaFormatTranslationKey[
+        media.format as keyof typeof mediaFormatTranslationKey
+      ]
     : undefined;
 
   return (

@@ -172,6 +172,7 @@ export default {
     ecchiContentMode: "Ecchi (NSFW)",
     hentaiContentMode: "Hentai (NSFW)",
     adultContentConfirmCancel: "Cancel",
+    screenAutoRotation: "Screen auto-rotation",
     adultContentConfirmTitle: "Enable adult content?",
     adultContentConfirmDescription: "If you press “OK” there’s no God anymore.",
   },
@@ -191,6 +192,8 @@ export default {
       "Could not update the favorite status. Please try again.",
     adultContentEnableFailed:
       "Could not enable adult content in your account settings. Please try again.",
+    screenRotationChangeFailed:
+      "The browser could not change the screen orientation. Try in the installed app.",
   },
   ui: {
     watchStatus: {

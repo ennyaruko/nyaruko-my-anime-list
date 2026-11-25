@@ -179,6 +179,7 @@ export default {
     hentaiContentMode: "Hentai (NSFW)",
     safeContentMode: "Безопасный (SFW)",
     adultContentConfirmCancel: "Отмена",
+    screenAutoRotation: "Автоповорот экрана",
     adultContentConfirmTitle: "Включить 18+ контент?",
     adultContentConfirmDescription: "Если нажать OK - дальше бога нет.",
   },
@@ -197,6 +198,8 @@ export default {
       "Не удалось изменить избранное. Попробуйте ещё раз.",
     adultContentEnableFailed:
       "Не удалось включить 18+ контент в настройках аккаунта. Попробуйте ещё раз.",
+    screenRotationChangeFailed:
+      "Браузер не разрешил изменить ориентацию экрана. Попробуйте в установленном приложении.",
   },
   ui: {
     watchStatus: {

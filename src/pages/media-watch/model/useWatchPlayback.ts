@@ -26,8 +26,12 @@ export function useWatchPlayback(
 ) {
   const { media } = detail;
   const { mode: contentMode } = useAdultContent();
-  const { continuation, saveContinuation, clearContinuation } =
-    useWatchContinuation(userId);
+  const {
+    continuation,
+    saveContinuation,
+    clearContinuation,
+    isLoaded: continuationLoaded,
+  } = useWatchContinuation(userId);
   const service = useAppService(mediaPlaybackServiceToken);
   const actions = useMediaListActions(userId);
   const catalogQuery = useQuery({
@@ -143,17 +147,19 @@ export function useWatchPlayback(
   const loading =
     (!forceFallback && catalogQuery.isPending) ||
     (!primaryRu && embedsQuery.isPending) ||
-    waitingForContinuation;
+    waitingForContinuation ||
+    (Boolean(userId) && !continuationLoaded);
 
   useEffect(() => {
+    if (!userId || !continuationLoaded || restoredMediaId === media.id) return;
     if (
-      !userId ||
       !continuation ||
       continuation.mediaId !== media.id ||
-      continuation.userId !== userId ||
-      restoredMediaId === media.id
-    )
+      continuation.userId !== userId
+    ) {
+      setRestoredMediaId(media.id);
       return;
+    }
 
     if (continuation.source === "yummyani") {
       if (catalogQuery.isPending) return;
@@ -262,6 +268,7 @@ export function useWatchPlayback(
     catalogQuery.data,
     catalogQuery.isPending,
     continuation,
+    continuationLoaded,
     embedsQuery.data,
     embedsQuery.isPending,
     media.episodes,

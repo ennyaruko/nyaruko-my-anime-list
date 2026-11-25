@@ -4,7 +4,10 @@ import { Fragment, type ReactNode } from "react";
 
 import clsx from "clsx";
 
+import { useShikimoriMediaInfo } from "@/features/shikimori-media-info";
+
 import type { Media } from "@/entities/media";
+import { mediaFormatTranslationKey } from "@/entities/media";
 import type { MediaDetail, ShikimoriAgeRating } from "@/entities/media";
 import {
   MediaReleaseStatus,
@@ -14,9 +17,6 @@ import {
 import { ArrowDownIcon } from "@/shared/icons";
 import { skeletonAnimation } from "@/shared/styles";
 import { Row, Score, Column, Heading } from "@/shared/ui";
-
-import { formatLabelKey } from "../media-detail-labels";
-import { useShikimoriMediaInfo } from "../../model/useShikimoriMediaInfo";
 
 import * as styles from "./MediaInformation.css";
 import * as pageStyles from "../MediaDetailPage.css";
@@ -114,7 +114,9 @@ function MediaInformationContent({
           ? t("common:mediaDetail.year", { year: media.seasonYear })
           : null));
   const formatKey = media.format
-    ? formatLabelKey[media.format as keyof typeof formatLabelKey]
+    ? mediaFormatTranslationKey[
+        media.format as keyof typeof mediaFormatTranslationKey
+      ]
     : undefined;
   const sourceKey = media.source
     ? sourceLabelKey[media.source as keyof typeof sourceLabelKey]

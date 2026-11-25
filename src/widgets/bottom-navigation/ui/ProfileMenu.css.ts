@@ -161,6 +161,16 @@ export const adultContentThumb = styleVariants({
   hentai: { background: colors.background.elevation1Warning },
 });
 
+export const screenRotationThumb = style({
+  background: colors.background.elevation1Info,
+});
+
+export const screenRotationIcon = style({
+  width: "11px",
+  height: "11px",
+  color: colors.text.action,
+});
+
 export const adultContentIcon = styleVariants({
   safe: {
     width: "11px",

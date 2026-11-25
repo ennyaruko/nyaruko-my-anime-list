@@ -22,8 +22,13 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function parseInfo(payload: unknown): MediaShikimoriInfo {
-  if (!isRecord(payload)) return { ageRating: null, russianTitle: null };
+  if (!isRecord(payload))
+    return { ageRating: null, russianTitle: null, shikimoriTitle: null };
 
+  const shikimoriTitle =
+    typeof payload.name === "string" && payload.name.trim()
+      ? payload.name.trim()
+      : null;
   const russianTitle =
     typeof payload.russian === "string" && payload.russian.trim()
       ? payload.russian.trim()
@@ -34,7 +39,7 @@ function parseInfo(payload: unknown): MediaShikimoriInfo {
       ? (payload.rating as ShikimoriAgeRating)
       : null;
 
-  return { ageRating, russianTitle };
+  return { ageRating, russianTitle, shikimoriTitle };
 }
 
 /** Fetches Shikimori's Russian title and age rating through the configured proxy. */
@@ -51,6 +56,7 @@ export function createShikimoriMediaInfoService(
         let info: MediaShikimoriInfo = {
           ageRating: null,
           russianTitle: null,
+          shikimoriTitle: null,
         };
 
         let shikimoriId: null | number = null;
@@ -61,8 +67,11 @@ export function createShikimoriMediaInfoService(
               info = {
                 ageRating: info.ageRating ?? fallbackInfo.ageRating,
                 russianTitle: info.russianTitle ?? fallbackInfo.russianTitle,
+                shikimoriTitle:
+                  info.shikimoriTitle ?? fallbackInfo.shikimoriTitle,
               };
-              if (info.ageRating && info.russianTitle) return info;
+              if (info.ageRating && info.russianTitle && info.shikimoriTitle)
+                return info;
             } catch (error) {
               if (signal?.aborted) throw error;
             }
@@ -92,8 +101,10 @@ export function createShikimoriMediaInfoService(
             info = {
               ageRating: info.ageRating ?? nextInfo.ageRating,
               russianTitle: info.russianTitle ?? nextInfo.russianTitle,
+              shikimoriTitle: info.shikimoriTitle ?? nextInfo.shikimoriTitle,
             };
-            if (info.ageRating && info.russianTitle) return info;
+            if (info.ageRating && info.russianTitle && info.shikimoriTitle)
+              return info;
           } catch (error) {
             if (signal?.aborted) throw error;
           }
@@ -102,7 +113,7 @@ export function createShikimoriMediaInfoService(
         return info;
       } catch (error) {
         if (signal?.aborted) throw error;
-        return { ageRating: null, russianTitle: null };
+        return { ageRating: null, russianTitle: null, shikimoriTitle: null };
       }
     },
   };

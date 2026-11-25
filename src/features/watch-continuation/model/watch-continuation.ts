@@ -28,6 +28,7 @@ export type WatchContinuation =
     });
 
 export type WatchContinuationContextValue = {
+  isLoaded: boolean;
   clearContinuation: VoidFunction;
   continuation: null | WatchContinuation;
   saveContinuation: (continuation: WatchContinuation) => void;

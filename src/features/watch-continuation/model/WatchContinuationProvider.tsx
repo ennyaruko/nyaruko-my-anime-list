@@ -67,9 +67,11 @@ export function WatchContinuationProvider({ children }: PropsWithChildren) {
   const [continuation, setContinuation] = useState<null | WatchContinuation>(
     null,
   );
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     setContinuation(readContinuation());
+    setIsLoaded(true);
 
     const handleStorage = (event: StorageEvent) => {
       if (event.key === null || event.key === STORAGE_KEY)
@@ -99,8 +101,8 @@ export function WatchContinuationProvider({ children }: PropsWithChildren) {
   }, []);
 
   const value = useMemo(
-    () => ({ continuation, saveContinuation, clearContinuation }),
-    [continuation, saveContinuation, clearContinuation],
+    () => ({ isLoaded, continuation, saveContinuation, clearContinuation }),
+    [continuation, isLoaded, saveContinuation, clearContinuation],
   );
 
   return (

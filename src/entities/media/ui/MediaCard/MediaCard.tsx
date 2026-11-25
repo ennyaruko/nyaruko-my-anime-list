@@ -15,6 +15,7 @@ import {
 } from "@/shared/ui";
 
 import type { Media, MediaListStatus } from "../../model/media";
+import { mediaFormatTranslationKey } from "../../model/media-format";
 
 import * as styles from "./MediaCard.css";
 
@@ -68,8 +69,12 @@ export function MediaCard({
   const { t } = useTranslation(["common"]);
   const coverUrl = media.coverImage?.large ?? media.coverImage?.preview;
   const isPlaceholder = !coverUrl;
-  const formatLabel =
-    media.format === "TV" ? t("common:tvSeries") : media.format;
+  const formatKey = media.format
+    ? mediaFormatTranslationKey[
+        media.format as keyof typeof mediaFormatTranslationKey
+      ]
+    : undefined;
+  const formatLabel = formatKey ? t(formatKey) : media.format;
   const progress =
     (media.status === "CURRENT" || media.status === "REPEATING") &&
     media.progress !== null ? (

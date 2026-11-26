@@ -16,6 +16,7 @@ import * as styles from "./MarkdownContent.css";
 
 export type MarkdownContentProps = {
   children: string;
+  emptyLinkHref?: string;
   translations?: TextTranslations;
   variant: "review" | "description";
 };
@@ -105,7 +106,7 @@ function getMarkdownComponents(
       }
 
       return (
-        <Link to={href} title={title} target="_blank" className={styles.link}>
+        <Link to={href} title={title} className={styles.link}>
           {children}
         </Link>
       );
@@ -117,9 +118,10 @@ function getMarkdownComponents(
 export function MarkdownContent({
   variant,
   children,
+  emptyLinkHref,
   translations = {},
 }: MarkdownContentProps) {
-  const markdown = normalizeMarkdown(children, variant);
+  const markdown = normalizeMarkdown(children, variant, emptyLinkHref);
 
   return (
     <div className={styles.content[variant]}>

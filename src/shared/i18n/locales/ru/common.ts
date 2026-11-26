@@ -65,6 +65,13 @@ export default {
     loginRequired: "Введите имя пользователя",
     loginLatinOnly: "Имя пользователя не должно содержать кириллицу",
   },
+  statistics: {
+    totalAnime: "Всего аниме",
+    meanScore: "Средний рейтинг",
+    daysWatched: "Дней просмотрено",
+    daysPlanned: "Дней запланировано",
+    episodesWatched: "Просмотрено серий",
+  },
   errorBoundary: {
     retry: "Повторить",
     reload: "Перезагрузить",
@@ -87,16 +94,6 @@ export default {
     authFailed: "Не удалось завершить авторизацию AniList. Попробуйте ещё раз.",
     description: "На данной странице вы сможете авторизоваться на нашем сайте.",
   },
-  list: {
-    tags: "Теги",
-    list: "Список",
-    genres: "Жанры",
-    recommendations: "Рекомендации",
-    filteredResults_one: "Найдено: {{count}}",
-    filteredResults_few: "Найдено: {{count}}",
-    filteredResults_many: "Найдено: {{count}}",
-    filteredResults_other: "Найдено: {{count}}",
-  },
   blockStatus: {
     forbiddenTitle: "Страница запрещена",
     forbiddenDescription: "Попробуйте сменить режим контента в меню профиля",
@@ -115,14 +112,16 @@ export default {
     returnToStart: "Вернуться в начало поиска",
     saved: "Страница {{page}}, аниме {{anime}}",
   },
-  listRecommendations: {
-    random: "Случайное",
-    noRecommendationsTitle: "Рекомендаций пока нет",
-    noCompletedAnimeTitle: "Нет просмотренного аниме",
-    noRecommendationsDescription:
-      "Для просмотренного аниме пока не найдено похожих тайтлов",
-    noCompletedAnimeDescription:
-      "Добавьте аниме со статусом «Просмотрено», чтобы получить рекомендации",
+  list: {
+    tags: "Теги",
+    list: "Список",
+    genres: "Жанры",
+    statistics: "Статистика",
+    recommendations: "Рекомендации",
+    filteredResults_one: "Найдено: {{count}}",
+    filteredResults_few: "Найдено: {{count}}",
+    filteredResults_many: "Найдено: {{count}}",
+    filteredResults_other: "Найдено: {{count}}",
   },
   sort: {
     score: "По рейтингу",
@@ -135,6 +134,16 @@ export default {
     averageScore: "По среднему рейтингу",
     lastAdded: "По последнему добавленному",
     lastUpdated: "По последнему обновлению",
+  },
+  listRecommendations: {
+    random: "Случайное",
+    excludeListed: "Из моего списка",
+    noRecommendationsTitle: "Рекомендаций пока нет",
+    noCompletedAnimeTitle: "Нет просмотренного аниме",
+    noRecommendationsDescription:
+      "Для просмотренного аниме пока не найдено похожих тайтлов",
+    noCompletedAnimeDescription:
+      "Добавьте аниме со статусом «Просмотрено», чтобы получить рекомендации",
   },
   debugConsole: {
     close: "Закрыть",
@@ -282,11 +291,13 @@ export default {
     score: "Рейтинг:",
     status: "Статус:",
     info: "Информация",
+    similar: "Похожие",
     screenshots: "Кадры",
     episodes: "Эпизоды:",
     year: "{{year}} год",
     relations: "Связанное",
     description: "Описание",
+    allReviews: "Все отзывы",
     source: "Первоисточник:",
     collapseReview: "Свернуть",
     expandReview: "Развернуть",

@@ -1,6 +1,11 @@
-query MediaRecommendations($id: Int!, $page: Int!, $perPage: Int!) {
+query MediaRecommendations(
+  $id: Int!
+  $page: Int!
+  $perPage: Int!
+  $sort: [RecommendationSort]
+) {
   Media(id: $id, type: ANIME) {
-    recommendations(page: $page, perPage: $perPage, sort: RATING_DESC) {
+    recommendations(page: $page, perPage: $perPage, sort: $sort) {
       pageInfo {
         hasNextPage
       }

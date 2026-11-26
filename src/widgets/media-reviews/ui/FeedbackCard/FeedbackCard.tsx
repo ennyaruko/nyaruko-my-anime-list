@@ -19,6 +19,7 @@ import type { TextTranslations } from "@/shared/lib/content-markup";
 import * as styles from "./FeedbackCard.css";
 
 export type FeedbackCardProps = {
+  mediaId: number;
   review: MediaReview;
 };
 
@@ -27,7 +28,7 @@ export type FeedbackCardSkeletonProps = {
 };
 
 /** Displays one AniList review with safe Markdown rendering and collapse state. */
-export function FeedbackCard({ review }: FeedbackCardProps) {
+export function FeedbackCard({ review, mediaId }: FeedbackCardProps) {
   const { t, i18n } = useTranslation(["common"]);
   const { language, setLanguage } = useContentLanguage(review.id, "reviews");
   const voteCounts = getReviewVoteCounts(review.rating, review.ratingAmount);
@@ -53,7 +54,11 @@ export function FeedbackCard({ review }: FeedbackCardProps) {
           collapseLabel={t("common:mediaDetail.collapseReview")}
         >
           <div className={styles.body}>
-            <MarkdownContent variant="review" translations={translations}>
+            <MarkdownContent
+              variant="review"
+              translations={translations}
+              emptyLinkHref={`/media/${mediaId}`}
+            >
               {body}
             </MarkdownContent>
           </div>

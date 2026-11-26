@@ -1,6 +1,9 @@
-query MediaReviews($id: Int!) {
+query MediaReviews($id: Int!, $page: Int!, $perPage: Int!) {
   Media(id: $id, type: ANIME) {
-    reviews(page: 1, perPage: 5, sort: RATING_DESC) {
+    reviews(page: $page, perPage: $perPage, sort: RATING_DESC) {
+      pageInfo {
+        hasNextPage
+      }
       nodes {
         id
         summary

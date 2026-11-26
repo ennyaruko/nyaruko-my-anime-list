@@ -1,9 +1,13 @@
 import { useMemo } from "react";
+import { Link } from "react-router";
 import { useTranslation } from "react-i18next";
 
 import type { MyListEntry } from "@/entities/media";
 
+import { ArrowDownIcon } from "@/shared/icons";
 import { Table, Heading, TableSkeleton } from "@/shared/ui";
+
+import * as styles from "./MyListGenres.css";
 
 type MyListGenresProps = {
   isPending: boolean;
@@ -33,7 +37,17 @@ export function MyListGenres({
 
   return (
     <>
-      <Heading variant="neutral">{t("common:list.genres")}</Heading>
+      <Heading
+        variant="neutral"
+        action={
+          <Link to="/statistics" className={styles.statisticsLink}>
+            {t("common:list.statistics")}
+            <ArrowDownIcon className={styles.statisticsLinkArrow} />
+          </Link>
+        }
+      >
+        {t("common:list.genres")}
+      </Heading>
       {isPending ? (
         <TableSkeleton values={[82, 64, 50]} />
       ) : (

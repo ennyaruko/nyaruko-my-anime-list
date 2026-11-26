@@ -1,0 +1,26 @@
+query ViewerStatistics {
+  Viewer {
+    statistics {
+      anime {
+        count
+        episodesWatched
+        minutesWatched
+        meanScore
+        statuses {
+          status
+          minutesWatched
+        }
+        genres(limit: 100) {
+          genre
+          count
+        }
+        tags(limit: 100) {
+          count
+          tag {
+            name
+          }
+        }
+      }
+    }
+  }
+}

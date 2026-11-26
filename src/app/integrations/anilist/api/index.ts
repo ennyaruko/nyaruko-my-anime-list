@@ -1,3 +1,4 @@
+export { getViewerStatistics } from "./user-statistics";
 export type { AniListViewerDto, AniListCurrentViewerResponse } from "./dto";
 /** Internal AniList API. Import this only from app/integrations/anilist. */
 export {

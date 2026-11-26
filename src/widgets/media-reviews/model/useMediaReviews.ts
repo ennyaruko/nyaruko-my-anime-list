@@ -7,6 +7,7 @@ import { useAppService, queryCacheConfig } from "@/shared/lib";
 
 type UseMediaReviewsParameters = {
   mediaId: number;
+  perPage?: number;
   userId: string | undefined;
 };
 
@@ -14,12 +15,14 @@ type UseMediaReviewsParameters = {
 export function useMediaReviews({
   userId,
   mediaId,
+  perPage = 5,
 }: UseMediaReviewsParameters) {
   const { accessToken } = useAuth();
   const service = useAppService(mediaReviewsServiceToken);
   const queryKey = queryCacheConfig.families.mediaReviews.key(
     userId ?? "unknown",
     mediaId,
+    perPage,
   );
 
   return useQuery({
@@ -30,7 +33,7 @@ export function useMediaReviews({
         throw new Error("An authenticated AniList session is required.");
       }
 
-      return service.getMediaReviews(accessToken, mediaId, signal);
+      return service.getMediaReviews(accessToken, mediaId, 1, perPage, signal);
     },
   });
 }

@@ -10,9 +10,11 @@ import * as styles from "./CollapsibleContent.css";
 export function CollapsibleContent({
   children,
   expandLabel,
+  fade = true,
   collapseLabel,
   collapsedHeight = 160,
 }: {
+  fade?: boolean;
   children: ReactNode;
   expandLabel: string;
   collapseLabel: string;
@@ -42,7 +44,7 @@ export function CollapsibleContent({
         style={{ maxHeight: expanded ? undefined : collapsedHeight }}
         className={clsx(
           styles.viewport,
-          overflowing && !expanded && styles.faded,
+          fade && overflowing && !expanded && styles.faded,
         )}
       >
         <div ref={content} className={styles.content}>

@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { useSearchParams } from "react-router";
 
 import { useAdultContent } from "@/features/toggle-adult-content";
 import { MediaCardContextMenu } from "@/features/manage-media-list";
@@ -7,20 +8,33 @@ import { useMediaRecommendations } from "@/features/media-recommendations";
 
 import { MediaCardSkeleton } from "@/entities/media";
 import type { AccountProfile } from "@/entities/account";
-import type { MediaContentMode } from "@/entities/media";
+import type {
+  MediaContentMode,
+  MediaRecommendationSort,
+} from "@/entities/media";
 
 import {
+  Row,
   Column,
   Header,
+  Heading,
   GridList,
   BackLink,
   Container,
+  LabeledCheckbox,
+  LabeledCombobox,
   BlockStatusEmpty,
   QueryErrorBoundary,
   BlockStatusNotFound,
 } from "@/shared/ui";
 
 import * as styles from "./RecommendationsPage.css";
+
+const DEFAULT_SORT: MediaRecommendationSort = "ratingDesc";
+const RECOMMENDATION_SORTS: MediaRecommendationSort[] = [
+  "ratingDesc",
+  "rating",
+];
 
 type RecommendationsPageProps = {
   mediaId: number;
@@ -45,6 +59,7 @@ export function RecommendationsPage({
           variant="plain"
           leading={<BackLink>{t("common:mediaDetail.back")}</BackLink>}
         />
+        <Heading variant="neutral">{t("common:mediaDetail.similar")}</Heading>
         <QueryErrorBoundary resetKeys={[mediaId]}>
           <RecommendationsResults
             userId={userId}
@@ -66,11 +81,22 @@ export function RecommendationsResults({
   mediaId,
   contentMode,
 }: RecommendationsResultsProps) {
+  const { t } = useTranslation(["common"]);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const sortParameter = searchParams.get("sort");
+  const sort: MediaRecommendationSort = RECOMMENDATION_SORTS.includes(
+    sortParameter as MediaRecommendationSort,
+  )
+    ? (sortParameter as MediaRecommendationSort)
+    : DEFAULT_SORT;
+  const excludeListed = searchParams.get("excludeListed") === "1";
   const query = useMediaRecommendations({
+    sort,
     userId,
     mediaId,
     perPage: 50,
     contentMode,
+    excludeListed,
   });
   const { data, isPending, hasNextPage, fetchNextPage, isFetchingNextPage } =
     query;
@@ -84,6 +110,17 @@ export function RecommendationsResults({
   const lastPageHasNewItems = lastPage?.items.some(
     ({ id }) => !previousIds.has(id),
   );
+  const updateSearchParam = (key: string, value: null | string) => {
+    setSearchParams(
+      (currentParams) => {
+        const nextParams = new URLSearchParams(currentParams);
+        if (value === null) nextParams.delete(key);
+        else nextParams.set(key, value);
+        return nextParams;
+      },
+      { replace: true, preventScrollReset: true },
+    );
+  };
 
   useEffect(() => {
     if (
@@ -108,34 +145,73 @@ export function RecommendationsResults({
       ))}
     </div>
   ) : null;
+  const toolbar = (
+    <Row
+      gap="m"
+      alignItem="center"
+      justifyContent="end"
+      className={styles.toolbar}
+    >
+      <LabeledCombobox
+        value={sort}
+        className={styles.sort}
+        label={t("common:sortLabel")}
+        onValueChange={(value) => updateSearchParam("sort", value)}
+        options={RECOMMENDATION_SORTS.map((value) => ({
+          value,
+          label: t(`common:recommendationSort.${value}`),
+        }))}
+      />
+      <LabeledCheckbox
+        size="s"
+        checked={excludeListed}
+        className={styles.excludeListedToggle}
+        label={t("common:listRecommendations.excludeListed")}
+        onCheckedChange={(checked) =>
+          updateSearchParam("excludeListed", checked ? "1" : null)
+        }
+      />
+    </Row>
+  );
 
   if (isPending || (media.length === 0 && isFetchingNextPage)) {
     return (
-      <GridList
-        renderItem={() => <MediaCardSkeleton size="l" />}
-        data={Array.from({ length: 6 }, (_, index) => index)}
-      />
+      <Column gap="m">
+        {toolbar}
+        <GridList
+          renderItem={() => <MediaCardSkeleton size="l" />}
+          data={Array.from({ length: 6 }, (_, index) => index)}
+        />
+      </Column>
     );
   }
 
   if (media.length === 0) {
-    return <BlockStatusEmpty className={styles.empty} />;
+    return (
+      <Column gap="m">
+        {toolbar}
+        <BlockStatusEmpty className={styles.empty} />
+      </Column>
+    );
   }
 
   return (
-    <GridList
-      virtualize
-      data={media}
-      footer={footer}
-      getKey={(item) => item.id}
-      renderItem={(item) => (
-        <MediaCardContextMenu size="l" media={item} userId={userId} />
-      )}
-      endReached={() => {
-        if (hasNextPage && !isFetchingNextPage) {
-          void fetchNextPage();
-        }
-      }}
-    />
+    <Column gap="m">
+      {toolbar}
+      <GridList
+        virtualize
+        data={media}
+        footer={footer}
+        getKey={(item) => item.id}
+        renderItem={(item) => (
+          <MediaCardContextMenu size="l" media={item} userId={userId} />
+        )}
+        endReached={() => {
+          if (hasNextPage && !isFetchingNextPage) {
+            void fetchNextPage();
+          }
+        }}
+      />
+    </Column>
   );
 }

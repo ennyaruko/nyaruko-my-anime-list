@@ -254,16 +254,15 @@ export const queryCacheConfig = {
         keyConstraints: [{ index: 1, type: "non-empty-string" }],
       },
     ),
-    /** Media reviews are fetched on demand and are not persisted. */
-    mediaReviews: defineQueryFamily(
-      ["media-reviews"],
-      (userId: string, mediaId: number) => [userId, mediaId] as const,
+    /** Account statistics are retained only in memory, never in IndexedDB. */
+    accountStatistics: defineQueryFamily(
+      ["account-statistics"],
+      (userId: string) => [userId] as const,
       {
         userIdIndex: 1,
-        keyConstraints: [
-          { index: 1, type: "non-empty-string" },
-          { index: 2, type: "finite-number" },
-        ],
+        gcTimeMs: 30 * MINUTE_MS,
+        staleTimeMs: 5 * MINUTE_MS,
+        keyConstraints: [{ index: 1, type: "non-empty-string" }],
       },
     ),
     /** Список пользователя: свежесть 24 часа, хранение до 90 дней. */
@@ -331,17 +330,39 @@ export const queryCacheConfig = {
         ],
       },
     ),
-    /** Recommendations load by page and are not persisted. */
-    mediaRecommendations: defineQueryFamily(
-      ["media-recommendations"],
-      (userId: string, mediaId: number, perPage: number, contentMode: string) =>
-        [userId, mediaId, perPage, contentMode] as const,
+    /** Media reviews are fetched on demand and are not persisted. */
+    mediaReviews: defineQueryFamily(
+      ["media-reviews"],
+      (userId: string, mediaId: number, perPage: number) =>
+        [userId, mediaId, perPage] as const,
       {
         userIdIndex: 1,
         keyConstraints: [
           { index: 1, type: "non-empty-string" },
           { index: 2, type: "finite-number" },
           { index: 3, type: "finite-number" },
+        ],
+      },
+    ),
+    /** Recommendations load by page and are not persisted. */
+    mediaRecommendations: defineQueryFamily(
+      ["media-recommendations"],
+      (
+        userId: string,
+        mediaId: number,
+        perPage: number,
+        sort: string,
+        excludeListed: boolean,
+        contentMode: string,
+      ) =>
+        [userId, mediaId, perPage, sort, excludeListed, contentMode] as const,
+      {
+        userIdIndex: 1,
+        keyConstraints: [
+          { index: 1, type: "non-empty-string" },
+          { index: 2, type: "finite-number" },
+          { index: 3, type: "finite-number" },
+          { index: 4, type: "non-empty-string" },
         ],
       },
     ),

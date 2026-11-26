@@ -29,7 +29,11 @@ export const sanitizeSchema: Options = {
   },
 };
 
-export function normalizeMarkdown(content: string, variant: MarkupVariant) {
+export function normalizeMarkdown(
+  content: string,
+  variant: MarkupVariant,
+  emptyLinkHref?: string,
+) {
   const withoutEmbeddedStyles = content.replace(
     /<style\b[^>]*>[\s\S]*?<\/style\s*>/gi,
     "",
@@ -42,7 +46,7 @@ export function normalizeMarkdown(content: string, variant: MarkupVariant) {
         )
       : withoutEmbeddedStyles;
 
-  return normalizeInlineMarkdown(normalized);
+  return normalizeInlineMarkdown(normalized, emptyLinkHref);
 }
 
 /** Unwraps AniList reviews accidentally serialized as escaped HTML in code. */
@@ -61,7 +65,7 @@ function normalizeReviewCodeMarkup(content: string) {
   );
 }
 
-function normalizeInlineMarkdown(content: string) {
+function normalizeInlineMarkdown(content: string, emptyLinkHref?: string) {
   const parts = content.split(/(```[\s\S]*?```|`[^`\n]*`)/g);
 
   return parts
@@ -71,13 +75,16 @@ function normalizeInlineMarkdown(content: string) {
       const links: string[] = [];
 
       const protectedPart = part.replace(
-        /(!?)\[([^\]\n]+)\]\(([^)\s]+)\)/g,
+        /(!?)\[([^\]\n]+)\]\(([^)\s]*)\)/g,
         (match, image: string, label: string, url: string) => {
+          const destination = url || emptyLinkHref;
+          if (!destination) return match;
+
           if (image) {
             const imageIndex = links.push(match) - 1;
             return `\u0000LINK${imageIndex}\u0000`;
           }
-          const safeUrl = url
+          const safeUrl = destination
             .replace(/&/g, "&amp;")
             .replace(/"/g, "&quot;")
             .replace(/</g, "&lt;")

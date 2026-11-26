@@ -30,7 +30,10 @@ export const emphasis = style({
 export const paragraph = styleVariants({
   description: { margin: 0 },
   review: {
-    selectors: { "&&": { marginBottom: primitives.spacing.xs } },
+    selectors: {
+      "blockquote &&": { marginBottom: 0 },
+      "&&": { marginBottom: primitives.spacing.xs },
+    },
   },
 });
 

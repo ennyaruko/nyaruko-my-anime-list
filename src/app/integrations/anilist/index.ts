@@ -4,6 +4,7 @@ export { aniListIdentityProvider } from "./auth/identity-provider";
 export { aniListMediaSearchService } from "./media-search-service";
 export { aniListMediaDetailService } from "./media-detail-service";
 export { aniListMediaReviewsService } from "./media-reviews-service";
+export { aniListAccountStatisticsProvider } from "./api/user-statistics";
 export { aniListMediaRelationsService } from "./media-relations-service";
 export { aniListFilterOptionsProvider } from "./filter-options-provider";
 export { aniListMediaListActionsService } from "./media-list-actions-service";

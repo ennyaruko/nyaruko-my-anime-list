@@ -43,10 +43,11 @@ export function useMediaDetailRefresh({
         ),
       }),
       queryClient.invalidateQueries({
-        queryKey: queryCacheConfig.families.mediaReviews.key(
+        queryKey: [
+          ...queryCacheConfig.families.mediaReviews.keyPrefix,
           userId ?? "unknown",
           mediaId,
-        ),
+        ],
       }),
       queryClient.invalidateQueries({
         queryKey: queryCacheConfig.families.mediaRelations.key(
@@ -56,12 +57,11 @@ export function useMediaDetailRefresh({
         ),
       }),
       queryClient.invalidateQueries({
-        queryKey: queryCacheConfig.families.mediaRecommendations.key(
+        queryKey: [
+          ...queryCacheConfig.families.mediaRecommendations.keyPrefix,
           userId ?? "unknown",
           mediaId,
-          5,
-          contentMode,
-        ),
+        ],
       }),
     ]);
   }, [contentMode, malId, mediaId, queryClient, userId]);

@@ -7,7 +7,7 @@ import { isMediaVisibleInContentMode } from "@/entities/media";
 import { CompactCard, CompactCardSkeleton } from "@/entities/media";
 import type { MediaRelation, MediaRelationType } from "@/entities/media";
 
-import { Column, Heading } from "@/shared/ui";
+import { Column, Heading, CollapsibleContent } from "@/shared/ui";
 
 import { useMediaRelations } from "../model/useMediaRelations";
 
@@ -55,16 +55,36 @@ export function MediaRelations({
         {t("common:mediaDetail.relations")}
       </Heading>
       {relations ? (
-        <Column gap="m">
-          {relations.map(({ type, media }, index) => (
-            <RelatedMediaCard
-              type={type}
-              media={media}
-              userId={userId}
-              key={`${media.id}-${type ?? index}`}
-            />
-          ))}
-        </Column>
+        relations.length > 3 ? (
+          <CollapsibleContent
+            key={mediaId}
+            collapsedHeight={280}
+            expandLabel={t("common:table.showAll")}
+            collapseLabel={t("common:table.showLess")}
+          >
+            <Column gap="m">
+              {relations.map(({ type, media }, index) => (
+                <RelatedMediaCard
+                  type={type}
+                  media={media}
+                  userId={userId}
+                  key={`${media.id}-${type ?? index}`}
+                />
+              ))}
+            </Column>
+          </CollapsibleContent>
+        ) : (
+          <Column gap="m">
+            {relations.map(({ type, media }, index) => (
+              <RelatedMediaCard
+                type={type}
+                media={media}
+                userId={userId}
+                key={`${media.id}-${type ?? index}`}
+              />
+            ))}
+          </Column>
+        )
       ) : (
         <RelationsSkeleton />
       )}

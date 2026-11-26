@@ -1,25 +1,31 @@
-import type { MediaReview } from "@/entities/media";
+import type { MediaReview, MediaReviewsPage } from "@/entities/media";
 
 import { MediaReviewsDocument } from "./queries";
 import { createAniListGraphQLClient } from "./client";
 import type { MediaReviewsQuery } from "./generated/graphql";
 
-/** Loads and maps the five highest-rated reviews returned by AniList. */
+/** Loads and maps one page of highest-rated reviews returned by AniList. */
 export async function getAniListMediaReviews(
   accessToken: string,
   mediaId: number,
+  page: number,
+  perPage: number,
   signal?: AbortSignal,
-): Promise<MediaReview[]> {
+): Promise<MediaReviewsPage> {
   const client = createAniListGraphQLClient(accessToken);
   const response = await client.request({
     signal,
-    variables: { id: mediaId },
     document: MediaReviewsDocument,
+    variables: { page, perPage, id: mediaId },
   });
 
-  return (response.Media?.reviews?.nodes ?? []).flatMap((review) =>
-    review ? [mapReview(review)] : [],
-  );
+  const reviews = response.Media?.reviews;
+  return {
+    hasNextPage: reviews?.pageInfo?.hasNextPage ?? false,
+    items: (reviews?.nodes ?? []).flatMap((review) =>
+      review ? [mapReview(review)] : [],
+    ),
+  };
 }
 
 type AniListReviewsConnection = NonNullable<

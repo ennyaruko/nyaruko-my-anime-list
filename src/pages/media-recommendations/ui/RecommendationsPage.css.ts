@@ -36,3 +36,25 @@ export const empty = style({
 });
 
 export const notFound = style({ minHeight: "50svh" });
+
+export const toolbar = style({
+  width: "100%",
+  "@media": {
+    "(min-width: 1024px)": {
+      maxWidth: "440px",
+      marginInlineStart: "auto",
+    },
+  },
+});
+
+export const sort = style({
+  minWidth: 0,
+  width: "auto",
+  flex: "1 1 auto",
+});
+
+export const excludeListedToggle = style({
+  width: "auto",
+  flex: "0 0 auto",
+  whiteSpace: "nowrap",
+});

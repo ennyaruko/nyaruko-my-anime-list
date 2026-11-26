@@ -6,6 +6,7 @@ import { filterMediaForContentMode } from "@/entities/media";
 import { mediaRecommendationsServiceToken } from "@/entities/media";
 import type {
   MediaContentMode,
+  MediaRecommendationSort,
   MediaRecommendationsPage,
 } from "@/entities/media";
 
@@ -14,8 +15,10 @@ import { useAppService, queryCacheConfig } from "@/shared/lib";
 type UseMediaRecommendationsParameters = {
   mediaId: number;
   perPage?: number;
+  excludeListed?: boolean;
   userId: string | undefined;
   contentMode: MediaContentMode;
+  sort?: MediaRecommendationSort;
 };
 
 /** Loads paginated similar media without persisting provider results. */
@@ -24,6 +27,8 @@ export function useMediaRecommendations({
   mediaId,
   perPage = 5,
   contentMode,
+  sort = "ratingDesc",
+  excludeListed = false,
 }: UseMediaRecommendationsParameters) {
   const { accessToken } = useAuth();
   const service = useAppService(mediaRecommendationsServiceToken);
@@ -31,6 +36,8 @@ export function useMediaRecommendations({
     userId ?? "unknown",
     mediaId,
     perPage,
+    sort,
+    excludeListed,
     contentMode,
   );
 
@@ -55,12 +62,15 @@ export function useMediaRecommendations({
         accessToken,
         mediaId,
         pageParam,
+        sort,
         signal,
         perPage,
       );
       return {
         ...page,
-        items: filterMediaForContentMode(page.items, contentMode),
+        items: filterMediaForContentMode(page.items, contentMode).filter(
+          (media) => !excludeListed || media.listEntryId === null,
+        ),
       };
     },
   });

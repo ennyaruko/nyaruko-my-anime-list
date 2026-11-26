@@ -21,6 +21,7 @@ import {
   aniListMediaRelationsService,
   aniListFilterOptionsProvider,
   aniListMediaListActionsService,
+  aniListAccountStatisticsProvider,
   aniListMediaRecommendationsService,
 } from "@/app/integrations/anilist";
 
@@ -28,7 +29,6 @@ import { translationServiceToken } from "@/features/translate-content";
 
 import { myListServiceToken } from "@/entities/media";
 import { identityProviderToken } from "@/entities/auth";
-import { accountProviderToken } from "@/entities/account";
 import { mediaSearchServiceToken } from "@/entities/media";
 import { mediaDetailServiceToken } from "@/entities/media";
 import { mediaReviewsServiceToken } from "@/entities/media";
@@ -39,6 +39,10 @@ import { filterOptionsProviderToken } from "@/entities/filters";
 import { mediaRecommendationsServiceToken } from "@/entities/media";
 import { adultAnimeVideosServiceToken } from "@/entities/adult-anime";
 import { muchoHentaiAdultAnimeVideosServiceToken } from "@/entities/adult-anime";
+import {
+  accountProviderToken,
+  accountStatisticsProviderToken,
+} from "@/entities/account";
 import {
   mediaExternalIdResolverToken,
   mediaScreenshotsServiceToken,
@@ -69,6 +73,7 @@ export const appServices = createServiceRegistry()
   )
   .register(identityProviderToken, aniListIdentityProvider)
   .register(accountProviderToken, aniListAccountProvider)
+  .register(accountStatisticsProviderToken, aniListAccountStatisticsProvider)
   .register(myListServiceToken, aniListMediaListService)
   .register(mediaListActionsServiceToken, aniListMediaListActionsService)
   .register(mediaDetailServiceToken, aniListMediaDetailService)

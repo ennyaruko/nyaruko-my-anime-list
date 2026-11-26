@@ -65,13 +65,12 @@ export default {
     passwordRequired: "Password is required",
     loginLatinOnly: "Username must not contain Cyrillic characters",
   },
-  list: {
-    list: "List",
-    tags: "Tags",
-    genres: "Genres",
-    recommendations: "Recommendations",
-    filteredResults_one: "Found: {{count}}",
-    filteredResults_other: "Found: {{count}}",
+  statistics: {
+    meanScore: "Mean score",
+    totalAnime: "Total anime",
+    daysWatched: "Days watched",
+    daysPlanned: "Days planned",
+    episodesWatched: "Episodes watched",
   },
   errorBoundary: {
     reload: "Reload",
@@ -79,6 +78,15 @@ export default {
     title: "Something went wrong",
     notFoundTitle: "Page not found",
     description: "Something went wrong. Try reloading the page.",
+  },
+  list: {
+    list: "List",
+    tags: "Tags",
+    genres: "Genres",
+    statistics: "Statistics",
+    recommendations: "Recommendations",
+    filteredResults_one: "Found: {{count}}",
+    filteredResults_other: "Found: {{count}}",
   },
   translation: {
     auto: "Auto translate",
@@ -137,15 +145,6 @@ export default {
     averageScore: "By Average Score",
     completedDate: "By Completion Date",
   },
-  listRecommendations: {
-    random: "Random",
-    noCompletedAnimeTitle: "No completed anime",
-    noRecommendationsTitle: "No recommendations yet",
-    noRecommendationsDescription:
-      "No similar titles were found for your completed anime",
-    noCompletedAnimeDescription:
-      "Add anime with the Completed status to get recommendations",
-  },
   watchQueue: {
     clear: "Clear",
     open: "Anime to watch",
@@ -157,6 +156,16 @@ export default {
     itemCount_one: "{{count}} anime",
     itemCount_other: "{{count}} anime",
     empty: "The list is empty. Add anime from the user list context menu.",
+  },
+  listRecommendations: {
+    random: "Random",
+    excludeListed: "From my list",
+    noCompletedAnimeTitle: "No completed anime",
+    noRecommendationsTitle: "No recommendations yet",
+    noRecommendationsDescription:
+      "No similar titles were found for your completed anime",
+    noCompletedAnimeDescription:
+      "Add anime with the Completed status to get recommendations",
   },
   profileMenu: {
     logout: "Log out",
@@ -275,6 +284,7 @@ export default {
     source: "Source:",
     status: "Status:",
     reviews: "Reviews",
+    similar: "Similar",
     info: "Information",
     relations: "Related",
     copyLink: "Copy link",
@@ -282,6 +292,7 @@ export default {
     expandReview: "Expand",
     ageRating: "Age rating:",
     noImagelabel: "No image",
+    allReviews: "All reviews",
     screenshots: "Screenshots",
     collapseReview: "Collapse",
     description: "Description",

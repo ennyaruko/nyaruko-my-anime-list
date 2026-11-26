@@ -68,6 +68,14 @@ export type MediaRecommendationsPage = {
   hasNextPage: boolean;
 };
 
+/** One page of public reviews returned by AniList. */
+export type MediaReviewsPage = {
+  /** Reviews included in the requested page. */
+  items: MediaReview[];
+  /** Whether AniList reports another page after this one. */
+  hasNextPage: boolean;
+};
+
 /** Core media page data returned by the persisted detail query. */
 export type MediaDetail = {
   /** The main media record, including the current user's list entry. */

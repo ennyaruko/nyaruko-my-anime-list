@@ -21,6 +21,7 @@ export type MediaRecommendationsService = {
     accessToken: string,
     mediaId: number,
     page: number,
+    sort: MediaRecommendationSort,
     signal?: AbortSignal,
     perPage?: number,
   ): Promise<MediaRecommendationsPage>;

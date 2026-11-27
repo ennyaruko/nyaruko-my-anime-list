@@ -5,13 +5,14 @@ import { useTranslation } from "react-i18next";
 import {
   FeedbackCard,
   useMediaReviews,
+  ReviewRatingPopover,
   FeedbackCardSkeleton,
 } from "@/widgets/media-reviews";
 
 import type { AccountProfile } from "@/entities/account";
 
-import { Column, Heading } from "@/shared/ui";
 import { ArrowDownIcon } from "@/shared/icons";
+import { Row, Column, Heading } from "@/shared/ui";
 
 import * as styles from "./MediaReviews.css";
 import * as pageStyles from "../MediaDetailPage.css";
@@ -44,7 +45,18 @@ export function MediaReviews({ userId, mediaId }: MediaReviewsProps) {
           ) : null
         }
       >
-        {t("common:mediaDetail.reviews")}
+        <Row gap="xxs" alignItem="center">
+          {t("common:mediaDetail.reviews")}
+          {!reviewsQuery.isPending &&
+            Boolean(reviewsQuery.data?.items.length) && (
+              <ReviewRatingPopover
+                userId={userId}
+                mediaId={mediaId}
+                initialReviews={reviewsQuery.data.items}
+                canLoadFull={reviewsQuery.data.hasNextPage}
+              />
+            )}
+        </Row>
       </Heading>
       {reviewsQuery.isPending ? (
         <ReviewSkeleton />

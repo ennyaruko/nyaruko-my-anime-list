@@ -4,6 +4,7 @@ import { useRef, Fragment, useEffect } from "react";
 
 import {
   FeedbackCard,
+  ReviewRatingPopover,
   FeedbackCardSkeleton,
   useInfiniteMediaReviews,
 } from "@/widgets/media-reviews";
@@ -11,6 +12,7 @@ import {
 import type { AccountState, AccountProfile } from "@/entities/account";
 
 import {
+  Row,
   Column,
   Header,
   Heading,
@@ -37,9 +39,6 @@ export function MediaReviewsPage({ mediaId }: { mediaId: number }) {
           variant="plain"
           leading={<BackLink>{t("common:mediaDetail.back")}</BackLink>}
         />
-        <Heading variant="neutral">
-          {t("common:mediaDetail.allReviews")}
-        </Heading>
         <QueryErrorBoundary resetKeys={[mediaId]}>
           <ReviewsResults mediaId={mediaId} userId={account?.id} />
         </QueryErrorBoundary>
@@ -61,6 +60,22 @@ function ReviewsResults({
     useInfiniteMediaReviews({ userId, mediaId });
   const reviews = data?.pages.flatMap(({ items }) => items) ?? [];
 
+  const heading = (
+    <Heading variant="neutral">
+      <Row gap="xxs" alignItem="center">
+        {t("common:mediaDetail.allReviews")}
+        {reviews.length > 0 && (
+          <ReviewRatingPopover
+            userId={userId}
+            mediaId={mediaId}
+            initialReviews={reviews}
+            canLoadFull={hasNextPage}
+          />
+        )}
+      </Row>
+    </Heading>
+  );
+
   useEffect(() => {
     const sentinel = sentinelRef.current;
     if (!sentinel || !hasNextPage || isFetchingNextPage) return;
@@ -78,6 +93,7 @@ function ReviewsResults({
   if (isPending) {
     return (
       <Column gap="m">
+        {heading}
         {Array.from({ length: 3 }, (_, index) => (
           <FeedbackCardSkeleton key={index} />
         ))}
@@ -86,11 +102,17 @@ function ReviewsResults({
   }
 
   if (reviews.length === 0) {
-    return <p className={styles.empty}>{t("common:mediaDetail.noReviews")}</p>;
+    return (
+      <Column gap="m">
+        {heading}
+        <p className={styles.empty}>{t("common:mediaDetail.noReviews")}</p>
+      </Column>
+    );
   }
 
   return (
     <Column gap="m">
+      {heading}
       {reviews.map((review, index) => (
         <Fragment key={review.id}>
           {index > 0 && <hr className={styles.divider} />}
